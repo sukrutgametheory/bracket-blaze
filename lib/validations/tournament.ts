@@ -3,8 +3,8 @@ import { z } from "zod"
 export const tournamentSchema = z.object({
   name: z.string().min(3, "Tournament name must be at least 3 characters").max(100),
   venue: z.string().min(3, "Venue must be at least 3 characters").max(200),
-  timezone: z.string().default("UTC"),
-  rest_window_minutes: z.number().int().min(0).max(120).default(15),
+  timezone: z.string().min(1),
+  rest_window_minutes: z.number().int().min(0).max(120),
 })
 
 export const courtSchema = z.object({
