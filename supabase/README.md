@@ -1,5 +1,12 @@
 # Supabase Database Setup
 
+## ⚠️ Important: Using Prefixed Tables
+
+All database tables use the `bracket_blaze_` prefix to:
+- Avoid naming conflicts
+- Clearly identify Bracket Blaze tables
+- Better organize your Supabase project
+
 ## Running Migrations
 
 You have two options for running these migrations:
@@ -9,9 +16,11 @@ You have two options for running these migrations:
 1. Go to your Supabase project dashboard: https://app.supabase.com/project/YOUR_PROJECT_ID
 2. Navigate to the SQL Editor
 3. Copy and paste the contents of each migration file in order:
-   - First: `migrations/20250101000000_initial_schema.sql`
-   - Second: `migrations/20250101000001_rls_policies.sql`
+   - **Recommended**: `migrations/20250101000002_add_prefix.sql` (with bracket_blaze_ prefix)
+   - **Then**: `migrations/20250101000003_rls_policies_prefixed.sql`
 4. Run each migration by clicking "Run"
+
+**Note**: The old migrations (20250101000000 and 20250101000001) are kept for reference but use the new prefixed versions above.
 
 ### Option 2: Using Supabase CLI (Recommended for Development)
 
@@ -42,18 +51,25 @@ Then fill in your Supabase credentials from: https://app.supabase.com/project/YO
 
 ## Database Schema Overview
 
-### Core Tables
-- **tournaments**: Tournament metadata and configuration
-- **courts**: Physical courts available for matches
-- **divisions**: Competition divisions within tournaments
-- **participants**: Individual players
-- **teams**: Teams for doubles/group events
-- **entries**: Participants/teams registered in divisions
-- **matches**: Individual matches with status and results
-- **match_events**: Immutable audit log of all scoring actions
-- **standings**: Materialized standings for Swiss/Groups formats
-- **checkins**: Player check-in tracking
-- **official_assignments**: Referees assigned to matches
+### Core Tables (all prefixed with `bracket_blaze_`)
+- **bracket_blaze_tournaments**: Tournament metadata and configuration
+- **bracket_blaze_courts**: Physical courts available for matches
+- **bracket_blaze_divisions**: Competition divisions within tournaments
+- **bracket_blaze_participants**: Individual players
+- **bracket_blaze_teams**: Teams for doubles/group events
+- **bracket_blaze_entries**: Participants/teams registered in divisions
+- **bracket_blaze_matches**: Individual matches with status and results
+- **bracket_blaze_match_events**: Immutable audit log of all scoring actions
+- **bracket_blaze_standings**: Materialized standings for Swiss/Groups formats
+- **bracket_blaze_checkins**: Player check-in tracking
+- **bracket_blaze_official_assignments**: Referees assigned to matches
+
+### Custom Types (all prefixed with `bracket_blaze_`)
+- `bracket_blaze_tournament_status`
+- `bracket_blaze_entry_status`
+- `bracket_blaze_match_status`
+- `bracket_blaze_sport_type`
+- `bracket_blaze_format_type`
 
 ### Key Features
 - UUID primary keys throughout

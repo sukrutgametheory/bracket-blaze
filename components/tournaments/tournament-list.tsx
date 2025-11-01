@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query"
 import { createClient } from "@/lib/supabase/client"
-import { Tournament } from "@/types/database"
+import { Tournament, TABLE_NAMES } from "@/types/database"
 import {
   Card,
   CardContent,
@@ -22,7 +22,7 @@ export function TournamentList() {
     queryKey: ["tournaments"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("tournaments")
+        .from(TABLE_NAMES.TOURNAMENTS)
         .select("*")
         .order("created_at", { ascending: false })
 

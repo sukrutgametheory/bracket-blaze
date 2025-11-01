@@ -2,6 +2,9 @@
 
 Professional tournament management platform for racquet sports (badminton, squash, pickleball, padel).
 
+🔗 **Production**: https://bracket-blaze.vercel.app (after deployment)
+📦 **Repository**: https://github.com/sukrutgametheory/bracket-blaze
+
 ## Project Status
 
 **Phase 1: Foundation Complete ✅**
@@ -11,9 +14,12 @@ The project foundation has been successfully set up with:
 - ✅ Supabase integration (auth, database, realtime)
 - ✅ shadcn/ui component library
 - ✅ TanStack Query for state management
-- ✅ Database schema with migrations and RLS policies
+- ✅ Database schema with `bracket_blaze_` prefix
+- ✅ Comprehensive RLS policies
 - ✅ Basic authentication flow
 - ✅ Tournament list page
+- ✅ Vercel deployment ready
+- ✅ Auto-sync to GitHub
 
 ## Quick Start
 
@@ -35,10 +41,10 @@ npm install
 2. Fill in your Supabase credentials in `.env.local`:
    - Get these from: https://app.supabase.com/project/YOUR_PROJECT_ID/settings/api
 
-3. Run the database migrations:
+3. Run the database migrations (with `bracket_blaze_` prefix):
    - Open Supabase SQL Editor
-   - Run `supabase/migrations/20250101000000_initial_schema.sql`
-   - Then run `supabase/migrations/20250101000001_rls_policies.sql`
+   - Run `supabase/migrations/20250101000002_add_prefix.sql`
+   - Then run `supabase/migrations/20250101000003_rls_policies_prefixed.sql`
 
 #### Option B: Use Supabase CLI (Recommended for Development)
 
@@ -206,12 +212,40 @@ This script will:
 3. Push to GitHub
 4. Show sync status
 
+## Deployment to Vercel
+
+### Quick Deploy
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/sukrutgametheory/bracket-blaze)
+
+### Manual Deployment
+
+For detailed deployment instructions, see **[VERCEL_DEPLOYMENT.md](./VERCEL_DEPLOYMENT.md)**
+
+**Quick steps:**
+1. Connect GitHub repo to Vercel
+2. Add environment variables (Supabase credentials)
+3. Deploy
+4. Configure Supabase redirect URLs
+
+**Result**: Automatic deployments on every push to `main`!
+
+### Production Checklist
+
+Before going live:
+- [ ] Run Supabase migrations (prefixed tables)
+- [ ] Add environment variables in Vercel
+- [ ] Configure Supabase redirect URLs
+- [ ] Test authentication flow
+- [ ] Verify tournament creation works
+
 ## Next Steps
 
 1. **Add your Supabase credentials** to `.env.local`
 2. **Run database migrations** (see `supabase/README.md`)
-3. **Create a tournament** by signing up and navigating to `/tournaments`
-4. **Begin Phase 2** implementation (Tournament Setup Wizard)
+3. **Deploy to Vercel** (see `VERCEL_DEPLOYMENT.md`)
+4. **Create a tournament** by signing up and navigating to `/tournaments`
+5. **Begin Phase 2** implementation (Tournament Setup Wizard)
 
 ## Contributing
 

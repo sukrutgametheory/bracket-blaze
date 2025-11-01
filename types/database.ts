@@ -13,6 +13,23 @@ export type SportType = 'badminton' | 'squash' | 'pickleball' | 'padel'
 export type FormatType = 'swiss' | 'mexicano' | 'groups_knockout'
 export type WinnerSide = 'A' | 'B'
 
+// Database table names with prefix
+export const TABLE_NAMES = {
+  TOURNAMENTS: 'bracket_blaze_tournaments',
+  COURTS: 'bracket_blaze_courts',
+  DIVISIONS: 'bracket_blaze_divisions',
+  PARTICIPANTS: 'bracket_blaze_participants',
+  TEAMS: 'bracket_blaze_teams',
+  TEAM_MEMBERS: 'bracket_blaze_team_members',
+  ENTRIES: 'bracket_blaze_entries',
+  DRAWS: 'bracket_blaze_draws',
+  MATCHES: 'bracket_blaze_matches',
+  MATCH_EVENTS: 'bracket_blaze_match_events',
+  OFFICIAL_ASSIGNMENTS: 'bracket_blaze_official_assignments',
+  CHECKINS: 'bracket_blaze_checkins',
+  STANDINGS: 'bracket_blaze_standings',
+} as const
+
 export interface Tournament {
   id: string
   name: string
