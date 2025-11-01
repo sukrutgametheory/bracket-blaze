@@ -17,7 +17,7 @@ export const divisionSchema = z.object({
   name: z.string().min(3, "Division name must be at least 3 characters").max(100),
   format: z.enum(["swiss", "mexicano", "groups_knockout"]),
   draw_size: z.number().int().min(2).max(512),
-  rules_json: z.record(z.any()).optional().default({}),
+  rules_json: z.record(z.string(), z.any()).optional().default({}),
 })
 
 export const participantSchema = z.object({
