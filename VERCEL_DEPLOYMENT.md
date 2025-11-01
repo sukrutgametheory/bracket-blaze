@@ -69,17 +69,29 @@ Vercel will auto-detect Next.js. Confirm these settings:
 
 #### Step 2.3: Add Environment Variables
 
-Click **Environment Variables** and add these:
+**📖 Detailed Guide**: See [VERCEL_ENV_SETUP.md](./VERCEL_ENV_SETUP.md) for step-by-step screenshots and troubleshooting.
 
-| Name | Value | Environment |
+**Quick Summary:**
+
+Scroll down to **Environment Variables** section and add these three:
+
+| Name | Value | Environments |
 |------|-------|-------------|
-| `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase project URL | Production, Preview, Development |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Your Supabase anon key | Production, Preview, Development |
-| `SUPABASE_SERVICE_ROLE_KEY` | Your Supabase service role key | Production only |
+| `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase project URL | ✅ Production, Preview, Development |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Your Supabase anon key | ✅ Production, Preview, Development |
+| `SUPABASE_SERVICE_ROLE_KEY` | Your Supabase service role key | ✅ Production ONLY |
+
+**For each variable:**
+1. Click **Add New** or `+`
+2. Enter the **Key** exactly as shown
+3. Paste the **Value** from Supabase
+4. Check the appropriate environments
+5. Click **Add**
 
 **Important**:
 - Variables prefixed with `NEXT_PUBLIC_` are exposed to the browser
 - The service role key should **only** be in Production (never Preview/Development)
+- If you get errors about secrets not existing, make sure you're adding them as plain environment variables, not referencing @secrets
 
 #### Step 2.4: Deploy
 
