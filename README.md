@@ -180,7 +180,31 @@ npm start
 
 # Run linting
 npm run lint
+
+# Sync to GitHub (manual)
+./sync-to-github.sh
 ```
+
+## GitHub Sync
+
+This project is configured to automatically sync to GitHub:
+
+🔗 **Repository**: https://github.com/sukrutgametheory/bracket-blaze
+
+### Automatic Sync
+A git post-commit hook automatically pushes every commit to GitHub. No manual action needed!
+
+### Manual Sync
+If you need to manually sync changes:
+```bash
+./sync-to-github.sh
+```
+
+This script will:
+1. Check for uncommitted changes
+2. Optionally commit them
+3. Push to GitHub
+4. Show sync status
 
 ## Next Steps
 
