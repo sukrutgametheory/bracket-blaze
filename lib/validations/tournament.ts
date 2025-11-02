@@ -9,7 +9,7 @@ export const tournamentSchema = z.object({
 
 export const courtSchema = z.object({
   name: z.string().min(1, "Court name is required").max(20),
-  is_active: z.boolean().default(true),
+  is_active: z.boolean(),
 })
 
 export const divisionSchema = z.object({
