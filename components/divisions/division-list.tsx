@@ -9,6 +9,7 @@ import { DivisionDialog } from "./division-dialog"
 import { deleteDivision } from "@/lib/actions/divisions"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 interface DivisionListProps {
   divisions: Division[]
@@ -140,12 +141,10 @@ export function DivisionList({ divisions, tournamentId, userId }: DivisionListPr
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <Button
-                        variant="default"
-                        size="sm"
-                        onClick={() => window.location.href = `/tournaments/${tournamentId}/divisions/${division.id}/entries`}
-                      >
-                        Manage Entries
+                      <Button asChild variant="default" size="sm">
+                        <Link href={`/tournaments/${tournamentId}/divisions/${division.id}/entries`}>
+                          Manage Entries
+                        </Link>
                       </Button>
                       <Button
                         variant="outline"
