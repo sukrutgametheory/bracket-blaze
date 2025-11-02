@@ -7,19 +7,41 @@ Professional tournament management platform for racquet sports (badminton, squas
 
 ## Project Status
 
-**Phase 1: Foundation Complete ✅**
+**Current Phase**: Phase 2 Complete ✅ → Moving to Phase 3
 
-The project foundation has been successfully set up with:
-- ✅ Next.js 14+ with TypeScript, App Router, and Tailwind CSS
+### 🎉 Phase 1: Foundations (COMPLETE)
+- ✅ Next.js 15.1.3 with TypeScript, App Router, and Tailwind CSS
 - ✅ Supabase integration (auth, database, realtime)
 - ✅ shadcn/ui component library
 - ✅ TanStack Query for state management
-- ✅ Database schema with `bracket_blaze_` prefix
+- ✅ Database schema with `bracket_blaze_` prefix (13 tables)
 - ✅ Comprehensive RLS policies
-- ✅ Basic authentication flow
-- ✅ Tournament list page
-- ✅ Vercel deployment ready
-- ✅ Auto-sync to GitHub
+- ✅ Authentication (login/signup)
+- ✅ Vercel deployment with auto-deploy
+- ✅ GitHub auto-sync on commit
+
+### 🎉 Phase 2: Core Setup (COMPLETE)
+- ✅ **Tournament Management** - Create/edit tournaments
+- ✅ **Court Management** - Add courts (C1-C7) with active/inactive status
+- ✅ **Division Management** - Configure divisions with:
+  - Sport types (Badminton, Squash, Pickleball, Padel)
+  - Formats (Swiss, Mexicano, Groups+Knockout)
+  - Even draw sizes (2-512 players)
+  - Format-specific settings (rounds, qualifiers)
+- ✅ **Participant Management** - Register players
+- ✅ **Entry Management** - Assign participants to divisions with seeding
+
+### 🚧 Phase 3: Draw Generation & Scheduling (NEXT)
+- [ ] Draw generation engines (Swiss, Mexicano, Groups)
+- [ ] TD Control Center with Ready Queue
+- [ ] Auto-assignment with manual override
+- [ ] Conflict detection (player overlaps, rest periods)
+- [ ] Court grid visualization
+- [ ] Real-time updates
+
+**📊 Overall Progress**: 40% Complete
+
+For detailed progress tracking, see [PROGRESS.md](./PROGRESS.md)
 
 ## Quick Start
 
@@ -41,10 +63,11 @@ npm install
 2. Fill in your Supabase credentials in `.env.local`:
    - Get these from: https://app.supabase.com/project/YOUR_PROJECT_ID/settings/api
 
-3. Run the database migrations (with `bracket_blaze_` prefix):
+3. Run the database migrations (with `bracket_blaze_` prefix) **in order**:
    - Open Supabase SQL Editor
-   - Run `supabase/migrations/20250101000002_add_prefix.sql`
-   - Then run `supabase/migrations/20250101000003_rls_policies_prefixed.sql`
+   - **First**: Run `supabase/migrations/20250101000002_add_prefix.sql`
+   - **Second**: Run `supabase/migrations/20250101000003_rls_policies_prefixed.sql`
+   - **Third**: Run `supabase/migrations/20250102000001_add_tournament_id_to_participants.sql` ⚠️ Required!
 
 #### Option B: Use Supabase CLI (Recommended for Development)
 

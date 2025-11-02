@@ -176,14 +176,165 @@ Separate engines: `badmintonEngine`, `squashEngine`, `pickleballEngine`, `padelE
 
 ## Development Phases (11-15 weeks)
 
-1. **Foundations** (2-3 weeks): Auth, data model, RLS, CRUD operations
-2. **Draws & Pairings** (3-4 weeks): Seeding, format engines, late-add logic
-3. **Scoring & TV** (2-3 weeks): Ref app, events, sign-off, Court TV
-4. **Scheduling & Conflicts** (2-3 weeks): Queue, drag-drop, conflict/rest warnings
-5. **Player Portal** (1-2 weeks): Draws, standings, "My Matches"
-6. **Polish & Ops** (1-2 weeks): Admin UX, load testing, exports
+### ✅ Phase 1: Foundations (COMPLETED)
+**Duration**: 2 weeks
+- ✅ Next.js 15.1.3 + TypeScript setup
+- ✅ Supabase integration (Auth, Database, Realtime)
+- ✅ shadcn/ui component library
+- ✅ Authentication (login/signup)
+- ✅ Database schema with `bracket_blaze_` prefix
+- ✅ Row-Level Security policies
+- ✅ GitHub auto-sync on commit
+- ✅ Vercel deployment pipeline
+
+### ✅ Phase 2: Core Setup (COMPLETED)
+**Duration**: 3 weeks
+**Completed Features**:
+1. ✅ **Tournament Management** - CRUD for tournaments (name, venue, timezone, rest window)
+2. ✅ **Court Management** - Add/edit courts with active/inactive status
+3. ✅ **Division Management** - Create divisions with:
+   - Sport selection (Badminton, Squash, Pickleball, Padel)
+   - Format selection (Swiss, Mexicano, Groups+Knockout)
+   - **Even draw sizes enforced** (2-512 players)
+   - **Format-specific configuration**:
+     - Swiss: rounds (3-10), qualifiers for knockout
+     - Groups: group count, qualifiers per group
+     - Mexicano: rounds (3-20), qualifiers for playoff
+4. ✅ **Participant Management** - Register players with contact info
+5. ✅ **Entry Management** - Assign participants to divisions:
+   - Prevents duplicate entries (same player in same division)
+   - Enforces draw size limits
+   - Optional seeding (manual or auto-assign)
+   - Shows entry count (12/16)
+
+**Key Decision**: Two-step participant registration workflow
+- Step 1: Add participants to tournament (creates player pool)
+- Step 2: Assign participants to divisions via entries (with seeding)
+- Rationale: Allows bulk import, pre-registration before divisions finalized, same participant in multiple divisions
+
+### 🚧 Phase 3: Draw Generation & Scheduling (NEXT)
+**Estimated Duration**: 3-4 weeks
+**Planned Features**:
+1. **Draw Generation Engines**
+   - Swiss pairing algorithm (avoid repeats, match by score)
+   - Mexicano dynamic pairing (performance-based)
+   - Groups round-robin + knockout bracket
+   - Seeding and bracket generation
+
+2. **TD Control Center**
+   - Ready Queue (prioritized matches waiting for courts)
+   - Court Grid (visual court status)
+   - Auto-assignment with manual override (greedy algorithm)
+   - Drag-drop match-to-court assignment
+
+3. **Conflict Detection Engine**
+   - Runtime detection at assignment time
+   - Player overlap check (same player on different court)
+   - Rest period warnings (15 min default, non-blocking)
+   - Court availability check
+
+4. **Match Timing & Assignment**
+   - Database additions: `assigned_at`, `actual_start_time`, `actual_end_time`
+   - Conflict tracking table with override reasons
+   - Court assignment audit log
+
+**Key Decisions for Phase 3**:
+- ✅ All divisions share all active courts (no court preferences in MVP)
+- ✅ Auto-assignment with manual override (not manual-only)
+- ✅ Runtime conflict detection (not preventive at draw generation)
+- ✅ Build as complete Phase 3 milestone (after Phase 2 complete)
+
+### Phase 4: Scoring & TV (Future)
+- Referee app with sport-specific scoring
+- Match events (immutable audit log)
+- TD sign-off workflow
+- Court TV display
+
+### Phase 5: Player Portal (Future)
+- My Matches view
+- Live draws and standings
+- Results timeline
+
+### Phase 6: Polish & Ops (Future)
+- Admin UX improvements
+- Load testing
+- Exports and reporting
+
+## Key Architectural Decisions
+
+### Database Design
+**Decision**: Prefix all tables with `bracket_blaze_`
+- **Rationale**: Avoid naming conflicts in shared Supabase projects, clear identification
+- **Implementation**: All tables, types, and indexes use prefix
+- **Tables**: tournaments, courts, divisions, participants, teams, entries, matches, etc.
+
+**Decision**: Separate `participants` and `entries` tables
+- **Rationale**: Participants are tournament-scoped player pool, entries link participants to specific divisions
+- **Benefit**: Same participant can be in multiple divisions with different seeds
+- **Flow**: Create participant → Create entry (participant + division + seed)
+
+**Decision**: Match-court relationship already exists (`matches.court_id`)
+- **Finding**: Schema already includes court assignment capability
+- **Benefit**: Foundation for scheduling system already in place
+
+### Division Configuration
+**Decision**: Enforce even draw sizes only (2, 4, 6...512)
+- **Rationale**: Bracket generation requires power-of-2 or even numbers for fair pairings
+- **Implementation**: Zod validation with `refine((val) => val % 2 === 0)`
+
+**Decision**: Store format-specific config in `rules_json`
+- **Examples**:
+  - Swiss: `{ swiss_rounds: 5, swiss_qualifiers: 8 }`
+  - Groups: `{ groups_count: 4, group_qualifiers_per_group: 2 }`
+- **Rationale**: Flexible schema, easier to extend with new formats
+- **Usage**: Drives draw generation and leaderboard highlighting
+
+### Scheduling Architecture
+**Decision**: All divisions share all active courts (no court preferences for MVP)
+- **Alternative considered**: Division-specific court assignments
+- **Rationale**: Maximizes court utilization, simpler MVP, TD can override as needed
+- **Future**: Add court preferences in Phase 4 if needed
+
+**Decision**: Auto-assignment with manual override
+- **Alternative considered**: Manual-only or both modes with toggle
+- **Rationale**: Best balance of automation and TD control, greedy algorithm reduces TD workload
+- **Implementation**: System auto-assigns highest priority match to free court, TD can drag-drop to override
+
+**Decision**: Runtime conflict detection (not preventive at draw generation)
+- **Alternative considered**: Smart draw generation to avoid conflicts
+- **Rationale**: Simpler draw algorithms, flexibility for player withdrawals/late adds
+- **Implementation**: Check conflicts when TD assigns match to court, allow override with reason
+
+**Decision**: Rest period warnings only (non-blocking)
+- **Per PRD**: 15-minute rest is warning-only, not hard enforcement
+- **Rationale**: TD knows context (player requested, tournament running behind, etc.)
+- **Implementation**: Show warning with override reason input
+
+### Data Flow
+**Critical Path**: Tournaments → Courts → Divisions → Participants → **Entries** → Matches → Scheduling
+- **Without entries**: Cannot generate matches (matches need entry IDs)
+- **Entry = participant + division + seed**: Represents a player's registration in a specific competition
+
+### UI/UX Patterns
+**Decision**: Two-step participant registration
+- **Step 1**: Add all participants to tournament (player pool)
+- **Step 2**: Assign participants to divisions via entry management
+- **Rationale**:
+  - Allows bulk import of participants
+  - Pre-registration before divisions finalized
+  - Clear separation for multi-division tournaments
+  - Easier to manage large player lists
+
+**Decision**: Separate management pages for each entity
+- **Pattern**: `/tournaments/{id}/courts`, `/tournaments/{id}/divisions`, `/tournaments/{id}/participants`
+- **Entry management**: Nested under division `/tournaments/{id}/divisions/{divisionId}/entries`
+- **Rationale**: Clear hierarchy, focused workflows, easier navigation
 
 ## Out of Scope for MVP (V2 Features)
+- Division-specific court preferences (all courts shared for now)
+- Smart draw generation to prevent conflicts (runtime detection only)
+- Division start time scheduling (priority-based only)
+- Court utilization analytics
 - Payments (Razorpay integration)
 - WhatsApp notifications
 - Dispute workflow
@@ -191,8 +342,10 @@ Separate engines: `badmintonEngine`, `squashEngine`, `pickleballEngine`, `padelE
 - Court TV rotation
 - Calendar feeds
 - Live streaming integrations
-- Complex seeding algorithms
+- Complex seeding algorithms (manual/auto-assign only)
 - Hard rest enforcement (warning-only in MVP)
+- Match SLA tracking
+- "On deck" player notifications
 
 ## Key Risks & Mitigations
 
