@@ -129,16 +129,19 @@ export default async function TournamentPage({ params }: TournamentPageProps) {
                     <Link href={`/tournaments/${id}/courts`}>Manage Courts</Link>
                   </Button>
                 </div>
-                <div className="flex items-center gap-4 opacity-50">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-muted">
+                <div className="flex items-center gap-4">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-primary text-primary">
                     3
                   </div>
                   <div className="flex-1">
                     <p className="font-medium">Create Divisions</p>
                     <p className="text-sm text-muted-foreground">
-                      Set up competition divisions (Coming soon in Phase 2)
+                      Set up competition divisions for different sports
                     </p>
                   </div>
+                  <Button asChild variant="outline" size="sm">
+                    <Link href={`/tournaments/${id}/divisions`}>Manage Divisions</Link>
+                  </Button>
                 </div>
                 <div className="flex items-center gap-4 opacity-50">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-muted">
