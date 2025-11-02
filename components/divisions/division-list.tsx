@@ -104,41 +104,61 @@ export function DivisionList({ divisions, tournamentId, userId }: DivisionListPr
             </div>
           ) : (
             <div className="space-y-4">
-              {divisions.map((division) => (
-                <div
-                  key={division.id}
-                  className="flex items-center justify-between p-4 border rounded-lg"
-                >
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <p className="font-semibold text-lg">{division.name}</p>
-                      <Badge variant="outline">{sportLabels[division.sport]}</Badge>
-                      <Badge variant="secondary">{formatLabels[division.format]}</Badge>
+              {divisions.map((division) => {
+                const rulesJson = (division.rules_json as Record<string, any>) || {}
+                let formatDetails = ""
+
+                if (division.format === "swiss") {
+                  const rounds = rulesJson.swiss_rounds || "?"
+                  const qualifiers = rulesJson.swiss_qualifiers || 0
+                  formatDetails = `${rounds} rounds${qualifiers > 0 ? ` → Top ${qualifiers} to knockout` : ""}`
+                } else if (division.format === "groups_knockout") {
+                  const groups = rulesJson.groups_count || "?"
+                  const qualifiers = rulesJson.group_qualifiers_per_group || "?"
+                  formatDetails = `${groups} groups, Top ${qualifiers} advance`
+                } else if (division.format === "mexicano") {
+                  const rounds = rulesJson.mexicano_rounds || "?"
+                  const qualifiers = rulesJson.mexicano_qualifiers || 0
+                  formatDetails = `${rounds} rounds${qualifiers > 0 ? ` → Top ${qualifiers} to playoff` : ""}`
+                }
+
+                return (
+                  <div
+                    key={division.id}
+                    className="flex items-center justify-between p-4 border rounded-lg"
+                  >
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <p className="font-semibold text-lg">{division.name}</p>
+                        <Badge variant="outline">{sportLabels[division.sport]}</Badge>
+                        <Badge variant="secondary">{formatLabels[division.format]}</Badge>
+                      </div>
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <span>Draw Size: {division.draw_size}</span>
+                        {formatDetails && <span>{formatDetails}</span>}
+                        <span>Created {new Date(division.created_at).toLocaleDateString()}</span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                      <span>Draw Size: {division.draw_size}</span>
-                      <span>Created {new Date(division.created_at).toLocaleDateString()}</span>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleEdit(division)}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDelete(division.id)}
+                        disabled={isDeleting === division.id}
+                      >
+                        {isDeleting === division.id ? "Deleting..." : "Delete"}
+                      </Button>
                     </div>
                   </div>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleEdit(division)}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => handleDelete(division.id)}
-                      disabled={isDeleting === division.id}
-                    >
-                      {isDeleting === division.id ? "Deleting..." : "Delete"}
-                    </Button>
-                  </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           )}
         </CardContent>

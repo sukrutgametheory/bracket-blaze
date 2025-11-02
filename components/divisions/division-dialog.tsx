@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { divisionSchema, type DivisionFormData } from "@/lib/validations/tournament"
+import { divisionFormSchema, type DivisionFormData } from "@/lib/validations/tournament"
 import { createDivision, updateDivision } from "@/lib/actions/divisions"
 import { Button } from "@/components/ui/button"
 import {
@@ -65,25 +65,38 @@ export function DivisionDialog({
   const [isLoading, setIsLoading] = useState(false)
 
   const form = useForm<DivisionFormData>({
-    resolver: zodResolver(divisionSchema),
+    resolver: zodResolver(divisionFormSchema),
     defaultValues: {
       sport: "badminton",
       name: "",
       format: "swiss",
       draw_size: 16,
       rules_json: {},
+      swiss_rounds: 5,
+      swiss_qualifiers: 8,
     },
   })
+
+  const selectedFormat = form.watch("format")
+  const drawSize = form.watch("draw_size")
 
   // Update form when division changes
   useEffect(() => {
     if (division) {
+      const rulesJson = (division.rules_json as Record<string, any>) || {}
       form.reset({
         sport: division.sport as "badminton" | "squash" | "pickleball" | "padel",
         name: division.name,
         format: division.format as "swiss" | "mexicano" | "groups_knockout",
         draw_size: division.draw_size,
-        rules_json: (division.rules_json as Record<string, any>) || {},
+        rules_json: rulesJson,
+        // Extract format-specific fields from rules_json
+        swiss_rounds: rulesJson.swiss_rounds,
+        swiss_qualifiers: rulesJson.swiss_qualifiers,
+        groups_count: rulesJson.groups_count,
+        group_qualifiers_per_group: rulesJson.group_qualifiers_per_group,
+        mexicano_rounds: rulesJson.mexicano_rounds,
+        mexicano_qualifiers: rulesJson.mexicano_qualifiers,
       })
     } else {
       form.reset({
@@ -92,6 +105,8 @@ export function DivisionDialog({
         format: "swiss",
         draw_size: 16,
         rules_json: {},
+        swiss_rounds: 5,
+        swiss_qualifiers: 8,
       })
     }
   }, [division, form])
@@ -100,9 +115,31 @@ export function DivisionDialog({
     setIsLoading(true)
 
     try {
+      // Build rules_json from format-specific fields
+      const rules_json: Record<string, any> = {}
+
+      if (values.format === "swiss") {
+        rules_json.swiss_rounds = values.swiss_rounds
+        rules_json.swiss_qualifiers = values.swiss_qualifiers
+      } else if (values.format === "groups_knockout") {
+        rules_json.groups_count = values.groups_count
+        rules_json.group_qualifiers_per_group = values.group_qualifiers_per_group
+      } else if (values.format === "mexicano") {
+        rules_json.mexicano_rounds = values.mexicano_rounds
+        rules_json.mexicano_qualifiers = values.mexicano_qualifiers
+      }
+
+      const payload = {
+        sport: values.sport,
+        name: values.name,
+        format: values.format,
+        draw_size: values.draw_size,
+        rules_json,
+      }
+
       const result = division
-        ? await updateDivision(division.id, values)
-        : await createDivision(values, tournamentId)
+        ? await updateDivision(division.id, payload)
+        : await createDivision(payload, tournamentId)
 
       if (result.error) {
         toast({
@@ -135,7 +172,7 @@ export function DivisionDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{division ? "Edit Division" : "Add Division"}</DialogTitle>
           <DialogDescription>
@@ -239,24 +276,192 @@ export function DivisionDialog({
               name="draw_size"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Draw Size</FormLabel>
+                  <FormLabel>Draw Size (must be even)</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
                       min={2}
                       max={512}
+                      step={2}
                       disabled={isLoading}
                       {...field}
                       onChange={(e) => field.onChange(parseInt(e.target.value))}
                     />
                   </FormControl>
                   <FormDescription>
-                    Maximum number of participants (2-512)
+                    Maximum number of participants (must be even, 2-512)
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            {/* Swiss Format Fields */}
+            {selectedFormat === "swiss" && (
+              <>
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="swiss_rounds"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Number of Swiss Rounds</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            min={3}
+                            max={10}
+                            disabled={isLoading}
+                            {...field}
+                            onChange={(e) => field.onChange(parseInt(e.target.value))}
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          Rounds before knockout (3-10)
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="swiss_qualifiers"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Qualifiers for Knockout</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            min={0}
+                            max={drawSize}
+                            step={2}
+                            disabled={isLoading}
+                            {...field}
+                            onChange={(e) => field.onChange(parseInt(e.target.value))}
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          Top N players advance (0 = Swiss only)
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </>
+            )}
+
+            {/* Groups + Knockout Format Fields */}
+            {selectedFormat === "groups_knockout" && (
+              <>
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="groups_count"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Number of Groups</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            min={2}
+                            max={16}
+                            disabled={isLoading}
+                            {...field}
+                            onChange={(e) => field.onChange(parseInt(e.target.value))}
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          Draw size must be divisible by this (2-16)
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="group_qualifiers_per_group"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Qualifiers per Group</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            min={1}
+                            max={4}
+                            disabled={isLoading}
+                            {...field}
+                            onChange={(e) => field.onChange(parseInt(e.target.value))}
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          Top N from each group advance (1-4)
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </>
+            )}
+
+            {/* Mexicano Format Fields */}
+            {selectedFormat === "mexicano" && (
+              <>
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="mexicano_rounds"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Number of Rounds</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            min={3}
+                            max={20}
+                            disabled={isLoading}
+                            {...field}
+                            onChange={(e) => field.onChange(parseInt(e.target.value))}
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          Total rounds of play (3-20)
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="mexicano_qualifiers"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Qualifiers for Playoff</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            min={0}
+                            max={drawSize}
+                            step={2}
+                            disabled={isLoading}
+                            {...field}
+                            onChange={(e) => field.onChange(parseInt(e.target.value))}
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          Top N for final playoff (0 = no playoff)
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </>
+            )}
 
             <div className="flex gap-4">
               <Button type="submit" disabled={isLoading} className="flex-1">
