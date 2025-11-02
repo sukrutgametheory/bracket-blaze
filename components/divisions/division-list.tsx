@@ -141,6 +141,13 @@ export function DivisionList({ divisions, tournamentId, userId }: DivisionListPr
                     </div>
                     <div className="flex gap-2">
                       <Button
+                        variant="default"
+                        size="sm"
+                        onClick={() => window.location.href = `/tournaments/${tournamentId}/divisions/${division.id}/entries`}
+                      >
+                        Manage Entries
+                      </Button>
+                      <Button
                         variant="outline"
                         size="sm"
                         onClick={() => handleEdit(division)}
