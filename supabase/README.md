@@ -15,9 +15,10 @@ You have two options for running these migrations:
 
 1. Go to your Supabase project dashboard: https://app.supabase.com/project/YOUR_PROJECT_ID
 2. Navigate to the SQL Editor
-3. Copy and paste the contents of each migration file in order:
-   - **Recommended**: `migrations/20250101000002_add_prefix.sql` (with bracket_blaze_ prefix)
-   - **Then**: `migrations/20250101000003_rls_policies_prefixed.sql`
+3. Copy and paste the contents of each migration file **in order**:
+   - **First**: `migrations/20250101000002_add_prefix.sql` (base schema with bracket_blaze_ prefix)
+   - **Second**: `migrations/20250101000003_rls_policies_prefixed.sql` (security policies)
+   - **Third**: `migrations/20250102000001_add_tournament_id_to_participants.sql` (participant fix)
 4. Run each migration by clicking "Run"
 
 **Note**: The old migrations (20250101000000 and 20250101000001) are kept for reference but use the new prefixed versions above.
