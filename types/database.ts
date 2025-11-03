@@ -28,6 +28,8 @@ export const TABLE_NAMES = {
   OFFICIAL_ASSIGNMENTS: 'bracket_blaze_official_assignments',
   CHECKINS: 'bracket_blaze_checkins',
   STANDINGS: 'bracket_blaze_standings',
+  MATCH_CONFLICTS: 'bracket_blaze_match_conflicts',
+  COURT_ASSIGNMENTS: 'bracket_blaze_court_assignments',
 } as const
 
 export interface Tournament {

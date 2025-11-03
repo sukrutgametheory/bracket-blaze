@@ -160,6 +160,24 @@ export default async function TournamentPage({ params }: TournamentPageProps) {
               </div>
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Tournament Operations</CardTitle>
+              <CardDescription>
+                Manage matches and court assignments
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex gap-4">
+                <Button asChild variant="default" size="lg" className="flex-1">
+                  <Link href={`/tournaments/${id}/control-center`}>
+                    🎮 Control Center
+                  </Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
