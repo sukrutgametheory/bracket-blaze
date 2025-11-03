@@ -7,8 +7,10 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { EntryDialog } from "./entry-dialog"
 import { deleteEntry } from "@/lib/actions/entries"
+import { generateDraw, deleteAllMatches } from "@/lib/actions/draws"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 interface EntryWithParticipant {
   id: string
@@ -32,6 +34,8 @@ export function EntryList({ entries, division, participants, tournamentId, userI
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [selectedEntry, setSelectedEntry] = useState<EntryWithParticipant | null>(null)
   const [isDeleting, setIsDeleting] = useState<string | null>(null)
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [isDeletingDraw, setIsDeletingDraw] = useState(false)
   const { toast } = useToast()
   const router = useRouter()
 
@@ -79,6 +83,76 @@ export function EntryList({ entries, division, participants, tournamentId, userI
     }
   }
 
+  const handleGenerateDraw = async () => {
+    if (!confirm(`Generate draw for ${division.name}? This will create Round 1 matches based on seeding.`)) {
+      return
+    }
+
+    setIsGenerating(true)
+    try {
+      const result = await generateDraw(division.id)
+
+      if (result.error) {
+        toast({
+          title: "Error",
+          description: result.error,
+          variant: "destructive",
+        })
+        return
+      }
+
+      toast({
+        title: "Draw Generated!",
+        description: result.message,
+      })
+      router.refresh()
+      // Redirect to matches page
+      router.push(`/tournaments/${tournamentId}/divisions/${division.id}/matches`)
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to generate draw",
+        variant: "destructive",
+      })
+    } finally {
+      setIsGenerating(false)
+    }
+  }
+
+  const handleDeleteDraw = async () => {
+    if (!confirm("Delete all matches? This cannot be undone.")) {
+      return
+    }
+
+    setIsDeletingDraw(true)
+    try {
+      const result = await deleteAllMatches(division.id)
+
+      if (result.error) {
+        toast({
+          title: "Error",
+          description: result.error,
+          variant: "destructive",
+        })
+        return
+      }
+
+      toast({
+        title: "Success",
+        description: "All matches deleted",
+      })
+      router.refresh()
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete matches",
+        variant: "destructive",
+      })
+    } finally {
+      setIsDeletingDraw(false)
+    }
+  }
+
   // Get participant IDs already in this division
   const enteredParticipantIds = new Set(entries.map(e => e.participant_id))
 
@@ -87,6 +161,7 @@ export function EntryList({ entries, division, participants, tournamentId, userI
 
   const entriesCount = entries.length
   const drawSize = division.draw_size
+  const canGenerateDraw = entriesCount >= 2 && !division.is_published
 
   return (
     <div>
@@ -96,17 +171,49 @@ export function EntryList({ entries, division, participants, tournamentId, userI
             <div>
               <CardTitle>
                 Entries ({entriesCount}/{drawSize})
+                {division.is_published && (
+                  <Badge variant="default" className="ml-2">Draw Published</Badge>
+                )}
               </CardTitle>
               <CardDescription>
                 Participants registered for this division
               </CardDescription>
             </div>
-            <Button
-              onClick={handleAdd}
-              disabled={entriesCount >= drawSize}
-            >
-              {entriesCount >= drawSize ? "Division Full" : "Add Entry"}
-            </Button>
+            <div className="flex gap-2">
+              {division.is_published ? (
+                <>
+                  <Button asChild variant="default">
+                    <Link href={`/tournaments/${tournamentId}/divisions/${division.id}/matches`}>
+                      View Matches
+                    </Link>
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    onClick={handleDeleteDraw}
+                    disabled={isDeletingDraw}
+                  >
+                    {isDeletingDraw ? "Deleting..." : "Delete Draw"}
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    onClick={handleAdd}
+                    disabled={entriesCount >= drawSize}
+                    variant="outline"
+                  >
+                    {entriesCount >= drawSize ? "Division Full" : "Add Entry"}
+                  </Button>
+                  <Button
+                    onClick={handleGenerateDraw}
+                    disabled={!canGenerateDraw || isGenerating}
+                    variant="default"
+                  >
+                    {isGenerating ? "Generating..." : "Generate Draw"}
+                  </Button>
+                </>
+              )}
+            </div>
           </div>
         </CardHeader>
         <CardContent>
