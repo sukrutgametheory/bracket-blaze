@@ -59,15 +59,20 @@ export async function updateDivision(divisionId: string, data: DivisionFormData)
 
     const supabase = await createClient()
 
-    // Get tournament_id for revalidation
+    // Get division with tournament_id and check if published (draw generated)
     const { data: division } = await supabase
       .from(TABLE_NAMES.DIVISIONS)
-      .select("tournament_id")
+      .select("tournament_id, is_published")
       .eq("id", divisionId)
       .single()
 
     if (!division) {
       return { error: "Division not found" }
+    }
+
+    // Block editing format/rules after draw has been generated
+    if (division.is_published) {
+      return { error: "Cannot edit division after draw has been generated. Delete the draw first." }
     }
 
     // Update division

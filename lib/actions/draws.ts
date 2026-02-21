@@ -176,6 +176,13 @@ export async function generateDraw(divisionId: string) {
       .update({ is_published: true })
       .eq("id", divisionId)
 
+    // Set tournament to active if still in draft
+    await supabase
+      .from(TABLE_NAMES.TOURNAMENTS)
+      .update({ status: 'active' })
+      .eq("id", division.tournament_id)
+      .eq("status", "draft")
+
     await revalidateDivisionPaths(supabase, divisionId)
 
     return {
