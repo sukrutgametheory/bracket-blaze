@@ -52,6 +52,9 @@ export function CourtTvClient({
     matches.map(m => [m.court_id, m])
   )
 
+  // Stable key for Broadcast subscription dependencies
+  const matchKey = matches.map(m => `${m.id}:${m.status}`).join(",")
+
   // Subscribe to Broadcast channels for each active match
   useEffect(() => {
     const activeMatches = matches.filter(m => m.status === "on_court")
@@ -77,7 +80,8 @@ export function CourtTvClient({
     return () => {
       channels.forEach(ch => supabase.removeChannel(ch))
     }
-  }, [supabase, matches.map(m => `${m.id}:${m.status}`).join(",")])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [supabase, matchKey])
 
   // Subscribe to postgres_changes for status transitions (new assignments, completions)
   useEffect(() => {
