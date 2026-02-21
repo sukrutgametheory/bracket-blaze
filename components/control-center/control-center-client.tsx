@@ -251,6 +251,15 @@ export function ControlCenterClient({
             </Button>
           </>
         )}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => {
+            window.open(`${window.location.origin}/live/${tournament.id}`, '_blank')
+          }}
+        >
+          Open Live Portal
+        </Button>
         {pendingSignoffCount > 0 && (
           <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 text-xs font-medium">
             {pendingSignoffCount} pending sign-off
