@@ -44,12 +44,21 @@ function formatScore(metaJson: any): string {
   return data.games.map(g => `${g.score_a}-${g.score_b}`).join(", ")
 }
 
+function getKnockoutRoundLabel(round: number, totalKnockoutRounds: number): string {
+  const roundsFromEnd = totalKnockoutRounds - round
+  if (roundsFromEnd === 0) return "Final"
+  if (roundsFromEnd === 1) return "Semi-Final"
+  if (roundsFromEnd === 2) return "Quarter-Final"
+  return `Round of ${Math.pow(2, roundsFromEnd + 1)}`
+}
+
 export function ResultsSection({
   divisions,
   matches,
   entries,
   onEditScore,
 }: ResultsSectionProps) {
+  const [phaseFilter, setPhaseFilter] = useState<string>("all")
   const [roundFilter, setRoundFilter] = useState<string>("all")
 
   const completedMatches = matches.filter(
@@ -64,44 +73,124 @@ export function ResultsSection({
     )
   }
 
-  // Derive available rounds
-  const rounds = [...new Set(completedMatches.map(m => m.round))].sort((a, b) => a - b)
+  // Check if knockout matches exist
+  const hasSwiss = completedMatches.some(m => m.phase === "swiss")
+  const hasKnockout = completedMatches.some(m => m.phase === "knockout")
+
+  // Apply phase filter
+  const phaseFiltered = phaseFilter === "all"
+    ? completedMatches
+    : completedMatches.filter(m => m.phase === phaseFilter)
+
+  // Derive available rounds from phase-filtered matches
+  const rounds = [...new Set(phaseFiltered.map(m => m.round))].sort((a, b) => a - b)
 
   // Apply round filter
   const filteredMatches = roundFilter === "all"
-    ? completedMatches
-    : completedMatches.filter(m => m.round === parseInt(roundFilter))
+    ? phaseFiltered
+    : phaseFiltered.filter(m => m.round === parseInt(roundFilter))
+
+  // Reset round filter when phase changes and selected round doesn't exist
+  const effectiveRoundFilter = roundFilter !== "all" && !rounds.includes(parseInt(roundFilter))
+    ? "all"
+    : roundFilter
 
   const entryMap = new Map(entries.map(e => [e.id, e]))
 
+  // Compute total knockout rounds per division for round labels
+  const knockoutRoundsMap = new Map<string, number>()
+  if (hasKnockout) {
+    for (const div of divisions) {
+      const koMatches = completedMatches.filter(m => m.division_id === div.id && m.phase === "knockout")
+      if (koMatches.length > 0) {
+        const maxRound = Math.max(...koMatches.map(m => m.round))
+        knockoutRoundsMap.set(div.id, maxRound)
+      }
+    }
+    // Also check scheduled knockout matches for total rounds
+    const allKoMatches = matches.filter(m => m.phase === "knockout")
+    for (const m of allKoMatches) {
+      const current = knockoutRoundsMap.get(m.division_id) || 0
+      if (m.round > current) knockoutRoundsMap.set(m.division_id, m.round)
+    }
+  }
+
   return (
     <div className="space-y-3">
-      {/* Round filter */}
-      <div className="flex items-center gap-2">
-        <span className="text-sm text-muted-foreground">Round:</span>
-        <Select value={roundFilter} onValueChange={setRoundFilter}>
-          <SelectTrigger className="w-[140px] h-8">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Rounds</SelectItem>
-            {rounds.map(r => (
-              <SelectItem key={r} value={String(r)}>Round {r}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      {/* Filters */}
+      <div className="flex items-center gap-4">
+        {hasSwiss && hasKnockout && (
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Phase:</span>
+            <Select
+              value={phaseFilter}
+              onValueChange={(v) => {
+                setPhaseFilter(v)
+                setRoundFilter("all")
+              }}
+            >
+              <SelectTrigger className="w-[140px] h-8">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Phases</SelectItem>
+                <SelectItem value="swiss">Swiss</SelectItem>
+                <SelectItem value="knockout">Knockout</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-muted-foreground">Round:</span>
+          <Select value={effectiveRoundFilter} onValueChange={setRoundFilter}>
+            <SelectTrigger className="w-[160px] h-8">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Rounds</SelectItem>
+              {rounds.map(r => {
+                // For knockout phase filter, show knockout labels
+                const isKoRound = phaseFilter === "knockout" ||
+                  (phaseFilter === "all" && phaseFiltered.some(m => m.round === r && m.phase === "knockout"))
+                const label = isKoRound && phaseFilter === "knockout"
+                  ? (() => {
+                    // Find total knockout rounds from any division
+                    const totalKo = Math.max(...Array.from(knockoutRoundsMap.values()), 1)
+                    return getKnockoutRoundLabel(r, totalKo)
+                  })()
+                  : `Round ${r}`
+                return (
+                  <SelectItem key={r} value={String(r)}>{label}</SelectItem>
+                )
+              })}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* Results grouped by division */}
       {divisions.map((division) => {
-        const divMatches = filteredMatches
+        const divMatches = (effectiveRoundFilter === "all"
+          ? phaseFiltered
+          : phaseFiltered.filter(m => m.round === parseInt(effectiveRoundFilter))
+        )
           .filter(m => m.division_id === division.id)
           .sort((a: any, b: any) => {
+            // Sort by round first
             if (a.round !== b.round) return a.round - b.round
+            // Then by phase (swiss before knockout for same round number)
+            if (a.phase !== b.phase) return a.phase === "swiss" ? -1 : 1
+            // Then by actual_end_time if available
+            if (a.actual_end_time && b.actual_end_time) {
+              return new Date(a.actual_end_time).getTime() - new Date(b.actual_end_time).getTime()
+            }
+            // Fallback to sequence
             return a.sequence - b.sequence
           })
 
         if (divMatches.length === 0) return null
+
+        const totalKoRounds = knockoutRoundsMap.get(division.id) || 1
 
         return (
           <Card key={division.id} className="border">
@@ -117,7 +206,7 @@ export function ResultsSection({
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-16">Match</TableHead>
+                    <TableHead className="w-28">Round</TableHead>
                     <TableHead>Side A</TableHead>
                     <TableHead className="w-24 text-center">Score</TableHead>
                     <TableHead>Side B</TableHead>
@@ -132,11 +221,23 @@ export function ResultsSection({
                     const nameB = sideB?.participant?.display_name || "TBD"
                     const isWalkover = (match.meta_json as MatchScoreData)?.walkover === true
                     const score = formatScore(match.meta_json)
+                    const isKnockout = match.phase === "knockout"
+
+                    const roundLabel = isKnockout
+                      ? getKnockoutRoundLabel(match.round, totalKoRounds)
+                      : `Round ${match.round}`
 
                     return (
                       <TableRow key={match.id}>
                         <TableCell className="text-xs text-muted-foreground">
-                          R{match.round} M{match.sequence}
+                          <div className="flex items-center gap-1.5">
+                            {isKnockout && (
+                              <Badge variant="secondary" className="text-[10px] px-1 py-0">
+                                KO
+                              </Badge>
+                            )}
+                            <span>{roundLabel}</span>
+                          </div>
                         </TableCell>
                         <TableCell>
                           <span className={cn(

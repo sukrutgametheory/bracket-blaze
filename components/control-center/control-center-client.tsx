@@ -328,6 +328,7 @@ export function ControlCenterClient({
             standings={standings}
             draws={draws}
             entries={entries}
+            matches={matches}
           />
         </TabsContent>
 
