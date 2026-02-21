@@ -288,6 +288,11 @@ export async function clearCourt(courtId: string) {
       return { error: "Cannot clear court: match is in progress. Complete or walkover the match first." }
     }
 
+    // Guard: cannot clear matches pending TD sign-off
+    if (match.status === "pending_signoff") {
+      return { error: "Cannot clear court: match is pending sign-off. Approve or reject the match first." }
+    }
+
     // Clear court assignment
     const { error: updateError } = await supabase
       .from(TABLE_NAMES.MATCHES)

@@ -11,7 +11,8 @@ type ServerSupabase = Awaited<ReturnType<typeof createClient>>
 const VALID_TRANSITIONS: Record<MatchStatus, MatchStatus[]> = {
   scheduled: ['ready', 'walkover'],
   ready: ['scheduled', 'on_court', 'walkover'],
-  on_court: ['completed', 'walkover'],
+  on_court: ['pending_signoff', 'completed', 'walkover'],
+  pending_signoff: ['completed', 'on_court', 'walkover'],
   completed: [],
   walkover: [],
 }
