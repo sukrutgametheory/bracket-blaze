@@ -226,17 +226,30 @@ export function ControlCenterClient({
           {tournament.scoring_token ? "Regenerate Scoring Link" : "Generate Scoring Link"}
         </Button>
         {tournament.scoring_token && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              const url = `${window.location.origin}/tv/${tournament.id}`
-              navigator.clipboard.writeText(url)
-              toast({ title: "Court TV Link Copied", description: url })
-            }}
-          >
-            Copy Court TV Link
-          </Button>
+          <>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                const url = `${window.location.origin}/score/${tournament.scoring_token}`
+                navigator.clipboard.writeText(url)
+                toast({ title: "Referee Link Copied", description: url })
+              }}
+            >
+              Copy Referee Link
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                const url = `${window.location.origin}/tv/${tournament.id}`
+                navigator.clipboard.writeText(url)
+                toast({ title: "Court TV Link Copied", description: url })
+              }}
+            >
+              Copy Court TV Link
+            </Button>
+          </>
         )}
         {pendingSignoffCount > 0 && (
           <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 text-xs font-medium">
