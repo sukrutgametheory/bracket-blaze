@@ -47,9 +47,18 @@ export function CourtTvClient({
   const [supabase] = useState(() => createClient(supabaseUrl, supabaseAnonKey))
   const [matches, setMatches] = useState<CourtTvMatch[]>(initialMatches as CourtTvMatch[])
 
-  // Build court → match map
+  // Build court → match map, prioritizing active statuses over completed
+  const statusPriority: Record<string, number> = {
+    completed: 0,
+    ready: 1,
+    pending_signoff: 2,
+    on_court: 3,
+  }
+  const sortedMatches = [...matches].sort(
+    (a, b) => (statusPriority[a.status] || 0) - (statusPriority[b.status] || 0)
+  )
   const courtMatchMap = new Map(
-    matches.map(m => [m.court_id, m])
+    sortedMatches.map(m => [m.court_id, m])
   )
 
   // Stable key for Broadcast subscription dependencies

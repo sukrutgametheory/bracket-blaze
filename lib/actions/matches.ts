@@ -110,6 +110,7 @@ async function finalizeMatch(
       winner_side: winnerSide,
       actual_end_time: new Date().toISOString(),
       meta_json: scoreData,
+      court_id: null,
     })
     .eq("id", matchId)
 
@@ -345,6 +346,7 @@ export async function recordWalkover(
         winner_side: winnerSide,
         actual_end_time: new Date().toISOString(),
         meta_json: scoreData,
+        court_id: null,
       })
       .eq("id", matchId)
 
