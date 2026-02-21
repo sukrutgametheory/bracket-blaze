@@ -47,10 +47,12 @@ export default async function CourtTvPage({ params }: CourtTvPageProps) {
       id, status, court_id, meta_json, round, sequence, phase,
       division:bracket_blaze_divisions!inner(id, name),
       side_a:bracket_blaze_entries!side_a_entry_id(
-        participant:bracket_blaze_participants(display_name)
+        participant:bracket_blaze_participants(display_name),
+        team:bracket_blaze_teams(name)
       ),
       side_b:bracket_blaze_entries!side_b_entry_id(
-        participant:bracket_blaze_participants(display_name)
+        participant:bracket_blaze_participants(display_name),
+        team:bracket_blaze_teams(name)
       )
     `)
     .in("court_id", (courts || []).map(c => c.id))

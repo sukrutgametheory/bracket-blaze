@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { notFound } from "next/navigation"
 import { TABLE_NAMES } from "@/types/database"
 import { ScoringClient } from "@/components/scoring/scoring-client"
+import { getEntryDisplayName } from "@/lib/utils/display-name"
 
 interface ScoringPageProps {
   params: Promise<{ token: string }>
@@ -50,10 +51,12 @@ export default async function ScoringPage({ params, searchParams }: ScoringPageP
       .select(`
         id, status, court_id, meta_json,
         side_a:bracket_blaze_entries!side_a_entry_id(
-          participant:bracket_blaze_participants(display_name)
+          participant:bracket_blaze_participants(display_name),
+          team:bracket_blaze_teams(name)
         ),
         side_b:bracket_blaze_entries!side_b_entry_id(
-          participant:bracket_blaze_participants(display_name)
+          participant:bracket_blaze_participants(display_name),
+          team:bracket_blaze_teams(name)
         )
       `)
       .in("court_id", (courts || []).map(c => c.id))
@@ -75,8 +78,8 @@ export default async function ScoringPage({ params, searchParams }: ScoringPageP
             {(courts || []).map(court => {
               const match = courtMatchMap.get(court.id) as any
               const hasMatch = !!match
-              const sideAName = match?.side_a?.participant?.display_name
-              const sideBName = match?.side_b?.participant?.display_name
+              const sideAName = getEntryDisplayName(match?.side_a as any)
+              const sideBName = getEntryDisplayName(match?.side_b as any)
 
               return (
                 <a
@@ -118,11 +121,13 @@ export default async function ScoringPage({ params, searchParams }: ScoringPageP
       division:bracket_blaze_divisions!inner(id, name),
       side_a:bracket_blaze_entries!side_a_entry_id(
         id, seed,
-        participant:bracket_blaze_participants(id, display_name)
+        participant:bracket_blaze_participants(id, display_name),
+        team:bracket_blaze_teams(name)
       ),
       side_b:bracket_blaze_entries!side_b_entry_id(
         id, seed,
-        participant:bracket_blaze_participants(id, display_name)
+        participant:bracket_blaze_participants(id, display_name),
+        team:bracket_blaze_teams(name)
       )
     `)
     .eq("court_id", courtId)
@@ -166,8 +171,8 @@ export default async function ScoringPage({ params, searchParams }: ScoringPageP
       courtId={courtId}
       divisionName={matchData.division?.name || ""}
       roundInfo={`${matchData.phase === 'knockout' ? 'Knockout' : 'Round ' + matchData.round} • Match ${matchData.sequence}`}
-      sideAName={matchData.side_a?.participant?.display_name || "Side A"}
-      sideBName={matchData.side_b?.participant?.display_name || "Side B"}
+      sideAName={getEntryDisplayName(matchData.side_a) || "Side A"}
+      sideBName={getEntryDisplayName(matchData.side_b) || "Side B"}
       initialMetaJson={matchData.meta_json || {}}
       supabaseUrl={process.env.NEXT_PUBLIC_SUPABASE_URL!}
       supabaseAnonKey={process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}

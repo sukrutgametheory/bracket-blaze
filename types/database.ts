@@ -12,6 +12,7 @@ export type MatchStatus = 'scheduled' | 'ready' | 'on_court' | 'pending_signoff'
 export type MatchPhase = 'swiss' | 'knockout'
 export type SportType = 'badminton' | 'squash' | 'pickleball' | 'padel'
 export type FormatType = 'swiss' | 'mexicano' | 'groups_knockout'
+export type PlayMode = 'singles' | 'doubles'
 export type WinnerSide = 'A' | 'B'
 
 // Database table names with prefix
@@ -60,6 +61,7 @@ export interface Division {
   sport: SportType
   name: string
   format: FormatType
+  play_mode: PlayMode
   rules_json: Json
   draw_size: number
   is_published: boolean

@@ -44,11 +44,13 @@ export default async function LivePortalPage({ params }: LivePortalPageProps) {
       court:bracket_blaze_courts(id, name),
       side_a:bracket_blaze_entries!side_a_entry_id(
         id, seed,
-        participant:bracket_blaze_participants(display_name, club)
+        participant:bracket_blaze_participants(display_name, club),
+        team:bracket_blaze_teams(name)
       ),
       side_b:bracket_blaze_entries!side_b_entry_id(
         id, seed,
-        participant:bracket_blaze_participants(display_name, club)
+        participant:bracket_blaze_participants(display_name, club),
+        team:bracket_blaze_teams(name)
       )
     `)
     .in("division_id", divisionIds.length > 0 ? divisionIds : ['none'])
@@ -74,7 +76,7 @@ export default async function LivePortalPage({ params }: LivePortalPageProps) {
   // Fetch entries with participant names for standings display
   const { data: entries } = await supabase
     .from(TABLE_NAMES.ENTRIES)
-    .select("id, seed, participant:bracket_blaze_participants(display_name, club)")
+    .select("id, seed, participant:bracket_blaze_participants(display_name, club), team:bracket_blaze_teams(name)")
     .in("division_id", divisionIds.length > 0 ? divisionIds : ['none'])
 
   return (

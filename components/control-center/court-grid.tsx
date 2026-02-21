@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 import { X, Play, ClipboardCheck, Check, RotateCcw } from "lucide-react"
+import { getEntryDisplayName } from "@/lib/utils/display-name"
 
 interface CourtGridProps {
   courts: Court[]
@@ -148,7 +149,7 @@ export function CourtGrid({
                       </span>
                     )}
                     <span className="font-medium text-sm truncate">
-                      {match.side_a?.participant?.display_name || "TBD"}
+                      {getEntryDisplayName(match.side_a)}
                     </span>
                   </div>
 
@@ -166,7 +167,7 @@ export function CourtGrid({
                         </span>
                       )}
                       <span className="font-medium text-sm truncate">
-                        {match.side_b?.participant?.display_name || "TBD"}
+                        {getEntryDisplayName(match.side_b)}
                       </span>
                     </div>
                   )}

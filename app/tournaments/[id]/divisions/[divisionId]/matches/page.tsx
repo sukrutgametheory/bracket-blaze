@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { getEntryDisplayName } from "@/lib/utils/display-name"
 
 interface MatchesPageProps {
   params: Promise<{ id: string; divisionId: string }>
@@ -57,12 +58,14 @@ export default async function MatchesPage({ params }: MatchesPageProps) {
       side_a:bracket_blaze_entries!side_a_entry_id(
         id,
         seed,
-        participant:bracket_blaze_participants(id, display_name, club)
+        participant:bracket_blaze_participants(id, display_name, club),
+        team:bracket_blaze_teams(name)
       ),
       side_b:bracket_blaze_entries!side_b_entry_id(
         id,
         seed,
-        participant:bracket_blaze_participants(id, display_name, club)
+        participant:bracket_blaze_participants(id, display_name, club),
+        team:bracket_blaze_teams(name)
       )
     `)
     .eq("division_id", divisionId)
@@ -159,7 +162,7 @@ export default async function MatchesPage({ params }: MatchesPageProps) {
                                       )}
                                       <div>
                                         <p className="font-semibold">
-                                          {sideA?.participant?.display_name || "TBD"}
+                                          {getEntryDisplayName(sideA)}
                                         </p>
                                         {sideA?.participant?.club && (
                                           <p className="text-xs text-muted-foreground">
@@ -187,7 +190,7 @@ export default async function MatchesPage({ params }: MatchesPageProps) {
                                         )}
                                         <div>
                                           <p className="font-semibold">
-                                            {sideB?.participant?.display_name || "TBD"}
+                                            {getEntryDisplayName(sideB)}
                                           </p>
                                           {sideB?.participant?.club && (
                                             <p className="text-xs text-muted-foreground">

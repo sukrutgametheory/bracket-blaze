@@ -53,7 +53,13 @@ export default async function EntriesPage({ params }: EntriesPageProps) {
     .from(TABLE_NAMES.ENTRIES)
     .select(`
       *,
-      participant:bracket_blaze_participants(*)
+      participant:bracket_blaze_participants(*),
+      team:bracket_blaze_teams(
+        id, name,
+        members:bracket_blaze_team_members(
+          participant:bracket_blaze_participants(display_name, club)
+        )
+      )
     `)
     .eq("division_id", divisionId)
     .order("seed", { ascending: true, nullsFirst: false })

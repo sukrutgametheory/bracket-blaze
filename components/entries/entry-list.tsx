@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { EntryDialog } from "./entry-dialog"
 import { deleteEntry } from "@/lib/actions/entries"
+import { getEntryDisplayName } from "@/lib/utils/display-name"
 import { generateDraw, deleteAllMatches } from "@/lib/actions/draws"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
@@ -15,11 +16,13 @@ import Link from "next/link"
 interface EntryWithParticipant {
   id: string
   division_id: string
-  participant_id: string
+  participant_id: string | null
+  team_id: string | null
   seed: number | null
   status: string
   created_at: string
-  participant: Participant
+  participant: Participant | null
+  team?: { id: string; name: string; members?: { participant: Participant }[] } | null
 }
 
 interface EntryListProps {
@@ -48,6 +51,8 @@ export function EntryList({ entries, division, participants, tournamentId, userI
     setSelectedEntry(entry)
     setIsDialogOpen(true)
   }
+
+  const isDoubles = division.play_mode === "doubles"
 
   const handleDelete = async (entryId: string, participantName: string) => {
     if (!confirm(`Are you sure you want to remove ${participantName} from this division?`)) {
@@ -153,8 +158,20 @@ export function EntryList({ entries, division, participants, tournamentId, userI
     }
   }
 
-  // Get participant IDs already in this division
-  const enteredParticipantIds = new Set(entries.map(e => e.participant_id))
+  // Get participant IDs already in this division (singles or as team members)
+  const enteredParticipantIds = new Set<string>()
+  entries.forEach(e => {
+    if (e.participant_id) {
+      enteredParticipantIds.add(e.participant_id)
+    }
+    if (e.team?.members) {
+      e.team.members.forEach(m => {
+        if (m.participant?.id) {
+          enteredParticipantIds.add(m.participant.id)
+        }
+      })
+    }
+  })
 
   // Filter available participants (not already entered)
   const availableParticipants = participants.filter(p => !enteredParticipantIds.has(p.id))
@@ -176,7 +193,7 @@ export function EntryList({ entries, division, participants, tournamentId, userI
                 )}
               </CardTitle>
               <CardDescription>
-                Participants registered for this division
+                {isDoubles ? "Teams" : "Participants"} registered for this division
               </CardDescription>
             </div>
             <div className="flex gap-2">
@@ -202,7 +219,7 @@ export function EntryList({ entries, division, participants, tournamentId, userI
                     disabled={entriesCount >= drawSize}
                     variant="outline"
                   >
-                    {entriesCount >= drawSize ? "Division Full" : "Add Entry"}
+                    {entriesCount >= drawSize ? "Division Full" : isDoubles ? "Add Team" : "Add Entry"}
                   </Button>
                   <Button
                     onClick={handleGenerateDraw}
@@ -220,62 +237,76 @@ export function EntryList({ entries, division, participants, tournamentId, userI
           {entries.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground mb-4">
-                No participants have been added to this division yet
+                No {isDoubles ? "teams have" : "participants have"} been added to this division yet
               </p>
-              <Button onClick={handleAdd}>Add First Entry</Button>
+              <Button onClick={handleAdd}>{isDoubles ? "Add First Team" : "Add First Entry"}</Button>
             </div>
           ) : (
             <div className="space-y-3">
-              {entries.map((entry) => (
-                <div
-                  key={entry.id}
-                  className="flex items-center justify-between p-4 border rounded-lg"
-                >
-                  <div className="flex items-center gap-4">
-                    {entry.seed && (
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold">
-                        {entry.seed}
-                      </div>
-                    )}
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <p className="font-semibold text-lg">
-                          {entry.participant.display_name}
+              {entries.map((entry) => {
+                const displayName = getEntryDisplayName(entry)
+                const club = entry.participant?.club
+                const teamMembers = entry.team?.members
+
+                return (
+                  <div
+                    key={entry.id}
+                    className="flex items-center justify-between p-4 border rounded-lg"
+                  >
+                    <div className="flex items-center gap-4">
+                      {entry.seed && (
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold">
+                          {entry.seed}
+                        </div>
+                      )}
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <p className="font-semibold text-lg">
+                            {displayName}
+                          </p>
+                          {club && (
+                            <Badge variant="outline">{club}</Badge>
+                          )}
+                          {isDoubles && (
+                            <Badge variant="secondary">Doubles</Badge>
+                          )}
+                          {entry.status === "withdrawn" && (
+                            <Badge variant="destructive">Withdrawn</Badge>
+                          )}
+                          {entry.status === "late_add" && (
+                            <Badge variant="secondary">Late Add</Badge>
+                          )}
+                        </div>
+                        {teamMembers && teamMembers.length > 0 && (
+                          <p className="text-xs text-muted-foreground">
+                            {teamMembers.map(m => m.participant?.display_name).filter(Boolean).join(" & ")}
+                          </p>
+                        )}
+                        <p className="text-sm text-muted-foreground">
+                          Added {new Date(entry.created_at).toLocaleDateString()}
                         </p>
-                        {entry.participant.club && (
-                          <Badge variant="outline">{entry.participant.club}</Badge>
-                        )}
-                        {entry.status === "withdrawn" && (
-                          <Badge variant="destructive">Withdrawn</Badge>
-                        )}
-                        {entry.status === "late_add" && (
-                          <Badge variant="secondary">Late Add</Badge>
-                        )}
                       </div>
-                      <p className="text-sm text-muted-foreground">
-                        Added {new Date(entry.created_at).toLocaleDateString()}
-                      </p>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleEdit(entry)}
+                      >
+                        Edit Seed
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDelete(entry.id, displayName)}
+                        disabled={isDeleting === entry.id}
+                      >
+                        {isDeleting === entry.id ? "Removing..." : "Remove"}
+                      </Button>
                     </div>
                   </div>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleEdit(entry)}
-                    >
-                      Edit Seed
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => handleDelete(entry.id, entry.participant.display_name)}
-                      disabled={isDeleting === entry.id}
-                    >
-                      {isDeleting === entry.id ? "Removing..." : "Remove"}
-                    </Button>
-                  </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           )}
         </CardContent>

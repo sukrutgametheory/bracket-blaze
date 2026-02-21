@@ -14,8 +14,30 @@ interface ConflictWarning {
 }
 
 /**
+ * Resolve all participant IDs for a match entry (handles both singles and doubles).
+ * For singles: returns [participant_id]
+ * For doubles: queries team_members to get participant_ids
+ */
+async function resolveEntryParticipantIds(
+  supabase: ServerSupabase,
+  entry: { participant_id: string | null; team_id: string | null } | null
+): Promise<string[]> {
+  if (!entry) return []
+  if (entry.participant_id) return [entry.participant_id]
+  if (entry.team_id) {
+    const { data: members } = await supabase
+      .from(TABLE_NAMES.TEAM_MEMBERS)
+      .select("participant_id")
+      .eq("team_id", entry.team_id)
+    return members?.map(m => m.participant_id) || []
+  }
+  return []
+}
+
+/**
  * Check for conflicts when assigning a match to a court.
  * All queries are scoped to the given tournament.
+ * Handles both singles (participant_id) and doubles (team_id → team_members).
  */
 async function checkConflicts(
   supabase: ServerSupabase,
@@ -29,18 +51,18 @@ async function checkConflicts(
     .from(TABLE_NAMES.MATCHES)
     .select(`
       *,
-      side_a:bracket_blaze_entries!side_a_entry_id(participant_id),
-      side_b:bracket_blaze_entries!side_b_entry_id(participant_id)
+      side_a:bracket_blaze_entries!side_a_entry_id(participant_id, team_id),
+      side_b:bracket_blaze_entries!side_b_entry_id(participant_id, team_id)
     `)
     .eq("id", matchId)
     .single()
 
   if (!match) return warnings
 
-  const participantIds = [
-    match.side_a?.participant_id,
-    match.side_b?.participant_id,
-  ].filter(Boolean)
+  // Resolve all participant IDs (works for both singles and doubles)
+  const sideAIds = await resolveEntryParticipantIds(supabase, match.side_a)
+  const sideBIds = await resolveEntryParticipantIds(supabase, match.side_b)
+  const participantIds = [...sideAIds, ...sideBIds]
 
   if (participantIds.length === 0) return warnings
 
@@ -60,11 +82,11 @@ async function checkConflicts(
       *,
       court:bracket_blaze_courts(name),
       side_a:bracket_blaze_entries!side_a_entry_id(
-        participant_id,
+        participant_id, team_id,
         participant:bracket_blaze_participants(display_name)
       ),
       side_b:bracket_blaze_entries!side_b_entry_id(
-        participant_id,
+        participant_id, team_id,
         participant:bracket_blaze_participants(display_name)
       )
     `)
@@ -74,24 +96,25 @@ async function checkConflicts(
     .in("division_id", divisionIds)
 
   for (const otherMatch of otherMatches || []) {
-    const otherParticipantIds = [
-      otherMatch.side_a?.participant_id,
-      otherMatch.side_b?.participant_id,
-    ].filter(Boolean)
+    const otherSideAIds = await resolveEntryParticipantIds(supabase, otherMatch.side_a)
+    const otherSideBIds = await resolveEntryParticipantIds(supabase, otherMatch.side_b)
+    const otherParticipantIds = [...otherSideAIds, ...otherSideBIds]
 
     const overlap = participantIds.some(id => otherParticipantIds.includes(id))
 
     if (overlap) {
       const conflictingId = participantIds.find(id => otherParticipantIds.includes(id))
-      const playerName =
-        otherMatch.side_a?.participant_id === conflictingId
-          ? otherMatch.side_a?.participant?.display_name
-          : otherMatch.side_b?.participant?.display_name
+      // Look up the conflicting player's name
+      const { data: conflictPlayer } = await supabase
+        .from(TABLE_NAMES.PARTICIPANTS)
+        .select("display_name")
+        .eq("id", conflictingId!)
+        .single()
 
       warnings.push({
         type: "player_overlap",
         severity: "error",
-        message: `${playerName} is already assigned to ${otherMatch.court?.name}`,
+        message: `${conflictPlayer?.display_name || "A player"} is already assigned to ${otherMatch.court?.name}`,
       })
     }
   }
@@ -109,14 +132,8 @@ async function checkConflicts(
     .from(TABLE_NAMES.MATCHES)
     .select(`
       *,
-      side_a:bracket_blaze_entries!side_a_entry_id(
-        participant_id,
-        participant:bracket_blaze_participants(display_name)
-      ),
-      side_b:bracket_blaze_entries!side_b_entry_id(
-        participant_id,
-        participant:bracket_blaze_participants(display_name)
-      )
+      side_a:bracket_blaze_entries!side_a_entry_id(participant_id, team_id),
+      side_b:bracket_blaze_entries!side_b_entry_id(participant_id, team_id)
     `)
     .neq("id", matchId)
     .eq("status", "completed")
@@ -124,10 +141,9 @@ async function checkConflicts(
     .in("division_id", divisionIds)
 
   for (const recentMatch of recentMatches || []) {
-    const recentParticipantIds = [
-      recentMatch.side_a?.participant_id,
-      recentMatch.side_b?.participant_id,
-    ].filter(Boolean)
+    const recentSideAIds = await resolveEntryParticipantIds(supabase, recentMatch.side_a)
+    const recentSideBIds = await resolveEntryParticipantIds(supabase, recentMatch.side_b)
+    const recentParticipantIds = [...recentSideAIds, ...recentSideBIds]
 
     const overlap = participantIds.some(id => recentParticipantIds.includes(id))
 
@@ -140,17 +156,18 @@ async function checkConflicts(
         const conflictingId = participantIds.find(id =>
           recentParticipantIds.includes(id)
         )
-        const playerName =
-          recentMatch.side_a?.participant_id === conflictingId
-            ? recentMatch.side_a?.participant?.display_name
-            : recentMatch.side_b?.participant?.display_name
+        const { data: conflictPlayer } = await supabase
+          .from(TABLE_NAMES.PARTICIPANTS)
+          .select("display_name")
+          .eq("id", conflictingId!)
+          .single()
 
         const remainingRest = Math.ceil(restWindowMinutes - minutesSinceEnd)
 
         warnings.push({
           type: "rest_violation",
           severity: "warning",
-          message: `${playerName} finished a match ${Math.floor(minutesSinceEnd)} minutes ago (needs ${remainingRest} more minutes rest)`,
+          message: `${conflictPlayer?.display_name || "A player"} finished a match ${Math.floor(minutesSinceEnd)} minutes ago (needs ${remainingRest} more minutes rest)`,
         })
       }
     }

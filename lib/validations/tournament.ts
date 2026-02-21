@@ -15,6 +15,7 @@ export const courtSchema = z.object({
 export const divisionSchema = z.object({
   sport: z.enum(["badminton", "squash", "pickleball", "padel"]),
   name: z.string().min(3, "Division name must be at least 3 characters").max(100),
+  play_mode: z.enum(["singles", "doubles"]),
   format: z.enum(["swiss", "mexicano", "groups_knockout"]),
   draw_size: z.number().int().min(2).max(512).refine((val) => val % 2 === 0, {
     message: "Draw size must be an even number",

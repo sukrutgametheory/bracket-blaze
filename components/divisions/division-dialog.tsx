@@ -48,6 +48,11 @@ const sportOptions = [
   { value: "padel", label: "Padel" },
 ]
 
+const playModeOptions = [
+  { value: "singles", label: "Singles" },
+  { value: "doubles", label: "Doubles" },
+]
+
 const formatOptions = [
   { value: "swiss", label: "Swiss System" },
   { value: "mexicano", label: "Mexicano" },
@@ -69,6 +74,7 @@ export function DivisionDialog({
     defaultValues: {
       sport: "badminton",
       name: "",
+      play_mode: "singles",
       format: "swiss",
       draw_size: 16,
       rules_json: {},
@@ -78,6 +84,7 @@ export function DivisionDialog({
   })
 
   const selectedFormat = form.watch("format")
+  const selectedPlayMode = form.watch("play_mode")
   const drawSize = form.watch("draw_size")
 
   // Update form when division changes
@@ -87,6 +94,7 @@ export function DivisionDialog({
       form.reset({
         sport: division.sport as "badminton" | "squash" | "pickleball" | "padel",
         name: division.name,
+        play_mode: (division.play_mode || "singles") as "singles" | "doubles",
         format: division.format as "swiss" | "mexicano" | "groups_knockout",
         draw_size: division.draw_size,
         rules_json: rulesJson,
@@ -102,6 +110,7 @@ export function DivisionDialog({
       form.reset({
         sport: "badminton",
         name: "",
+        play_mode: "singles",
         format: "swiss",
         draw_size: 16,
         rules_json: {},
@@ -132,6 +141,7 @@ export function DivisionDialog({
       const payload = {
         sport: values.sport,
         name: values.name,
+        play_mode: values.play_mode,
         format: values.format,
         draw_size: values.draw_size,
         rules_json,
@@ -184,7 +194,7 @@ export function DivisionDialog({
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-4">
               <FormField
                 control={form.control}
                 name="sport"
@@ -211,6 +221,38 @@ export function DivisionDialog({
                     </Select>
                     <FormDescription>
                       Choose the sport for this division
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="play_mode"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Play Mode</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      disabled={isLoading}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select mode" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {playModeOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>
+                      Singles or doubles
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -289,7 +331,7 @@ export function DivisionDialog({
                     />
                   </FormControl>
                   <FormDescription>
-                    Maximum number of participants (must be even, 2-512)
+                    Maximum number of {selectedPlayMode === "doubles" ? "teams" : "participants"} (must be even, 2-512)
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

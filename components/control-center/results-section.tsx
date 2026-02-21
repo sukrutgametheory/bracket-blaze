@@ -22,6 +22,7 @@ import {
 import { cn } from "@/lib/utils"
 import { Pencil } from "lucide-react"
 import type { Division, MatchScoreData } from "@/types/database"
+import { getEntryDisplayName } from "@/lib/utils/display-name"
 
 interface EntryInfo {
   id: string
@@ -217,8 +218,8 @@ export function ResultsSection({
                   {divMatches.map((match: any) => {
                     const sideA = match.side_a as any
                     const sideB = match.side_b as any
-                    const nameA = sideA?.participant?.display_name || "TBD"
-                    const nameB = sideB?.participant?.display_name || "TBD"
+                    const nameA = getEntryDisplayName(sideA)
+                    const nameB = getEntryDisplayName(sideB)
                     const isWalkover = (match.meta_json as MatchScoreData)?.walkover === true
                     const score = formatScore(match.meta_json)
                     const isKnockout = match.phase === "knockout"

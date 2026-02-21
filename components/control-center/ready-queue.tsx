@@ -2,6 +2,7 @@
 
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
+import { getEntryDisplayName } from "@/lib/utils/display-name"
 
 interface ReadyQueueProps {
   matches: any[]
@@ -57,7 +58,7 @@ export function ReadyQueue({ matches, selectedMatch, onSelectMatch }: ReadyQueue
                   </span>
                 )}
                 <span className="font-medium truncate">
-                  {sideA?.participant?.display_name || "TBD"}
+                  {getEntryDisplayName(sideA)}
                 </span>
               </div>
 
@@ -73,7 +74,7 @@ export function ReadyQueue({ matches, selectedMatch, onSelectMatch }: ReadyQueue
                     </span>
                   )}
                   <span className="font-medium truncate">
-                    {sideB?.participant?.display_name || "TBD"}
+                    {getEntryDisplayName(sideB)}
                   </span>
                 </div>
               )}

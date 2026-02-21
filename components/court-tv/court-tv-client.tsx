@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { createClient } from "@supabase/supabase-js"
 import type { Court, LiveScore, GameScore } from "@/types/database"
+import { getEntryDisplayName } from "@/lib/utils/display-name"
 
 interface CourtTvMatch {
   id: string
@@ -13,8 +14,8 @@ interface CourtTvMatch {
   sequence: number
   phase: string
   division: { id: string; name: string }
-  side_a: { participant: { display_name: string } } | null
-  side_b: { participant: { display_name: string } } | null
+  side_a: { participant: { display_name: string } | null; team: { name: string } | null } | null
+  side_b: { participant: { display_name: string } | null; team: { name: string } | null } | null
 }
 
 interface CourtTvClientProps {
@@ -182,8 +183,8 @@ export function CourtTvClient({
           const metaJson = match?.meta_json || {}
           const liveScore: LiveScore | null = metaJson.live_score || null
           const games: GameScore[] = metaJson.games || []
-          const sideAName = match?.side_a?.participant?.display_name || ""
-          const sideBName = match?.side_b?.participant?.display_name || ""
+          const sideAName = getEntryDisplayName(match?.side_a ?? null)
+          const sideBName = getEntryDisplayName(match?.side_b ?? null)
           const isLive = match?.status === "on_court"
           const isPending = match?.status === "pending_signoff"
           const isReady = match?.status === "ready"

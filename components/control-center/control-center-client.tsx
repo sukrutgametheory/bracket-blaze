@@ -18,6 +18,7 @@ import { generateScoringToken } from "@/lib/actions/scoring-token"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
 import type { RankedStanding } from "@/lib/services/standings-engine"
+import { getEntryDisplayName } from "@/lib/utils/display-name"
 
 interface ControlCenterClientProps {
   tournament: Tournament
@@ -357,8 +358,8 @@ export function ControlCenterClient({
           open={resultDialog.open}
           onOpenChange={(open) => setResultDialog({ ...resultDialog, open })}
           matchId={resultDialog.match.id}
-          sideAName={resultDialog.match.side_a?.participant?.display_name || "Side A"}
-          sideBName={resultDialog.match.side_b?.participant?.display_name || "Side B"}
+          sideAName={getEntryDisplayName(resultDialog.match.side_a) || "Side A"}
+          sideBName={getEntryDisplayName(resultDialog.match.side_b) || "Side B"}
           onSubmitResult={handleSubmitResult}
           onSubmitWalkover={handleSubmitWalkover}
           mode={resultDialog.mode}

@@ -29,6 +29,7 @@ export async function createDivision(data: DivisionFormData, tournamentId: strin
       .insert({
         sport: validatedData.sport,
         name: validatedData.name,
+        play_mode: validatedData.play_mode,
         format: validatedData.format,
         draw_size: validatedData.draw_size,
         rules_json: validatedData.rules_json || {},
@@ -81,6 +82,7 @@ export async function updateDivision(divisionId: string, data: DivisionFormData)
       .update({
         sport: validatedData.sport,
         name: validatedData.name,
+        play_mode: validatedData.play_mode,
         format: validatedData.format,
         draw_size: validatedData.draw_size,
         rules_json: validatedData.rules_json || {},

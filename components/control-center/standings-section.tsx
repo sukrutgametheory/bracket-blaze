@@ -14,11 +14,13 @@ import {
 import { cn } from "@/lib/utils"
 import type { Division } from "@/types/database"
 import type { RankedStanding } from "@/lib/services/standings-engine"
+import { getEntryDisplayName } from "@/lib/utils/display-name"
 
 interface EntryInfo {
   id: string
   seed: number | null
   participant: { display_name: string; club: string | null } | null
+  team: { name: string } | null
 }
 
 interface DrawState {
@@ -104,7 +106,7 @@ function SwissStandingsTable({
                 <TableCell>
                   <div>
                     <span className="font-medium text-sm">
-                      {entry?.participant?.display_name || "Unknown"}
+                      {entry ? getEntryDisplayName(entry) : "Unknown"}
                     </span>
                     {entry?.participant?.club && (
                       <span className="text-xs text-muted-foreground ml-2">
@@ -191,8 +193,8 @@ function KnockoutBracketView({
               {roundMatches.map((match: any) => {
                 const sideA = match.side_a as any
                 const sideB = match.side_b as any
-                const nameA = sideA?.participant?.display_name || "TBD"
-                const nameB = sideB?.participant?.display_name || "TBD"
+                const nameA = getEntryDisplayName(sideA)
+                const nameB = getEntryDisplayName(sideB)
                 const isCompleted = match.status === "completed" || match.status === "walkover"
                 const isWalkover = match.meta_json?.walkover === true
                 const games = match.meta_json?.games || []
