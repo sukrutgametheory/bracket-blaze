@@ -26,16 +26,6 @@ interface CourtTvClientProps {
   supabaseAnonKey: string
 }
 
-function getStatusDisplay(status: string) {
-  switch (status) {
-    case "ready": return { label: "Ready", color: "bg-blue-500" }
-    case "on_court": return { label: "In Play", color: "bg-green-500 animate-pulse" }
-    case "pending_signoff": return { label: "Pending", color: "bg-yellow-500" }
-    case "completed": return { label: "Done", color: "bg-gray-500" }
-    default: return { label: "Empty", color: "bg-gray-700" }
-  }
-}
-
 export function CourtTvClient({
   tournamentName,
   courts,
@@ -105,7 +95,6 @@ export function CourtTvClient({
           table: "bracket_blaze_matches",
         },
         () => {
-          // Full page refresh on status change to get fresh data with joins
           window.location.reload()
         }
       )
@@ -131,78 +120,224 @@ export function CourtTvClient({
     : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white p-4">
+    <div className="min-h-screen text-white" style={{ background: "#04060e" }}>
+      {/* Scoreboard font */}
+      <link
+        href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&display=swap"
+        rel="stylesheet"
+      />
+      <style>{`
+        .tv-score {
+          font-family: 'Oswald', sans-serif;
+          font-variant-numeric: tabular-nums;
+          line-height: 1;
+        }
+        .live-glow {
+          text-shadow: 0 0 40px rgba(255, 255, 255, 0.15);
+        }
+        .card-live {
+          border-left: 4px solid #22c55e;
+          box-shadow: inset 6px 0 24px -12px rgba(34, 197, 94, 0.25);
+        }
+        .card-pending {
+          border-left: 4px solid #eab308;
+          box-shadow: inset 6px 0 24px -12px rgba(234, 179, 8, 0.2);
+        }
+        .card-ready {
+          border-left: 4px solid #3b82f6;
+          box-shadow: inset 6px 0 24px -12px rgba(59, 130, 246, 0.2);
+        }
+        .card-idle {
+          border-left: 4px solid transparent;
+        }
+        .pulse-dot {
+          animation: pulse-dot 2s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.3; }
+        }
+      `}</style>
+
       {/* Header */}
-      <div className="text-center mb-6">
-        <h1 className="text-3xl font-bold tracking-tight">{tournamentName}</h1>
-        <p className="text-gray-400 text-sm">Live Scores</p>
+      <div className="text-center pt-6 pb-5">
+        <h1
+          className="text-3xl sm:text-4xl font-bold tracking-tight"
+          style={{ color: "#e2e8f0" }}
+        >
+          {tournamentName}
+        </h1>
+        <p
+          className="text-xs font-semibold uppercase tracking-[0.3em] mt-1.5"
+          style={{ color: "#475569" }}
+        >
+          Live Scores
+        </p>
       </div>
 
       {/* Court Grid */}
-      <div className={`grid ${gridCols} gap-4 max-w-6xl mx-auto`}>
+      <div className={`grid ${gridCols} gap-5 max-w-7xl mx-auto px-5 pb-8`}>
         {courts.map(court => {
           const match = courtMatchMap.get(court.id)
-          const statusDisplay = getStatusDisplay(match?.status || "empty")
           const metaJson = match?.meta_json || {}
           const liveScore: LiveScore | null = metaJson.live_score || null
           const games: GameScore[] = metaJson.games || []
           const sideAName = match?.side_a?.participant?.display_name || ""
           const sideBName = match?.side_b?.participant?.display_name || ""
+          const isLive = match?.status === "on_court"
+          const isPending = match?.status === "pending_signoff"
+          const isReady = match?.status === "ready"
+
+          const cardAccent = isLive
+            ? "card-live"
+            : isPending
+            ? "card-pending"
+            : isReady
+            ? "card-ready"
+            : "card-idle"
+
+          const showScore = isLive || isPending
 
           return (
             <div
               key={court.id}
-              className="bg-gray-900 rounded-xl border border-gray-800 p-5"
+              className={`rounded-lg overflow-hidden ${cardAccent}`}
+              style={{ background: "#0c1120" }}
             >
-              {/* Court Name + Status */}
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-100">{court.name}</h2>
-                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium text-white ${statusDisplay.color}`}>
-                  {statusDisplay.label}
+              {/* Court header bar */}
+              <div
+                className="flex items-center justify-between px-5 py-2.5"
+                style={{ background: "#111827" }}
+              >
+                <span
+                  className="text-xs font-bold uppercase tracking-[0.2em]"
+                  style={{ color: "#64748b" }}
+                >
+                  {court.name}
                 </span>
+
+                {match ? (
+                  <span className="flex items-center gap-2">
+                    {isLive && (
+                      <span
+                        className="pulse-dot inline-block w-2 h-2 rounded-full"
+                        style={{ background: "#22c55e" }}
+                      />
+                    )}
+                    <span
+                      className="text-[10px] font-bold uppercase tracking-wider"
+                      style={{
+                        color: isLive
+                          ? "#4ade80"
+                          : isPending
+                          ? "#facc15"
+                          : isReady
+                          ? "#60a5fa"
+                          : "#64748b",
+                      }}
+                    >
+                      {isLive
+                        ? "Live"
+                        : isPending
+                        ? "Pending"
+                        : isReady
+                        ? "Ready"
+                        : "Final"}
+                    </span>
+                  </span>
+                ) : (
+                  <span
+                    className="text-[10px] font-bold uppercase tracking-wider"
+                    style={{ color: "#334155" }}
+                  >
+                    No Match
+                  </span>
+                )}
               </div>
 
               {match ? (
-                <div className="space-y-3">
-                  {/* Player Names + Live Score */}
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-lg font-medium truncate flex-1">{sideAName}</span>
-                      {liveScore && match.status === "on_court" && (
-                        <span className="text-3xl font-bold tabular-nums ml-3">
-                          {liveScore.score_a}
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-lg font-medium truncate flex-1">{sideBName}</span>
-                      {liveScore && match.status === "on_court" && (
-                        <span className="text-3xl font-bold tabular-nums ml-3">
-                          {liveScore.score_b}
-                        </span>
-                      )}
-                    </div>
+                <div className="px-5 py-4">
+                  {/* Player A */}
+                  <div className="flex items-center justify-between">
+                    <span
+                      className="text-lg sm:text-xl font-medium truncate flex-1 mr-4"
+                      style={{ color: "#e2e8f0" }}
+                    >
+                      {sideAName}
+                    </span>
+                    {showScore && liveScore && (
+                      <span
+                        className={`tv-score text-6xl sm:text-7xl font-bold ${isLive ? "live-glow" : ""}`}
+                        style={{ color: "#ffffff", minWidth: "1.5ch", textAlign: "right" }}
+                      >
+                        {liveScore.score_a}
+                      </span>
+                    )}
                   </div>
 
-                  {/* Completed Games */}
-                  {games.length > 0 && (
-                    <div className="flex gap-2 flex-wrap">
-                      {games.map((game, i) => (
-                        <span key={i} className="px-2 py-0.5 bg-gray-800 rounded text-sm font-mono text-gray-300">
-                          {game.score_a}-{game.score_b}
-                        </span>
-                      ))}
-                    </div>
-                  )}
+                  {/* Divider */}
+                  <div
+                    className="my-2"
+                    style={{
+                      height: "1px",
+                      background: "linear-gradient(to right, rgba(100,116,139,0.3), transparent)",
+                    }}
+                  />
 
-                  {/* Division + Round */}
-                  <p className="text-xs text-gray-500">
-                    {match.division?.name} &bull; Round {match.round}
-                  </p>
+                  {/* Player B */}
+                  <div className="flex items-center justify-between">
+                    <span
+                      className="text-lg sm:text-xl font-medium truncate flex-1 mr-4"
+                      style={{ color: "#e2e8f0" }}
+                    >
+                      {sideBName}
+                    </span>
+                    {showScore && liveScore && (
+                      <span
+                        className={`tv-score text-6xl sm:text-7xl font-bold ${isLive ? "live-glow" : ""}`}
+                        style={{ color: "#ffffff", minWidth: "1.5ch", textAlign: "right" }}
+                      >
+                        {liveScore.score_b}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Footer: completed games + division */}
+                  <div
+                    className="flex items-center justify-between mt-4 pt-3"
+                    style={{ borderTop: "1px solid rgba(100,116,139,0.15)" }}
+                  >
+                    {games.length > 0 ? (
+                      <div className="flex gap-2">
+                        {games.map((game, i) => (
+                          <span
+                            key={i}
+                            className="text-xs font-mono font-medium px-2 py-0.5 rounded"
+                            style={{ background: "#1e293b", color: "#94a3b8" }}
+                          >
+                            {game.score_a}-{game.score_b}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <div />
+                    )}
+                    <span
+                      className="text-[11px] font-medium"
+                      style={{ color: "#475569" }}
+                    >
+                      {match.division?.name} &middot; Round {match.round}
+                    </span>
+                  </div>
                 </div>
               ) : (
-                <div className="py-8 text-center text-gray-600">
-                  <p className="text-sm">No match assigned</p>
+                <div className="py-14 text-center">
+                  <p
+                    className="text-sm uppercase tracking-wider"
+                    style={{ color: "#1e293b" }}
+                  >
+                    Awaiting Assignment
+                  </p>
                 </div>
               )}
             </div>
