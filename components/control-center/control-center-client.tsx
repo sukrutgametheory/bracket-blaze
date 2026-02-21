@@ -252,7 +252,7 @@ export function ControlCenterClient({
           </>
         )}
         <Button
-          variant="ghost"
+          variant="outline"
           size="sm"
           onClick={() => {
             window.open(`${window.location.origin}/live/${tournament.id}`, '_blank')
