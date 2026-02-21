@@ -248,7 +248,8 @@ export function generateNextRoundMatches(
   const sortedGroupKeys = [...groups.keys()].sort((a, b) => b - a)
 
   // Merge groups and handle float-downs for odd-sized groups
-  const pairingPool: string[] = []
+  // Then fold-pair within each group (top vs bottom half) to avoid top seeds meeting early
+  const groupsInOrder: string[][] = []
   let floater: string | null = null
 
   for (const winCount of sortedGroupKeys) {
@@ -265,45 +266,57 @@ export function generateNextRoundMatches(
       floater = group.pop()!
     }
 
-    pairingPool.push(...group)
+    if (group.length > 0) {
+      groupsInOrder.push(group)
+    }
   }
 
-  // If there's still a floater, add to end of pool
+  // If there's still a floater, add as single-entry group
   if (floater) {
-    pairingPool.push(floater)
+    // Try to append to last group if it exists
+    if (groupsInOrder.length > 0) {
+      groupsInOrder[groupsInOrder.length - 1].push(floater)
+    } else {
+      groupsInOrder.push([floater])
+    }
   }
 
-  // Pair within the pool: pair adjacent entries (already ordered by standings)
+  // Fold-pair within each score group: #1 vs #(n/2+1), #2 vs #(n/2+2), etc.
+  // This keeps top-ranked players apart within the same bracket.
+  // If a fold pair is a rematch, swap with an adjacent pair to avoid it.
   let sequence = 1
   const paired = new Set<string>()
 
-  for (let i = 0; i < pairingPool.length; i++) {
-    if (paired.has(pairingPool[i])) continue
+  for (const group of groupsInOrder) {
+    const half = Math.floor(group.length / 2)
+    const topHalf = group.slice(0, half)
+    const bottomHalf = group.slice(half)
 
-    const entryA = pairingPool[i]
-    let bestPartner: string | null = null
-    let bestPartnerIdx = -1
+    for (let i = 0; i < topHalf.length; i++) {
+      const entryA = topHalf[i]
+      let entryB = bottomHalf[i]
 
-    // Look for the next unpaired entry, preferring non-rematches
-    for (let j = i + 1; j < pairingPool.length; j++) {
-      if (paired.has(pairingPool[j])) continue
-
-      if (!havePlayed(pairingHistory, entryA, pairingPool[j])) {
-        bestPartner = pairingPool[j]
-        bestPartnerIdx = j
-        break
+      // If this would be a rematch, try swapping with adjacent bottom-half entries
+      if (havePlayed(pairingHistory, entryA, entryB)) {
+        let swapped = false
+        for (let j = i + 1; j < bottomHalf.length; j++) {
+          if (!paired.has(bottomHalf[j]) && !havePlayed(pairingHistory, entryA, bottomHalf[j])) {
+            // Also check the displaced pairing won't be a rematch
+            if (!havePlayed(pairingHistory, topHalf[j] || topHalf[i], bottomHalf[i])) {
+              const temp = bottomHalf[i]
+              bottomHalf[i] = bottomHalf[j]
+              bottomHalf[j] = temp
+              entryB = bottomHalf[i]
+              swapped = true
+              break
+            }
+          }
+        }
+        // If no swap found, allow the rematch (rare, late rounds)
       }
 
-      // Remember first available as fallback (rematch allowed if necessary)
-      if (!bestPartner) {
-        bestPartner = pairingPool[j]
-        bestPartnerIdx = j
-      }
-    }
-
-    if (bestPartner) {
       paired.add(entryA)
-      paired.add(bestPartner)
+      paired.add(entryB)
 
       matches.push({
         division_id: divisionId,
@@ -311,11 +324,12 @@ export function generateNextRoundMatches(
         sequence,
         phase: 'swiss',
         side_a_entry_id: entryA,
-        side_b_entry_id: bestPartner,
+        side_b_entry_id: entryB,
         status: 'scheduled',
       })
       sequence++
     }
+
   }
 
   // Add bye match
