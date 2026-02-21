@@ -229,6 +229,112 @@ export async function recordWalkover(
 }
 
 /**
+ * Edit a completed match's score — updates meta_json and winner_side
+ * without changing the match status. Used by the TD to correct scores
+ * before generating the next round.
+ */
+export async function editMatchScore(
+  matchId: string,
+  winnerSide: WinnerSide,
+  games: GameScore[]
+) {
+  try {
+    const auth = await requireAuth()
+    if (!auth) return { error: "Unauthorized" }
+    const { supabase, user } = auth
+
+    const isAdmin = await isTournamentAdminForMatch(supabase, matchId, user.id)
+    if (!isAdmin) return { error: "Not authorized for this tournament" }
+
+    const { data: match, error: fetchError } = await supabase
+      .from(TABLE_NAMES.MATCHES)
+      .select("id, status, division_id, phase, winner_side, next_match_id, next_match_side, side_a_entry_id, side_b_entry_id")
+      .eq("id", matchId)
+      .single()
+
+    if (fetchError || !match) {
+      return { error: "Match not found" }
+    }
+
+    if (match.status !== 'completed' && match.status !== 'walkover') {
+      return { error: `Cannot edit score: match status is '${match.status}', expected 'completed' or 'walkover'` }
+    }
+
+    // Validate game scores
+    if (!games || games.length === 0) {
+      return { error: "At least one game score is required" }
+    }
+
+    for (const game of games) {
+      if (game.score_a < 0 || game.score_b < 0) {
+        return { error: "Game scores cannot be negative" }
+      }
+    }
+
+    // If knockout match and winner is changing, guard against next match in progress
+    const winnerChanged = match.winner_side !== winnerSide
+    if (winnerChanged && match.phase === 'knockout' && match.next_match_id) {
+      const { data: nextMatch } = await supabase
+        .from(TABLE_NAMES.MATCHES)
+        .select("id, status")
+        .eq("id", match.next_match_id)
+        .single()
+
+      if (nextMatch && nextMatch.status !== 'scheduled') {
+        return { error: "Cannot change winner — next match already in progress" }
+      }
+    }
+
+    const totalPointsA = games.reduce((sum, g) => sum + g.score_a, 0)
+    const totalPointsB = games.reduce((sum, g) => sum + g.score_b, 0)
+
+    const scoreData: MatchScoreData = {
+      games,
+      total_points_a: totalPointsA,
+      total_points_b: totalPointsB,
+    }
+
+    const { error: updateError } = await supabase
+      .from(TABLE_NAMES.MATCHES)
+      .update({
+        status: 'completed',
+        winner_side: winnerSide,
+        meta_json: scoreData,
+      })
+      .eq("id", matchId)
+
+    if (updateError) {
+      return { error: updateError.message }
+    }
+
+    // If knockout match and winner changed, update the next match entry
+    if (winnerChanged && match.phase === 'knockout' && match.next_match_id && match.next_match_side) {
+      const newWinnerEntryId = winnerSide === 'A'
+        ? match.side_a_entry_id
+        : match.side_b_entry_id
+
+      const updateField = match.next_match_side === 'A'
+        ? 'side_a_entry_id'
+        : 'side_b_entry_id'
+
+      if (newWinnerEntryId) {
+        await supabase
+          .from(TABLE_NAMES.MATCHES)
+          .update({ [updateField]: newWinnerEntryId })
+          .eq("id", match.next_match_id)
+      }
+    }
+
+    await revalidateMatchPaths(supabase, match.division_id)
+
+    return { success: true, message: "Score updated" }
+  } catch (error) {
+    console.error("Error in editMatchScore:", error)
+    return { error: "Failed to edit score" }
+  }
+}
+
+/**
  * After a knockout match completes, advance the winner to the next match
  */
 async function advanceKnockoutWinner(

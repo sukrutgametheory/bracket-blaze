@@ -8,9 +8,10 @@ import { ReadyQueue } from "./ready-queue"
 import { CourtGrid } from "./court-grid"
 import { RoundManagement } from "./round-management"
 import { StandingsSection } from "./standings-section"
+import { ResultsSection } from "./results-section"
 import { MatchResultDialog } from "./match-result-dialog"
 import { assignMatchToCourt, clearCourt } from "@/lib/actions/court-assignments"
-import { startMatch, completeMatch, recordWalkover } from "@/lib/actions/matches"
+import { startMatch, completeMatch, recordWalkover, editMatchScore } from "@/lib/actions/matches"
 import { generateNextSwissRound, generateKnockoutDraw } from "@/lib/actions/draws"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
@@ -39,7 +40,8 @@ export function ControlCenterClient({
   const [resultDialog, setResultDialog] = useState<{
     open: boolean
     match: any | null
-  }>({ open: false, match: null })
+    mode: 'record' | 'edit'
+  }>({ open: false, match: null, mode: 'record' })
   const { toast } = useToast()
   const router = useRouter()
 
@@ -116,17 +118,23 @@ export function ControlCenterClient({
   }
 
   const handleOpenResultDialog = (match: any) => {
-    setResultDialog({ open: true, match })
+    setResultDialog({ open: true, match, mode: 'record' })
+  }
+
+  const handleOpenEditDialog = (match: any) => {
+    setResultDialog({ open: true, match, mode: 'edit' })
   }
 
   const handleSubmitResult = async (matchId: string, winnerSide: WinnerSide, games: GameScore[]) => {
-    const result = await completeMatch(matchId, winnerSide, games)
+    const action = resultDialog.mode === 'edit' ? editMatchScore : completeMatch
+    const result = await action(matchId, winnerSide, games)
     if (result.error) {
       toast({ title: "Error", description: result.error, variant: "destructive" })
       return
     }
 
-    toast({ title: "Result Recorded", description: result.message })
+    const title = resultDialog.mode === 'edit' ? "Score Updated" : "Result Recorded"
+    toast({ title, description: result.message })
     router.refresh()
   }
 
@@ -178,6 +186,7 @@ export function ControlCenterClient({
         <TabsList>
           <TabsTrigger value="courts">Courts</TabsTrigger>
           <TabsTrigger value="standings">Standings</TabsTrigger>
+          <TabsTrigger value="results">Results</TabsTrigger>
         </TabsList>
 
         <TabsContent value="courts" className="mt-4">
@@ -234,6 +243,15 @@ export function ControlCenterClient({
             entries={entries}
           />
         </TabsContent>
+
+        <TabsContent value="results" className="mt-4">
+          <ResultsSection
+            divisions={divisions}
+            matches={matches}
+            entries={entries}
+            onEditScore={handleOpenEditDialog}
+          />
+        </TabsContent>
       </Tabs>
 
       {/* Match Result Dialog */}
@@ -246,6 +264,9 @@ export function ControlCenterClient({
           sideBName={resultDialog.match.side_b?.participant?.display_name || "Side B"}
           onSubmitResult={handleSubmitResult}
           onSubmitWalkover={handleSubmitWalkover}
+          mode={resultDialog.mode}
+          initialGames={resultDialog.mode === 'edit' ? resultDialog.match.meta_json?.games : undefined}
+          initialWalkover={resultDialog.mode === 'edit' ? resultDialog.match.meta_json?.walkover : undefined}
         />
       )}
     </div>

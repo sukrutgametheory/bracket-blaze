@@ -23,6 +23,9 @@ interface MatchResultDialogProps {
   sideBName: string
   onSubmitResult: (matchId: string, winnerSide: WinnerSide, games: GameScore[]) => void
   onSubmitWalkover: (matchId: string, winnerSide: WinnerSide) => void
+  mode?: 'record' | 'edit'
+  initialGames?: GameScore[]
+  initialWalkover?: boolean
 }
 
 export function MatchResultDialog({
@@ -33,9 +36,13 @@ export function MatchResultDialog({
   sideBName,
   onSubmitResult,
   onSubmitWalkover,
+  mode = 'record',
+  initialGames,
+  initialWalkover,
 }: MatchResultDialogProps) {
-  const [games, setGames] = useState<GameScore[]>([{ score_a: 0, score_b: 0 }])
-  const [isWalkover, setIsWalkover] = useState(false)
+  const defaultGames = initialGames && initialGames.length > 0 ? initialGames : [{ score_a: 0, score_b: 0 }]
+  const [games, setGames] = useState<GameScore[]>(defaultGames)
+  const [isWalkover, setIsWalkover] = useState(initialWalkover ?? false)
   const [walkoverWinner, setWalkoverWinner] = useState<WinnerSide | null>(null)
 
   const addGame = () => {
@@ -81,8 +88,9 @@ export function MatchResultDialog({
   }
 
   const resetAndClose = () => {
-    setGames([{ score_a: 0, score_b: 0 }])
-    setIsWalkover(false)
+    const resetGames = initialGames && initialGames.length > 0 ? initialGames : [{ score_a: 0, score_b: 0 }]
+    setGames(resetGames)
+    setIsWalkover(initialWalkover ?? false)
     setWalkoverWinner(null)
     onOpenChange(false)
   }
@@ -94,7 +102,7 @@ export function MatchResultDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Record Result</DialogTitle>
+          <DialogTitle>{mode === 'edit' ? 'Edit Match Score' : 'Record Result'}</DialogTitle>
           <DialogDescription>
             {sideAName} vs {sideBName}
           </DialogDescription>
@@ -198,7 +206,7 @@ export function MatchResultDialog({
             Cancel
           </Button>
           <Button onClick={handleSubmit} disabled={!canSubmit}>
-            Submit Result
+            {mode === 'edit' ? 'Save Changes' : 'Submit Result'}
           </Button>
         </DialogFooter>
       </DialogContent>
