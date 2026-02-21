@@ -1,10 +1,12 @@
 "use client"
 
+import { useState } from "react"
 import { Court } from "@/types/database"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
-import { X, Play, ClipboardCheck } from "lucide-react"
+import { X, Play, ClipboardCheck, Check, RotateCcw } from "lucide-react"
 
 interface CourtGridProps {
   courts: Court[]
@@ -14,14 +16,25 @@ interface CourtGridProps {
   onClear: (courtId: string) => void
   onStartMatch: (matchId: string) => void
   onRecordResult: (match: any) => void
+  onApproveMatch?: (matchId: string) => void
+  onRejectMatch?: (matchId: string, note?: string) => void
 }
 
 function getStatusBadgeVariant(status: string) {
   switch (status) {
     case 'ready': return 'secondary' as const
     case 'on_court': return 'default' as const
+    case 'pending_signoff': return 'destructive' as const
     case 'completed': return 'outline' as const
     default: return 'secondary' as const
+  }
+}
+
+function getStatusLabel(status: string) {
+  switch (status) {
+    case 'on_court': return 'In Play'
+    case 'pending_signoff': return 'Pending Sign-Off'
+    default: return status
   }
 }
 
@@ -42,7 +55,11 @@ export function CourtGrid({
   onClear,
   onStartMatch,
   onRecordResult,
+  onApproveMatch,
+  onRejectMatch,
 }: CourtGridProps) {
+  const [rejectingMatch, setRejectingMatch] = useState<string | null>(null)
+  const [rejectNote, setRejectNote] = useState("")
   if (courts.length === 0) {
     return (
       <div className="text-center py-8 text-muted-foreground">
@@ -77,7 +94,8 @@ export function CourtGrid({
               canAssign && "cursor-pointer hover:border-primary hover:bg-primary/5",
               isEmpty && "bg-muted/30",
               !isEmpty && "bg-card",
-              match?.status === 'on_court' && "border-green-500/50 bg-green-50/30 dark:bg-green-950/10"
+              match?.status === 'on_court' && "border-green-500/50 bg-green-50/30 dark:bg-green-950/10",
+              match?.status === 'pending_signoff' && "border-yellow-500/50 bg-yellow-50/30 dark:bg-yellow-950/10"
             )}
           >
             {/* Court Header */}
@@ -85,7 +103,7 @@ export function CourtGrid({
               <div className="flex items-center gap-2">
                 <h3 className="font-semibold text-lg">{court.name}</h3>
                 <Badge variant={isEmpty ? "secondary" : getStatusBadgeVariant(match.status)}>
-                  {isEmpty ? "Available" : match.status === 'on_court' ? "In Play" : match.status}
+                  {isEmpty ? "Available" : getStatusLabel(match.status)}
                 </Badge>
                 {match?.status === 'on_court' && match.actual_start_time && (
                   <span className="text-xs text-muted-foreground">
@@ -154,6 +172,37 @@ export function CourtGrid({
                   )}
                 </div>
 
+                {/* Live Score (when on_court or pending_signoff with live_score data) */}
+                {match.meta_json?.live_score && (match.status === 'on_court' || match.status === 'pending_signoff') && (
+                  <div className="pt-1">
+                    {/* Completed games */}
+                    {match.meta_json?.games?.length > 0 && (
+                      <div className="flex gap-1 mb-1">
+                        {match.meta_json.games.map((game: any, i: number) => (
+                          <span key={i} className="px-1.5 py-0.5 bg-muted rounded text-xs font-mono">
+                            {game.score_a}-{game.score_b}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    {/* Current game score */}
+                    <div className="text-sm font-mono font-semibold">
+                      Game {match.meta_json.live_score.current_game}: {match.meta_json.live_score.score_a} - {match.meta_json.live_score.score_b}
+                    </div>
+                  </div>
+                )}
+
+                {/* Completed games summary (pending_signoff without live_score) */}
+                {match.status === 'pending_signoff' && !match.meta_json?.live_score && match.meta_json?.games?.length > 0 && (
+                  <div className="flex gap-1 pt-1">
+                    {match.meta_json.games.map((game: any, i: number) => (
+                      <span key={i} className="px-1.5 py-0.5 bg-muted rounded text-xs font-mono">
+                        {game.score_a}-{game.score_b}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
                 {/* Action Buttons */}
                 <div className="flex gap-2 pt-2">
                   {match.status === 'ready' && (
@@ -181,6 +230,66 @@ export function CourtGrid({
                     >
                       <ClipboardCheck className="h-3 w-3 mr-1" /> Record Result
                     </Button>
+                  )}
+                  {match.status === 'pending_signoff' && onApproveMatch && onRejectMatch && (
+                    <>
+                      {rejectingMatch === match.id ? (
+                        <div className="flex gap-2 w-full" onClick={(e) => e.stopPropagation()}>
+                          <Input
+                            placeholder="Reason (optional)"
+                            value={rejectNote}
+                            onChange={(e) => setRejectNote(e.target.value)}
+                            className="flex-1 h-8 text-xs"
+                          />
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => {
+                              onRejectMatch(match.id, rejectNote || undefined)
+                              setRejectingMatch(null)
+                              setRejectNote("")
+                            }}
+                          >
+                            Reject
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => {
+                              setRejectingMatch(null)
+                              setRejectNote("")
+                            }}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <>
+                          <Button
+                            size="sm"
+                            variant="default"
+                            className="flex-1"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              onApproveMatch(match.id)
+                            }}
+                          >
+                            <Check className="h-3 w-3 mr-1" /> Approve
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="flex-1"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setRejectingMatch(match.id)
+                            }}
+                          >
+                            <RotateCcw className="h-3 w-3 mr-1" /> Reject
+                          </Button>
+                        </>
+                      )}
+                    </>
                   )}
                 </div>
               </div>

@@ -11,7 +11,8 @@ type ServerSupabase = Awaited<ReturnType<typeof createClient>>
 const VALID_TRANSITIONS: Record<MatchStatus, MatchStatus[]> = {
   scheduled: ['ready', 'walkover'],
   ready: ['scheduled', 'on_court', 'walkover'],
-  on_court: ['completed', 'walkover'],
+  on_court: ['pending_signoff', 'completed', 'walkover'],
+  pending_signoff: ['completed', 'on_court', 'walkover'],
   completed: [],
   walkover: [],
 }
@@ -81,8 +82,54 @@ export async function startMatch(matchId: string) {
 }
 
 /**
+ * Shared finalization logic: set match to completed with score data,
+ * advance knockout winner, clear live_score, revalidate paths.
+ * Used by both completeMatch (TD direct) and approveMatch (TD sign-off).
+ */
+async function finalizeMatch(
+  supabase: ServerSupabase,
+  matchId: string,
+  divisionId: string,
+  phase: string,
+  winnerSide: WinnerSide,
+  games: GameScore[]
+) {
+  const totalPointsA = games.reduce((sum, g) => sum + g.score_a, 0)
+  const totalPointsB = games.reduce((sum, g) => sum + g.score_b, 0)
+
+  const scoreData: MatchScoreData = {
+    games,
+    total_points_a: totalPointsA,
+    total_points_b: totalPointsB,
+  }
+
+  const { error: updateError } = await supabase
+    .from(TABLE_NAMES.MATCHES)
+    .update({
+      status: 'completed',
+      winner_side: winnerSide,
+      actual_end_time: new Date().toISOString(),
+      meta_json: scoreData,
+    })
+    .eq("id", matchId)
+
+  if (updateError) {
+    return { error: updateError.message }
+  }
+
+  // If knockout match, advance winner to next match
+  if (phase === 'knockout') {
+    await advanceKnockoutWinner(supabase, matchId, winnerSide)
+  }
+
+  await revalidateMatchPaths(supabase, divisionId)
+
+  return { success: true, scoreData }
+}
+
+/**
  * Complete a match — transitions from 'on_court' to 'completed'
- * Records winner and game scores
+ * Records winner and game scores (TD direct path)
  */
 export async function completeMatch(
   matchId: string,
@@ -122,44 +169,135 @@ export async function completeMatch(
       }
     }
 
-    const totalPointsA = games.reduce((sum, g) => sum + g.score_a, 0)
-    const totalPointsB = games.reduce((sum, g) => sum + g.score_b, 0)
+    const result = await finalizeMatch(supabase, matchId, match.division_id, match.phase, winnerSide, games)
+    if (result.error) return result
 
-    const scoreData: MatchScoreData = {
-      games,
-      total_points_a: totalPointsA,
-      total_points_b: totalPointsB,
+    return {
+      success: true,
+      message: "Match completed",
+      scoreData: result.scoreData,
+    }
+  } catch (error) {
+    console.error("Error in completeMatch:", error)
+    return { error: "Failed to complete match" }
+  }
+}
+
+/**
+ * Approve a match — transitions from 'pending_signoff' to 'completed'
+ * TD approves a referee-submitted match. Determines winner from game scores.
+ */
+export async function approveMatch(matchId: string) {
+  try {
+    const auth = await requireAuth()
+    if (!auth) return { error: "Unauthorized" }
+    const { supabase, user } = auth
+
+    const isAdmin = await isTournamentAdminForMatch(supabase, matchId, user.id)
+    if (!isAdmin) return { error: "Not authorized for this tournament" }
+
+    const { data: match, error: fetchError } = await supabase
+      .from(TABLE_NAMES.MATCHES)
+      .select("id, status, division_id, phase, meta_json")
+      .eq("id", matchId)
+      .single()
+
+    if (fetchError || !match) {
+      return { error: "Match not found" }
     }
 
+    if (!isValidTransition(match.status as MatchStatus, 'completed')) {
+      return { error: `Cannot approve match: current status is '${match.status}', expected 'pending_signoff'` }
+    }
+
+    // Get games from meta_json
+    const metaJson = match.meta_json as MatchScoreData | null
+    const games = metaJson?.games || []
+    if (games.length === 0) {
+      return { error: "Cannot approve match with no game scores" }
+    }
+
+    // Determine winner from game scores
+    let aWins = 0
+    let bWins = 0
+    for (const game of games) {
+      if (game.score_a > game.score_b) aWins++
+      else if (game.score_b > game.score_a) bWins++
+    }
+
+    if (aWins === bWins) {
+      return { error: "Cannot determine winner — game wins are tied. Reject and have referee continue." }
+    }
+
+    const winnerSide: WinnerSide = aWins > bWins ? 'A' : 'B'
+
+    // Write td_approve event
+    await supabase.from(TABLE_NAMES.MATCH_EVENTS).insert({
+      match_id: matchId,
+      event_type: 'td_approve',
+      payload_json: { games, winner_side: winnerSide },
+    })
+
+    const result = await finalizeMatch(supabase, matchId, match.division_id, match.phase, winnerSide, games)
+    if (result.error) return result
+
+    return { success: true, message: "Match approved" }
+  } catch (error) {
+    console.error("Error in approveMatch:", error)
+    return { error: "Failed to approve match" }
+  }
+}
+
+/**
+ * Reject a match — transitions from 'pending_signoff' back to 'on_court'
+ * TD rejects a referee-submitted match so the referee can continue scoring.
+ */
+export async function rejectMatch(matchId: string, note?: string) {
+  try {
+    const auth = await requireAuth()
+    if (!auth) return { error: "Unauthorized" }
+    const { supabase, user } = auth
+
+    const isAdmin = await isTournamentAdminForMatch(supabase, matchId, user.id)
+    if (!isAdmin) return { error: "Not authorized for this tournament" }
+
+    const { data: match, error: fetchError } = await supabase
+      .from(TABLE_NAMES.MATCHES)
+      .select("id, status, division_id")
+      .eq("id", matchId)
+      .single()
+
+    if (fetchError || !match) {
+      return { error: "Match not found" }
+    }
+
+    if (!isValidTransition(match.status as MatchStatus, 'on_court')) {
+      return { error: `Cannot reject match: current status is '${match.status}', expected 'pending_signoff'` }
+    }
+
+    // Write td_reject event with optional note
+    await supabase.from(TABLE_NAMES.MATCH_EVENTS).insert({
+      match_id: matchId,
+      event_type: 'td_reject',
+      payload_json: { note: note || '' },
+    })
+
+    // Transition back to on_court
     const { error: updateError } = await supabase
       .from(TABLE_NAMES.MATCHES)
-      .update({
-        status: 'completed',
-        winner_side: winnerSide,
-        actual_end_time: new Date().toISOString(),
-        meta_json: scoreData,
-      })
+      .update({ status: 'on_court' })
       .eq("id", matchId)
 
     if (updateError) {
       return { error: updateError.message }
     }
 
-    // If knockout match, advance winner to next match
-    if (match.phase === 'knockout') {
-      await advanceKnockoutWinner(supabase, matchId, winnerSide)
-    }
-
     await revalidateMatchPaths(supabase, match.division_id)
 
-    return {
-      success: true,
-      message: "Match completed",
-      scoreData,
-    }
+    return { success: true, message: "Match rejected — referee can continue scoring" }
   } catch (error) {
-    console.error("Error in completeMatch:", error)
-    return { error: "Failed to complete match" }
+    console.error("Error in rejectMatch:", error)
+    return { error: "Failed to reject match" }
   }
 }
 

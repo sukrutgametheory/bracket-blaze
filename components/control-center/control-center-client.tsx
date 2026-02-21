@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { Tournament, Court, Division, type GameScore, type WinnerSide } from "@/types/database"
+import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ReadyQueue } from "./ready-queue"
@@ -11,8 +12,9 @@ import { StandingsSection } from "./standings-section"
 import { ResultsSection } from "./results-section"
 import { MatchResultDialog } from "./match-result-dialog"
 import { assignMatchToCourt, clearCourt } from "@/lib/actions/court-assignments"
-import { startMatch, completeMatch, recordWalkover, editMatchScore } from "@/lib/actions/matches"
+import { startMatch, completeMatch, recordWalkover, editMatchScore, approveMatch, rejectMatch } from "@/lib/actions/matches"
 import { generateNextSwissRound, generateKnockoutDraw } from "@/lib/actions/draws"
+import { generateScoringToken } from "@/lib/actions/scoring-token"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
 import type { RankedStanding } from "@/lib/services/standings-engine"
@@ -171,8 +173,78 @@ export function ControlCenterClient({
     router.refresh()
   }
 
+  const handleApproveMatch = async (matchId: string) => {
+    const result = await approveMatch(matchId)
+    if ('error' in result && result.error) {
+      toast({ title: "Error", description: result.error, variant: "destructive" })
+      return
+    }
+
+    toast({ title: "Match Approved", description: "Match approved and completed" })
+    router.refresh()
+  }
+
+  const handleRejectMatch = async (matchId: string, note?: string) => {
+    const result = await rejectMatch(matchId, note)
+    if ('error' in result && result.error) {
+      toast({ title: "Error", description: result.error, variant: "destructive" })
+      return
+    }
+
+    toast({ title: "Match Rejected", description: "Referee can continue scoring" })
+    router.refresh()
+  }
+
+  const handleGenerateScoringToken = async () => {
+    if (tournament.scoring_token) {
+      if (!confirm("Regenerate scoring link? This will invalidate the current link.")) return
+    }
+
+    const result = await generateScoringToken(tournament.id)
+    if (result.error) {
+      toast({ title: "Error", description: result.error, variant: "destructive" })
+      return
+    }
+
+    const url = `${window.location.origin}/score/${result.token}`
+    await navigator.clipboard.writeText(url)
+    toast({ title: "Scoring Link Generated", description: "URL copied to clipboard" })
+    router.refresh()
+  }
+
+  const pendingSignoffCount = matches.filter(m => m.status === 'pending_signoff').length
+
   return (
     <div className="space-y-6">
+      {/* Token Management */}
+      <div className="flex items-center gap-3">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleGenerateScoringToken}
+        >
+          {tournament.scoring_token ? "Regenerate Scoring Link" : "Generate Scoring Link"}
+        </Button>
+        {tournament.scoring_token && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              const url = `${window.location.origin}/tv/${tournament.id}`
+              navigator.clipboard.writeText(url)
+              toast({ title: "Court TV Link Copied", description: url })
+            }}
+          >
+            Copy Court TV Link
+          </Button>
+        )}
+        {pendingSignoffCount > 0 && (
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 text-xs font-medium">
+            {pendingSignoffCount} pending sign-off
+          </span>
+        )}
+      </div>
+
       {/* Round Management Panel */}
       <RoundManagement
         divisions={divisions}
@@ -209,6 +281,8 @@ export function ControlCenterClient({
                     onClear={handleClearCourt}
                     onStartMatch={handleStartMatch}
                     onRecordResult={handleOpenResultDialog}
+                    onApproveMatch={handleApproveMatch}
+                    onRejectMatch={handleRejectMatch}
                   />
                 </CardContent>
               </Card>

@@ -8,7 +8,7 @@ export type Json =
 
 export type TournamentStatus = 'draft' | 'active' | 'paused' | 'completed' | 'cancelled'
 export type EntryStatus = 'active' | 'withdrawn' | 'late_add'
-export type MatchStatus = 'scheduled' | 'ready' | 'on_court' | 'completed' | 'walkover'
+export type MatchStatus = 'scheduled' | 'ready' | 'on_court' | 'pending_signoff' | 'completed' | 'walkover'
 export type MatchPhase = 'swiss' | 'knockout'
 export type SportType = 'badminton' | 'squash' | 'pickleball' | 'padel'
 export type FormatType = 'swiss' | 'mexicano' | 'groups_knockout'
@@ -40,6 +40,7 @@ export interface Tournament {
   timezone: string
   status: TournamentStatus
   rest_window_minutes: number
+  scoring_token: string | null
   created_at: string
   updated_at: string
   created_by: string | null
@@ -204,11 +205,19 @@ export interface GameScore {
   score_b: number
 }
 
+export interface LiveScore {
+  current_game: number
+  score_a: number
+  score_b: number
+}
+
 export interface MatchScoreData {
   games: GameScore[]
   total_points_a: number
   total_points_b: number
   walkover?: boolean
+  bye?: boolean
+  live_score?: LiveScore
 }
 
 // Extended types with relations
