@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Tournament, Court, Division, type GameScore, type WinnerSide } from "@/types/database"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ReadyQueue } from "./ready-queue"
 import { CourtGrid } from "./court-grid"
 import { RoundManagement } from "./round-management"
@@ -173,57 +174,67 @@ export function ControlCenterClient({
         onGenerateKnockout={handleGenerateKnockout}
       />
 
-      {/* Standings per Division */}
-      <StandingsSection
-        divisions={divisions}
-        standings={standings}
-        draws={draws}
-        entries={entries}
-      />
+      <Tabs defaultValue="courts">
+        <TabsList>
+          <TabsTrigger value="courts">Courts</TabsTrigger>
+          <TabsTrigger value="standings">Standings</TabsTrigger>
+        </TabsList>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Court Grid - 2/3 width on large screens */}
-        <div className="lg:col-span-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>Courts ({courts.length})</CardTitle>
-              <CardDescription>
-                Click a court to assign the selected match
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <CourtGrid
-                courts={courts}
-                matches={assignedMatches}
-                selectedMatch={selectedMatch}
-                onAssign={handleAssignToCourt}
-                onClear={handleClearCourt}
-                onStartMatch={handleStartMatch}
-                onRecordResult={handleOpenResultDialog}
-              />
-            </CardContent>
-          </Card>
-        </div>
+        <TabsContent value="courts" className="mt-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Court Grid - 2/3 width on large screens */}
+            <div className="lg:col-span-2">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Courts ({courts.length})</CardTitle>
+                  <CardDescription>
+                    Click a court to assign the selected match
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <CourtGrid
+                    courts={courts}
+                    matches={assignedMatches}
+                    selectedMatch={selectedMatch}
+                    onAssign={handleAssignToCourt}
+                    onClear={handleClearCourt}
+                    onStartMatch={handleStartMatch}
+                    onRecordResult={handleOpenResultDialog}
+                  />
+                </CardContent>
+              </Card>
+            </div>
 
-        {/* Ready Queue - 1/3 width on large screens */}
-        <div className="lg:col-span-1">
-          <Card>
-            <CardHeader>
-              <CardTitle>Ready Queue ({prioritizedMatches.length})</CardTitle>
-              <CardDescription>
-                Select a match to assign to a court
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ReadyQueue
-                matches={prioritizedMatches}
-                selectedMatch={selectedMatch}
-                onSelectMatch={setSelectedMatch}
-              />
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+            {/* Ready Queue - 1/3 width on large screens */}
+            <div className="lg:col-span-1">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Ready Queue ({prioritizedMatches.length})</CardTitle>
+                  <CardDescription>
+                    Select a match to assign to a court
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ReadyQueue
+                    matches={prioritizedMatches}
+                    selectedMatch={selectedMatch}
+                    onSelectMatch={setSelectedMatch}
+                  />
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="standings" className="mt-4">
+          <StandingsSection
+            divisions={divisions}
+            standings={standings}
+            draws={draws}
+            entries={entries}
+          />
+        </TabsContent>
+      </Tabs>
 
       {/* Match Result Dialog */}
       {resultDialog.match && (
