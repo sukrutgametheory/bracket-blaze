@@ -197,13 +197,14 @@ function havePlayed(pairingHistory: Set<string>, a: string, b: string): boolean 
 /**
  * Generate subsequent round matches (Round 2+) using score-based pairing.
  *
- * Algorithm:
- * 1. Group entries by win count (most wins first)
- * 2. Within each group, sort by point diff then points for
- * 3. Pair top-ranked vs bottom-ranked within each group
- * 4. Avoid rematches by swapping with adjacent pair
- * 5. Float odd players down to next group
- * 6. Assign bye to lowest-ranked player without a previous bye
+ * Algorithm (matches pickleball-swiss-master reference):
+ * 1. Sort all entries by standings (wins → point diff → points for)
+ * 2. Assign bye to lowest-ranked player without a previous bye
+ * 3. Group entries by win count (most wins first)
+ * 4. Within each bracket, fold-pair: take top player, search from bottom
+ *    for first non-rematch opponent. e.g. in a 16-player winners bracket,
+ *    #1 faces #16, #2 faces #15, etc.
+ * 5. If a bracket has an odd player left, float them down to the next bracket
  */
 export function generateNextRoundMatches(
   divisionId: string,
@@ -236,100 +237,97 @@ export function generateNextRoundMatches(
     }
   }
 
-  // Group entries by win count
-  const groups = new Map<number, string[]>()
+  // Group entries by win count into brackets
+  const brackets = new Map<number, string[]>()
   for (const entryId of entryIds) {
     const wins = standingsMap.get(entryId)?.wins ?? 0
-    if (!groups.has(wins)) groups.set(wins, [])
-    groups.get(wins)!.push(entryId)
+    if (!brackets.has(wins)) brackets.set(wins, [])
+    brackets.get(wins)!.push(entryId)
   }
 
-  // Sort groups by win count descending
-  const sortedGroupKeys = [...groups.keys()].sort((a, b) => b - a)
+  // Sort bracket keys by win count descending
+  const sortedBracketKeys = [...brackets.keys()].sort((a, b) => b - a)
 
-  // Merge groups and handle float-downs for odd-sized groups
-  // Then fold-pair within each group (top vs bottom half) to avoid top seeds meeting early
-  const groupsInOrder: string[][] = []
-  let floater: string | null = null
+  // Build ordered list of mutable brackets (entries already in standings order within each)
+  const orderedBrackets: string[][] = sortedBracketKeys.map(k => [...brackets.get(k)!])
 
-  for (const winCount of sortedGroupKeys) {
-    const group = groups.get(winCount)!
-
-    // Add floater from previous group if exists
-    if (floater) {
-      group.unshift(floater)
-      floater = null
-    }
-
-    // If odd group, float the bottom player down
-    if (group.length % 2 === 1) {
-      floater = group.pop()!
-    }
-
-    if (group.length > 0) {
-      groupsInOrder.push(group)
-    }
-  }
-
-  // If there's still a floater, add as single-entry group
-  if (floater) {
-    // Try to append to last group if it exists
-    if (groupsInOrder.length > 0) {
-      groupsInOrder[groupsInOrder.length - 1].push(floater)
-    } else {
-      groupsInOrder.push([floater])
-    }
-  }
-
-  // Fold-pair within each score group: #1 vs #(n/2+1), #2 vs #(n/2+2), etc.
-  // This keeps top-ranked players apart within the same bracket.
-  // If a fold pair is a rematch, swap with an adjacent pair to avoid it.
+  // Pair within each bracket using iterative top-from-bottom fold
+  // If a bracket has an odd player left, float them to the next bracket
   let sequence = 1
-  const paired = new Set<string>()
 
-  for (const group of groupsInOrder) {
-    const half = Math.floor(group.length / 2)
-    const topHalf = group.slice(0, half)
-    const bottomHalf = group.slice(half)
+  for (let bIdx = 0; bIdx < orderedBrackets.length; bIdx++) {
+    const bracket = orderedBrackets[bIdx]
 
-    for (let i = 0; i < topHalf.length; i++) {
-      const entryA = topHalf[i]
-      let entryB = bottomHalf[i]
+    while (bracket.length >= 2) {
+      // Take the top-ranked player in this bracket
+      const team1 = bracket.shift()!
 
-      // If this would be a rematch, try swapping with adjacent bottom-half entries
-      if (havePlayed(pairingHistory, entryA, entryB)) {
-        let swapped = false
-        for (let j = i + 1; j < bottomHalf.length; j++) {
-          if (!paired.has(bottomHalf[j]) && !havePlayed(pairingHistory, entryA, bottomHalf[j])) {
-            // Also check the displaced pairing won't be a rematch
-            if (!havePlayed(pairingHistory, topHalf[j] || topHalf[i], bottomHalf[i])) {
-              const temp = bottomHalf[i]
-              bottomHalf[i] = bottomHalf[j]
-              bottomHalf[j] = temp
-              entryB = bottomHalf[i]
-              swapped = true
-              break
-            }
-          }
+      // Search from bottom of bracket for first non-rematch opponent
+      let pairedTeam: string | null = null
+      let pairedIndex = -1
+
+      for (let j = bracket.length - 1; j >= 0; j--) {
+        if (!havePlayed(pairingHistory, team1, bracket[j])) {
+          pairedTeam = bracket[j]
+          pairedIndex = j
+          break
         }
-        // If no swap found, allow the rematch (rare, late rounds)
       }
 
-      paired.add(entryA)
-      paired.add(entryB)
+      // If no non-rematch found, allow rematch with the bottom player
+      if (!pairedTeam) {
+        pairedIndex = bracket.length - 1
+        pairedTeam = bracket[pairedIndex]
+      }
+
+      // Remove paired opponent from bracket (by index)
+      bracket.splice(pairedIndex, 1)
 
       matches.push({
         division_id: divisionId,
         round: nextRound,
         sequence,
         phase: 'swiss',
-        side_a_entry_id: entryA,
-        side_b_entry_id: entryB,
+        side_a_entry_id: team1,
+        side_b_entry_id: pairedTeam,
         status: 'scheduled',
       })
       sequence++
     }
 
+    // If one player left in this bracket, float them down to the next bracket
+    if (bracket.length === 1) {
+      const floater = bracket[0]
+      if (bIdx + 1 < orderedBrackets.length) {
+        // Insert at the top of the next bracket (they're the strongest floater)
+        orderedBrackets[bIdx + 1].unshift(floater)
+      } else {
+        // No next bracket — pair with last matched player as fallback
+        // This shouldn't happen with proper bye handling, but be defensive
+        const lastMatch = matches[matches.length - 1]
+        if (lastMatch) {
+          // Undo last match, re-pair as a 3-way float
+          const undone = matches.pop()!
+          sequence--
+          const pool = [undone.side_a_entry_id!, undone.side_b_entry_id!, floater]
+          // Pair first two, bye the third (lowest-ranked)
+          matches.push({
+            division_id: divisionId,
+            round: nextRound,
+            sequence,
+            phase: 'swiss',
+            side_a_entry_id: pool[0],
+            side_b_entry_id: pool[1],
+            status: 'scheduled',
+          })
+          sequence++
+          // The third becomes an extra bye
+          if (!byeEntryId) {
+            byeEntryId = pool[2]
+          }
+        }
+      }
+    }
   }
 
   // Add bye match
