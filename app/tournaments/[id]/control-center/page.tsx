@@ -48,6 +48,8 @@ export default async function ControlCenterPage({ params }: ControlCenterPagePro
     .eq("is_published", true)
     .order("scheduling_priority", { ascending: false })
 
+  const divisionIds = divisions?.map(d => d.id) || []
+
   // Fetch all matches for published divisions with entry/participant details
   const { data: matches } = await supabase
     .from(TABLE_NAMES.MATCHES)
@@ -70,9 +72,15 @@ export default async function ControlCenterPage({ params }: ControlCenterPagePro
         participant:bracket_blaze_participants(id, display_name, club)
       )
     `)
-    .in("division_id", divisions?.map(d => d.id) || [])
+    .in("division_id", divisionIds.length > 0 ? divisionIds : ['none'])
     .order("round", { ascending: true })
     .order("sequence", { ascending: true })
+
+  // Fetch draw state for each division
+  const { data: draws } = await supabase
+    .from(TABLE_NAMES.DRAWS)
+    .select("division_id, state_json")
+    .in("division_id", divisionIds.length > 0 ? divisionIds : ['none'])
 
   return (
     <div className="container mx-auto py-6">
@@ -88,7 +96,7 @@ export default async function ControlCenterPage({ params }: ControlCenterPagePro
         courts={courts || []}
         divisions={divisions || []}
         matches={matches || []}
-        userId={user.id}
+        draws={draws || []}
       />
     </div>
   )

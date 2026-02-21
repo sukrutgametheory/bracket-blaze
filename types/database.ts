@@ -9,6 +9,7 @@ export type Json =
 export type TournamentStatus = 'draft' | 'active' | 'paused' | 'completed' | 'cancelled'
 export type EntryStatus = 'active' | 'withdrawn' | 'late_add'
 export type MatchStatus = 'scheduled' | 'ready' | 'on_court' | 'completed' | 'walkover'
+export type MatchPhase = 'swiss' | 'knockout'
 export type SportType = 'badminton' | 'squash' | 'pickleball' | 'padel'
 export type FormatType = 'swiss' | 'mexicano' | 'groups_knockout'
 export type WinnerSide = 'A' | 'B'
@@ -61,6 +62,9 @@ export interface Division {
   rules_json: Json
   draw_size: number
   is_published: boolean
+  scheduling_priority: number
+  scheduled_start_time: string | null
+  target_completion_time: string | null
   created_at: string
 }
 
@@ -112,6 +116,7 @@ export interface Match {
   division_id: string
   round: number
   sequence: number
+  phase: MatchPhase
   side_a_entry_id: string | null
   side_b_entry_id: string | null
   scheduled_at: string | null
@@ -119,6 +124,13 @@ export interface Match {
   status: MatchStatus
   winner_side: WinnerSide | null
   meta_json: Json
+  assigned_at: string | null
+  assigned_by: string | null
+  actual_start_time: string | null
+  actual_end_time: string | null
+  estimated_duration_minutes: number
+  next_match_id: string | null
+  next_match_side: WinnerSide | null
   created_at: string
   updated_at: string
 }
@@ -154,12 +166,49 @@ export interface Standing {
   id: string
   division_id: string
   entry_id: string
+  round: number
   wins: number
   losses: number
   points_for: number
   points_against: number
   tiebreak_json: Json
   updated_at: string
+}
+
+export interface MatchConflict {
+  id: string
+  match_id: string
+  conflict_type: string
+  severity: string
+  details_json: Json
+  resolved_at: string | null
+  resolved_by: string | null
+  override_reason: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface CourtAssignment {
+  id: string
+  match_id: string
+  court_id: string | null
+  assigned_by: string | null
+  assigned_at: string
+  unassigned_at: string | null
+  notes: string | null
+}
+
+// Score data stored in match meta_json
+export interface GameScore {
+  score_a: number
+  score_b: number
+}
+
+export interface MatchScoreData {
+  games: GameScore[]
+  total_points_a: number
+  total_points_b: number
+  walkover?: boolean
 }
 
 // Extended types with relations

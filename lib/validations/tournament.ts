@@ -40,6 +40,11 @@ export const divisionFormSchema = divisionSchema.extend({
   if (data.format === "swiss") {
     if (!data.swiss_rounds || data.swiss_rounds < 3) return false
     if (data.swiss_qualifiers !== undefined && data.swiss_qualifiers > data.draw_size) return false
+    // Qualifiers must be a power of 2 (for clean knockout brackets)
+    if (data.swiss_qualifiers !== undefined && data.swiss_qualifiers > 0) {
+      const isPowerOf2 = (n: number) => n > 0 && (n & (n - 1)) === 0
+      if (!isPowerOf2(data.swiss_qualifiers)) return false
+    }
   }
 
   // Groups + Knockout validations

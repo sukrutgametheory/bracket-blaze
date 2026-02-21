@@ -3,6 +3,9 @@
 import { revalidatePath } from "next/cache"
 import { createClient } from "@/lib/supabase/server"
 import { TABLE_NAMES } from "@/types/database"
+import { requireAuth, isTournamentAdminForMatch, getTournamentIdForDivision } from "@/lib/auth/require-auth"
+
+type ServerSupabase = Awaited<ReturnType<typeof createClient>>
 
 interface ConflictWarning {
   type: "player_overlap" | "rest_violation"
@@ -11,13 +14,14 @@ interface ConflictWarning {
 }
 
 /**
- * Check for conflicts when assigning a match to a court
+ * Check for conflicts when assigning a match to a court.
+ * All queries are scoped to the given tournament.
  */
 async function checkConflicts(
+  supabase: ServerSupabase,
   matchId: string,
-  courtId: string
+  tournamentId: string
 ): Promise<ConflictWarning[]> {
-  const supabase = await createClient()
   const warnings: ConflictWarning[] = []
 
   // Fetch the match we're trying to assign
@@ -38,7 +42,18 @@ async function checkConflicts(
     match.side_b?.participant_id,
   ].filter(Boolean)
 
-  // Check for player overlaps (same player assigned to different court)
+  if (participantIds.length === 0) return warnings
+
+  // Get all division IDs for this tournament (scope queries)
+  const { data: tournamentDivisions } = await supabase
+    .from(TABLE_NAMES.DIVISIONS)
+    .select("id")
+    .eq("tournament_id", tournamentId)
+
+  const divisionIds = tournamentDivisions?.map(d => d.id) || []
+  if (divisionIds.length === 0) return warnings
+
+  // Check for player overlaps — only matches in this tournament
   const { data: otherMatches } = await supabase
     .from(TABLE_NAMES.MATCHES)
     .select(`
@@ -56,6 +71,7 @@ async function checkConflicts(
     .neq("id", matchId)
     .not("court_id", "is", null)
     .in("status", ["scheduled", "ready", "on_court"])
+    .in("division_id", divisionIds)
 
   for (const otherMatch of otherMatches || []) {
     const otherParticipantIds = [
@@ -63,11 +79,9 @@ async function checkConflicts(
       otherMatch.side_b?.participant_id,
     ].filter(Boolean)
 
-    // Check for overlap
     const overlap = participantIds.some(id => otherParticipantIds.includes(id))
 
     if (overlap) {
-      // Find which player
       const conflictingId = participantIds.find(id => otherParticipantIds.includes(id))
       const playerName =
         otherMatch.side_a?.participant_id === conflictingId
@@ -82,20 +96,15 @@ async function checkConflicts(
     }
   }
 
-  // Check for rest period violations (player played recently)
-  // Get the tournament's rest window setting
-  const { data: division } = await supabase
-    .from(TABLE_NAMES.DIVISIONS)
-    .select(`
-      tournament_id,
-      tournament:bracket_blaze_tournaments(rest_window_minutes)
-    `)
-    .eq("id", match.division_id)
+  // Check for rest period violations — only matches in this tournament
+  const { data: tournament } = await supabase
+    .from(TABLE_NAMES.TOURNAMENTS)
+    .select("rest_window_minutes")
+    .eq("id", tournamentId)
     .single()
 
-  const restWindowMinutes = (division?.tournament as any)?.rest_window_minutes || 15
+  const restWindowMinutes = tournament?.rest_window_minutes || 15
 
-  // Find recent matches for these participants
   const { data: recentMatches } = await supabase
     .from(TABLE_NAMES.MATCHES)
     .select(`
@@ -112,6 +121,7 @@ async function checkConflicts(
     .neq("id", matchId)
     .eq("status", "completed")
     .not("actual_end_time", "is", null)
+    .in("division_id", divisionIds)
 
   for (const recentMatch of recentMatches || []) {
     const recentParticipantIds = [
@@ -119,7 +129,6 @@ async function checkConflicts(
       recentMatch.side_b?.participant_id,
     ].filter(Boolean)
 
-    // Check if any of our players were in this match
     const overlap = participantIds.some(id => recentParticipantIds.includes(id))
 
     if (overlap && recentMatch.actual_end_time) {
@@ -153,15 +162,31 @@ async function checkConflicts(
 export async function assignMatchToCourt(
   matchId: string,
   courtId: string,
-  userId: string,
   override: boolean = false,
   overrideReason?: string
 ) {
   try {
-    const supabase = await createClient()
+    const auth = await requireAuth()
+    if (!auth) return { error: "Unauthorized" }
+    const { supabase, user } = auth
 
-    // Check conflicts first
-    const warnings = await checkConflicts(matchId, courtId)
+    const isAdmin = await isTournamentAdminForMatch(supabase, matchId, user.id)
+    if (!isAdmin) return { error: "Not authorized for this tournament" }
+
+    // Get tournament ID for scoped conflict checks
+    const { data: matchDiv } = await supabase
+      .from(TABLE_NAMES.MATCHES)
+      .select("division_id")
+      .eq("id", matchId)
+      .single()
+
+    if (!matchDiv) return { error: "Match not found" }
+
+    const tournamentId = await getTournamentIdForDivision(supabase, matchDiv.division_id)
+    if (!tournamentId) return { error: "Tournament not found" }
+
+    // Check conflicts (scoped to tournament)
+    const warnings = await checkConflicts(supabase, matchId, tournamentId)
 
     // Block if there are errors (not just warnings)
     const errors = warnings.filter(w => w.severity === "error")
@@ -180,14 +205,14 @@ export async function assignMatchToCourt(
       }
     }
 
-    // Assign match to court
+    // Assign match to court — userId from session, not client
     const { error: updateError } = await supabase
       .from(TABLE_NAMES.MATCHES)
       .update({
         court_id: courtId,
         status: "ready",
         assigned_at: new Date().toISOString(),
-        assigned_by: userId,
+        assigned_by: user.id,
       })
       .eq("id", matchId)
 
@@ -199,7 +224,7 @@ export async function assignMatchToCourt(
     await supabase.from(TABLE_NAMES.COURT_ASSIGNMENTS).insert({
       match_id: matchId,
       court_id: courtId,
-      assigned_by: userId,
+      assigned_by: user.id,
       notes: override ? overrideReason : null,
     })
 
@@ -211,7 +236,7 @@ export async function assignMatchToCourt(
         severity: w.severity,
         details_json: { message: w.message },
         resolved_at: new Date().toISOString(),
-        resolved_by: userId,
+        resolved_by: user.id,
         override_reason: overrideReason,
       }))
 
@@ -220,18 +245,7 @@ export async function assignMatchToCourt(
         .insert(conflictRecords)
     }
 
-    // Get tournament_id for revalidation
-    const { data: match } = await supabase
-      .from(TABLE_NAMES.MATCHES)
-      .select("division:bracket_blaze_divisions(tournament_id)")
-      .eq("id", matchId)
-      .single()
-
-    const tournamentId = (match?.division as any)?.tournament_id
-
-    if (tournamentId) {
-      revalidatePath(`/tournaments/${tournamentId}/control-center`)
-    }
+    revalidatePath(`/tournaments/${tournamentId}/control-center`)
 
     return {
       success: true,
@@ -245,17 +259,33 @@ export async function assignMatchToCourt(
 
 export async function clearCourt(courtId: string) {
   try {
-    const supabase = await createClient()
+    const auth = await requireAuth()
+    if (!auth) return { error: "Unauthorized" }
+    const { supabase, user } = auth
 
     // Find match on this court
     const { data: match } = await supabase
       .from(TABLE_NAMES.MATCHES)
-      .select("id, division:bracket_blaze_divisions(tournament_id)")
+      .select("id, status, division_id")
       .eq("court_id", courtId)
       .single()
 
     if (!match) {
       return { error: "No match found on this court" }
+    }
+
+    // Verify tournament admin via match's division
+    const isAdmin = await isTournamentAdminForMatch(supabase, match.id, user.id)
+    if (!isAdmin) return { error: "Not authorized for this tournament" }
+
+    // Guard: cannot clear completed or walkover matches
+    if (match.status === "completed" || match.status === "walkover") {
+      return { error: `Cannot clear court: match is already ${match.status}` }
+    }
+
+    // Guard: cannot clear in-progress matches without explicit action
+    if (match.status === "on_court") {
+      return { error: "Cannot clear court: match is in progress. Complete or walkover the match first." }
     }
 
     // Clear court assignment
@@ -280,8 +310,7 @@ export async function clearCourt(courtId: string) {
       .eq("match_id", match.id)
       .is("unassigned_at", null)
 
-    const tournamentId = (match?.division as any)?.tournament_id
-
+    const tournamentId = await getTournamentIdForDivision(supabase, match.division_id)
     if (tournamentId) {
       revalidatePath(`/tournaments/${tournamentId}/control-center`)
     }

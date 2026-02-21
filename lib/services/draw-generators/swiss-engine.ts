@@ -12,25 +12,38 @@
  * - Top N advance to knockout after Swiss rounds
  */
 
-interface Entry {
+export interface SwissEntry {
   id: string
   participant_id: string
   seed: number | null
   status: string
 }
 
-interface Match {
+export interface SwissMatch {
   division_id: string
   round: number
   sequence: number
+  phase: 'swiss'
   side_a_entry_id: string | null
   side_b_entry_id: string | null
   status: 'scheduled' | 'ready'
 }
 
-interface SwissConfig {
+export interface SwissConfig {
   rounds: number
   qualifiers: number // Top N advance to knockout
+}
+
+interface StandingForPairing {
+  entry_id: string
+  wins: number
+  points_for: number
+  points_against: number
+}
+
+interface CompletedMatch {
+  side_a_entry_id: string | null
+  side_b_entry_id: string | null
 }
 
 /**
@@ -39,9 +52,9 @@ interface SwissConfig {
  */
 export function generateRound1Matches(
   divisionId: string,
-  entries: Entry[],
+  entries: SwissEntry[],
   config: SwissConfig
-): Match[] {
+): SwissMatch[] {
   // Filter active entries only
   const activeEntries = entries.filter(e => e.status === 'active')
 
@@ -53,7 +66,7 @@ export function generateRound1Matches(
   })
 
   const n = sortedEntries.length
-  const matches: Match[] = []
+  const matches: SwissMatch[] = []
 
   // If odd number, lowest seed gets bye
   const hasbye = n % 2 === 1
@@ -65,6 +78,7 @@ export function generateRound1Matches(
       division_id: divisionId,
       round: 1,
       sequence: i + 1,
+      phase: 'swiss',
       side_a_entry_id: sortedEntries[i].id,
       side_b_entry_id: sortedEntries[n - 1 - i].id,
       status: 'scheduled',
@@ -78,6 +92,7 @@ export function generateRound1Matches(
       division_id: divisionId,
       round: 1,
       sequence: pairCount + 1,
+      phase: 'swiss',
       side_a_entry_id: byeEntry.id,
       side_b_entry_id: null, // null = bye
       status: 'scheduled',
@@ -91,7 +106,7 @@ export function generateRound1Matches(
  * Auto-assign seeds if not manually set
  * Uses participant_id order as tiebreaker
  */
-export function autoAssignSeeds(entries: Entry[]): Entry[] {
+export function autoAssignSeeds(entries: SwissEntry[]): SwissEntry[] {
   const unseeded = entries.filter(e => e.seed === null)
   const seeded = entries.filter(e => e.seed !== null)
 
@@ -138,6 +153,13 @@ export function validateSwissConfig(
     return { valid: false, error: 'Qualifiers must be even number for knockout bracket' }
   }
 
+  if (config.qualifiers > 0) {
+    const isPowerOf2 = (n: number) => n > 0 && (n & (n - 1)) === 0
+    if (!isPowerOf2(config.qualifiers)) {
+      return { valid: false, error: 'Qualifiers must be a power of 2 (2, 4, 8, 16, 32)' }
+    }
+  }
+
   return { valid: true }
 }
 
@@ -150,4 +172,200 @@ export function recommendedSwissRounds(entryCount: number): number {
   if (entryCount <= 32) return 5
   if (entryCount <= 64) return 6
   return 7
+}
+
+/**
+ * Build a set of previous pairings from completed matches.
+ * Returns a Set of "entryA-entryB" keys (sorted so order doesn't matter).
+ */
+export function buildPairingHistory(matches: CompletedMatch[]): Set<string> {
+  const history = new Set<string>()
+  for (const match of matches) {
+    if (match.side_a_entry_id && match.side_b_entry_id) {
+      const pair = [match.side_a_entry_id, match.side_b_entry_id].sort()
+      history.add(`${pair[0]}-${pair[1]}`)
+    }
+  }
+  return history
+}
+
+function havePlayed(pairingHistory: Set<string>, a: string, b: string): boolean {
+  const pair = [a, b].sort()
+  return pairingHistory.has(`${pair[0]}-${pair[1]}`)
+}
+
+/**
+ * Generate subsequent round matches (Round 2+) using score-based pairing.
+ *
+ * Algorithm:
+ * 1. Group entries by win count (most wins first)
+ * 2. Within each group, sort by point diff then points for
+ * 3. Pair top-ranked vs bottom-ranked within each group
+ * 4. Avoid rematches by swapping with adjacent pair
+ * 5. Float odd players down to next group
+ * 6. Assign bye to lowest-ranked player without a previous bye
+ */
+export function generateNextRoundMatches(
+  divisionId: string,
+  nextRound: number,
+  standings: StandingForPairing[],
+  pairingHistory: Set<string>,
+  byeHistory: string[]
+): SwissMatch[] {
+  const matches: SwissMatch[] = []
+
+  // Create a mutable list of entry IDs to pair, ordered by standings
+  const entryIds = standings.map(s => s.entry_id)
+  const standingsMap = new Map(standings.map(s => [s.entry_id, s]))
+
+  // Handle bye for odd number of entries
+  let byeEntryId: string | null = null
+  if (entryIds.length % 2 === 1) {
+    // Find lowest-ranked player who hasn't had a bye yet
+    const byeHistorySet = new Set(byeHistory)
+    for (let i = entryIds.length - 1; i >= 0; i--) {
+      if (!byeHistorySet.has(entryIds[i])) {
+        byeEntryId = entryIds[i]
+        entryIds.splice(i, 1)
+        break
+      }
+    }
+    // If everyone has had a bye, give it to the lowest-ranked
+    if (!byeEntryId) {
+      byeEntryId = entryIds.pop()!
+    }
+  }
+
+  // Group entries by win count
+  const groups = new Map<number, string[]>()
+  for (const entryId of entryIds) {
+    const wins = standingsMap.get(entryId)?.wins ?? 0
+    if (!groups.has(wins)) groups.set(wins, [])
+    groups.get(wins)!.push(entryId)
+  }
+
+  // Sort groups by win count descending
+  const sortedGroupKeys = [...groups.keys()].sort((a, b) => b - a)
+
+  // Merge groups and handle float-downs for odd-sized groups
+  const pairingPool: string[] = []
+  let floater: string | null = null
+
+  for (const winCount of sortedGroupKeys) {
+    const group = groups.get(winCount)!
+
+    // Add floater from previous group if exists
+    if (floater) {
+      group.unshift(floater)
+      floater = null
+    }
+
+    // If odd group, float the bottom player down
+    if (group.length % 2 === 1) {
+      floater = group.pop()!
+    }
+
+    pairingPool.push(...group)
+  }
+
+  // If there's still a floater, add to end of pool
+  if (floater) {
+    pairingPool.push(floater)
+  }
+
+  // Pair within the pool: pair adjacent entries (already ordered by standings)
+  let sequence = 1
+  const paired = new Set<string>()
+
+  for (let i = 0; i < pairingPool.length; i++) {
+    if (paired.has(pairingPool[i])) continue
+
+    const entryA = pairingPool[i]
+    let bestPartner: string | null = null
+    let bestPartnerIdx = -1
+
+    // Look for the next unpaired entry, preferring non-rematches
+    for (let j = i + 1; j < pairingPool.length; j++) {
+      if (paired.has(pairingPool[j])) continue
+
+      if (!havePlayed(pairingHistory, entryA, pairingPool[j])) {
+        bestPartner = pairingPool[j]
+        bestPartnerIdx = j
+        break
+      }
+
+      // Remember first available as fallback (rematch allowed if necessary)
+      if (!bestPartner) {
+        bestPartner = pairingPool[j]
+        bestPartnerIdx = j
+      }
+    }
+
+    if (bestPartner) {
+      paired.add(entryA)
+      paired.add(bestPartner)
+
+      matches.push({
+        division_id: divisionId,
+        round: nextRound,
+        sequence,
+        phase: 'swiss',
+        side_a_entry_id: entryA,
+        side_b_entry_id: bestPartner,
+        status: 'scheduled',
+      })
+      sequence++
+    }
+  }
+
+  // Add bye match
+  if (byeEntryId) {
+    matches.push({
+      division_id: divisionId,
+      round: nextRound,
+      sequence,
+      phase: 'swiss',
+      side_a_entry_id: byeEntryId,
+      side_b_entry_id: null,
+      status: 'scheduled',
+    })
+  }
+
+  return matches
+}
+
+/**
+ * Check if all matches in a given round are completed
+ */
+export function isRoundComplete(
+  matches: { round: number; status: string; phase: string }[],
+  round: number
+): boolean {
+  const roundMatches = matches.filter(m => m.round === round && m.phase === 'swiss')
+  if (roundMatches.length === 0) return false
+  return roundMatches.every(m => m.status === 'completed' || m.status === 'walkover')
+}
+
+/**
+ * Get the current (latest) Swiss round number from matches
+ */
+export function getCurrentRound(
+  matches: { round: number; phase: string }[]
+): number {
+  const swissRounds = matches
+    .filter(m => m.phase === 'swiss')
+    .map(m => m.round)
+  return swissRounds.length > 0 ? Math.max(...swissRounds) : 0
+}
+
+/**
+ * Check if all Swiss rounds are complete
+ */
+export function isSwissPhaseComplete(
+  matches: { round: number; status: string; phase: string }[],
+  totalRounds: number
+): boolean {
+  const currentRound = getCurrentRound(matches)
+  if (currentRound < totalRounds) return false
+  return isRoundComplete(matches, totalRounds)
 }

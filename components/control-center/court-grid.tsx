@@ -4,7 +4,7 @@ import { Court } from "@/types/database"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { X } from "lucide-react"
+import { X, Play, ClipboardCheck } from "lucide-react"
 
 interface CourtGridProps {
   courts: Court[]
@@ -12,6 +12,26 @@ interface CourtGridProps {
   selectedMatch: string | null
   onAssign: (matchId: string, courtId: string) => void
   onClear: (courtId: string) => void
+  onStartMatch: (matchId: string) => void
+  onRecordResult: (match: any) => void
+}
+
+function getStatusBadgeVariant(status: string) {
+  switch (status) {
+    case 'ready': return 'secondary' as const
+    case 'on_court': return 'default' as const
+    case 'completed': return 'outline' as const
+    default: return 'secondary' as const
+  }
+}
+
+function getElapsedTime(startTime: string | null): string {
+  if (!startTime) return ''
+  const start = new Date(startTime)
+  const now = new Date()
+  const minutes = Math.floor((now.getTime() - start.getTime()) / 60000)
+  if (minutes < 1) return '<1m'
+  return `${minutes}m`
 }
 
 export function CourtGrid({
@@ -20,6 +40,8 @@ export function CourtGrid({
   selectedMatch,
   onAssign,
   onClear,
+  onStartMatch,
+  onRecordResult,
 }: CourtGridProps) {
   if (courts.length === 0) {
     return (
@@ -54,21 +76,24 @@ export function CourtGrid({
               "border rounded-lg p-4 transition-all",
               canAssign && "cursor-pointer hover:border-primary hover:bg-primary/5",
               isEmpty && "bg-muted/30",
-              !isEmpty && "bg-card"
+              !isEmpty && "bg-card",
+              match?.status === 'on_court' && "border-green-500/50 bg-green-50/30 dark:bg-green-950/10"
             )}
           >
             {/* Court Header */}
             <div className="flex items-center justify-between mb-3">
-              <div>
+              <div className="flex items-center gap-2">
                 <h3 className="font-semibold text-lg">{court.name}</h3>
-                <Badge
-                  variant={isEmpty ? "secondary" : "default"}
-                  className="mt-1"
-                >
-                  {isEmpty ? "Available" : match.status}
+                <Badge variant={isEmpty ? "secondary" : getStatusBadgeVariant(match.status)}>
+                  {isEmpty ? "Available" : match.status === 'on_court' ? "In Play" : match.status}
                 </Badge>
+                {match?.status === 'on_court' && match.actual_start_time && (
+                  <span className="text-xs text-muted-foreground">
+                    {getElapsedTime(match.actual_start_time)}
+                  </span>
+                )}
               </div>
-              {!isEmpty && (
+              {match?.status === 'ready' && (
                 <Button
                   variant="ghost"
                   size="icon"
@@ -91,7 +116,7 @@ export function CourtGrid({
                     {match.division?.name}
                   </Badge>
                   <span className="text-xs text-muted-foreground">
-                    Round {match.round} • Match {match.sequence}
+                    {match.phase === 'knockout' ? 'KO ' : ''}Round {match.round} • Match {match.sequence}
                   </span>
                 </div>
 
@@ -126,6 +151,36 @@ export function CourtGrid({
                         {match.side_b?.participant?.display_name || "TBD"}
                       </span>
                     </div>
+                  )}
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-2 pt-2">
+                  {match.status === 'ready' && (
+                    <Button
+                      size="sm"
+                      variant="default"
+                      className="flex-1"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onStartMatch(match.id)
+                      }}
+                    >
+                      <Play className="h-3 w-3 mr-1" /> Start
+                    </Button>
+                  )}
+                  {match.status === 'on_court' && (
+                    <Button
+                      size="sm"
+                      variant="default"
+                      className="flex-1"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onRecordResult(match)
+                      }}
+                    >
+                      <ClipboardCheck className="h-3 w-3 mr-1" /> Record Result
+                    </Button>
                   )}
                 </div>
               </div>
