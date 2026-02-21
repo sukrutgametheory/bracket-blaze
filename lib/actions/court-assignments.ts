@@ -280,11 +280,12 @@ export async function clearCourt(courtId: string) {
     if (!auth) return { error: "Unauthorized" }
     const { supabase, user } = auth
 
-    // Find match on this court
+    // Find active match on this court (exclude completed/walkover)
     const { data: match } = await supabase
       .from(TABLE_NAMES.MATCHES)
       .select("id, status, division_id")
       .eq("court_id", courtId)
+      .in("status", ["scheduled", "ready", "on_court", "pending_signoff"])
       .single()
 
     if (!match) {
