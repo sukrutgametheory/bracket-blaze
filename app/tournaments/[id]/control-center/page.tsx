@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { redirect, notFound } from "next/navigation"
 import { TABLE_NAMES, type Tournament } from "@/types/database"
 import { ControlCenterClient } from "@/components/control-center/control-center-client"
+import { calculateStandings, type RankedStanding } from "@/lib/services/standings-engine"
 
 interface ControlCenterPageProps {
   params: Promise<{ id: string }>
@@ -82,6 +83,21 @@ export default async function ControlCenterPage({ params }: ControlCenterPagePro
     .select("division_id, state_json")
     .in("division_id", divisionIds.length > 0 ? divisionIds : ['none'])
 
+  // Calculate standings per division
+  const standingsMap: Record<string, RankedStanding[]> = {}
+  for (const division of divisions || []) {
+    const drawState = draws?.find(d => d.division_id === division.id)?.state_json as any
+    const currentRound = drawState?.current_round || 1
+    const { standings } = await calculateStandings(division.id, currentRound)
+    standingsMap[division.id] = standings || []
+  }
+
+  // Fetch entries with participant names for standings display
+  const { data: entriesWithParticipants } = await supabase
+    .from(TABLE_NAMES.ENTRIES)
+    .select("id, seed, participant:bracket_blaze_participants(display_name, club)")
+    .in("division_id", divisionIds.length > 0 ? divisionIds : ['none'])
+
   return (
     <div className="container mx-auto py-6">
       <div className="mb-6">
@@ -97,6 +113,8 @@ export default async function ControlCenterPage({ params }: ControlCenterPagePro
         divisions={divisions || []}
         matches={matches || []}
         draws={draws || []}
+        standings={standingsMap}
+        entries={entriesWithParticipants || []}
       />
     </div>
   )

@@ -6,12 +6,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ReadyQueue } from "./ready-queue"
 import { CourtGrid } from "./court-grid"
 import { RoundManagement } from "./round-management"
+import { StandingsSection } from "./standings-section"
 import { MatchResultDialog } from "./match-result-dialog"
 import { assignMatchToCourt, clearCourt } from "@/lib/actions/court-assignments"
 import { startMatch, completeMatch, recordWalkover } from "@/lib/actions/matches"
 import { generateNextSwissRound, generateKnockoutDraw } from "@/lib/actions/draws"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
+import type { RankedStanding } from "@/lib/services/standings-engine"
 
 interface ControlCenterClientProps {
   tournament: Tournament
@@ -19,6 +21,8 @@ interface ControlCenterClientProps {
   divisions: Division[]
   matches: any[]
   draws: { division_id: string; state_json: any }[]
+  standings: Record<string, RankedStanding[]>
+  entries: any[]
 }
 
 export function ControlCenterClient({
@@ -27,6 +31,8 @@ export function ControlCenterClient({
   divisions,
   matches,
   draws,
+  standings,
+  entries,
 }: ControlCenterClientProps) {
   const [selectedMatch, setSelectedMatch] = useState<string | null>(null)
   const [resultDialog, setResultDialog] = useState<{
@@ -165,6 +171,14 @@ export function ControlCenterClient({
         draws={draws}
         onGenerateNextRound={handleGenerateNextRound}
         onGenerateKnockout={handleGenerateKnockout}
+      />
+
+      {/* Standings per Division */}
+      <StandingsSection
+        divisions={divisions}
+        standings={standings}
+        draws={draws}
+        entries={entries}
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
