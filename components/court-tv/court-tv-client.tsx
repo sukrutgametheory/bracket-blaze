@@ -195,9 +195,9 @@ export function CourtTvClient({
                     </div>
                   )}
 
-                  {/* Division */}
+                  {/* Division + Round */}
                   <p className="text-xs text-gray-500">
-                    {match.division?.name}
+                    {match.division?.name} &bull; Round {match.round}
                   </p>
                 </div>
               ) : (

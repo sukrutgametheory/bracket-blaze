@@ -165,7 +165,7 @@ export default async function ScoringPage({ params, searchParams }: ScoringPageP
       courtName={courtName}
       courtId={courtId}
       divisionName={matchData.division?.name || ""}
-      roundInfo={`${matchData.phase === 'knockout' ? 'KO ' : ''}R${matchData.round} M${matchData.sequence}`}
+      roundInfo={`${matchData.phase === 'knockout' ? 'Knockout' : 'Round ' + matchData.round} • Match ${matchData.sequence}`}
       sideAName={matchData.side_a?.participant?.display_name || "Side A"}
       sideBName={matchData.side_b?.participant?.display_name || "Side B"}
       initialMetaJson={matchData.meta_json || {}}
