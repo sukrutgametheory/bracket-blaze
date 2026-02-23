@@ -69,6 +69,46 @@ export async function isTournamentAdminForMatch(
 }
 
 /**
+ * Check if the authenticated user is the tournament admin for a given match,
+ * and return context (divisionId, tournamentId, restWindowMinutes) to avoid
+ * redundant queries in the caller.
+ */
+export async function requireTournamentAdminForMatch(
+  supabase: ServerSupabase,
+  matchId: string,
+  userId: string
+): Promise<{ authorized: boolean; divisionId?: string; tournamentId?: string; restWindowMinutes?: number }> {
+  const { data: match } = await supabase
+    .from(TABLE_NAMES.MATCHES)
+    .select("division_id")
+    .eq("id", matchId)
+    .single()
+
+  if (!match?.division_id) return { authorized: false }
+
+  const { data: division } = await supabase
+    .from(TABLE_NAMES.DIVISIONS)
+    .select("tournament_id")
+    .eq("id", match.division_id)
+    .single()
+
+  if (!division?.tournament_id) return { authorized: false }
+
+  const { data: tournament } = await supabase
+    .from(TABLE_NAMES.TOURNAMENTS)
+    .select("created_by, rest_window_minutes")
+    .eq("id", division.tournament_id)
+    .single()
+
+  return {
+    authorized: tournament?.created_by === userId,
+    divisionId: match.division_id,
+    tournamentId: division.tournament_id,
+    restWindowMinutes: tournament?.rest_window_minutes ?? 15,
+  }
+}
+
+/**
  * Get the tournament_id for a given division.
  */
 export async function getTournamentIdForDivision(

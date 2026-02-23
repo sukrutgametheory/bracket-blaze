@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache"
 import { createClient } from "@/lib/supabase/server"
 import { TABLE_NAMES } from "@/types/database"
-import { requireAuth, isTournamentAdminForMatch, getTournamentIdForDivision } from "@/lib/auth/require-auth"
+import { requireAuth, isTournamentAdminForMatch, requireTournamentAdminForMatch, getTournamentIdForDivision } from "@/lib/auth/require-auth"
 
 type ServerSupabase = Awaited<ReturnType<typeof createClient>>
 
@@ -14,161 +14,160 @@ interface ConflictWarning {
 }
 
 /**
- * Resolve all participant IDs for a match entry (handles both singles and doubles).
- * For singles: returns [participant_id]
- * For doubles: queries team_members to get participant_ids
- */
-async function resolveEntryParticipantIds(
-  supabase: ServerSupabase,
-  entry: { participant_id: string | null; team_id: string | null } | null
-): Promise<string[]> {
-  if (!entry) return []
-  if (entry.participant_id) return [entry.participant_id]
-  if (entry.team_id) {
-    const { data: members } = await supabase
-      .from(TABLE_NAMES.TEAM_MEMBERS)
-      .select("participant_id")
-      .eq("team_id", entry.team_id)
-    return members?.map(m => m.participant_id) || []
-  }
-  return []
-}
-
-/**
  * Check for conflicts when assigning a match to a court.
  * All queries are scoped to the given tournament.
  * Handles both singles (participant_id) and doubles (team_id → team_members).
+ *
+ * Optimized: uses batch queries and in-memory checks instead of N+1 per-match queries.
  */
 async function checkConflicts(
   supabase: ServerSupabase,
   matchId: string,
-  tournamentId: string
+  tournamentId: string,
+  restWindowMinutes: number
 ): Promise<ConflictWarning[]> {
   const warnings: ConflictWarning[] = []
 
-  // Fetch the match we're trying to assign
-  const { data: match } = await supabase
-    .from(TABLE_NAMES.MATCHES)
-    .select(`
-      *,
-      side_a:bracket_blaze_entries!side_a_entry_id(participant_id, team_id),
-      side_b:bracket_blaze_entries!side_b_entry_id(participant_id, team_id)
-    `)
-    .eq("id", matchId)
-    .single()
+  // 1. Fetch match + all division IDs in parallel (2 queries, parallel)
+  const [matchResult, divisionsResult] = await Promise.all([
+    supabase
+      .from(TABLE_NAMES.MATCHES)
+      .select(`
+        *,
+        side_a:bracket_blaze_entries!side_a_entry_id(participant_id, team_id),
+        side_b:bracket_blaze_entries!side_b_entry_id(participant_id, team_id)
+      `)
+      .eq("id", matchId)
+      .single(),
+    supabase
+      .from(TABLE_NAMES.DIVISIONS)
+      .select("id")
+      .eq("tournament_id", tournamentId),
+  ])
 
+  const match = matchResult.data
   if (!match) return warnings
-
-  // Resolve all participant IDs (works for both singles and doubles)
-  const sideAIds = await resolveEntryParticipantIds(supabase, match.side_a)
-  const sideBIds = await resolveEntryParticipantIds(supabase, match.side_b)
-  const participantIds = [...sideAIds, ...sideBIds]
-
-  if (participantIds.length === 0) return warnings
-
-  // Get all division IDs for this tournament (scope queries)
-  const { data: tournamentDivisions } = await supabase
-    .from(TABLE_NAMES.DIVISIONS)
-    .select("id")
-    .eq("tournament_id", tournamentId)
-
-  const divisionIds = tournamentDivisions?.map(d => d.id) || []
+  const divisionIds = divisionsResult.data?.map((d: { id: string }) => d.id) || []
   if (divisionIds.length === 0) return warnings
 
-  // Check for player overlaps — only matches in this tournament
-  const { data: otherMatches } = await supabase
-    .from(TABLE_NAMES.MATCHES)
-    .select(`
-      *,
-      court:bracket_blaze_courts(name),
-      side_a:bracket_blaze_entries!side_a_entry_id(
-        participant_id, team_id,
-        participant:bracket_blaze_participants(display_name)
-      ),
-      side_b:bracket_blaze_entries!side_b_entry_id(
-        participant_id, team_id,
-        participant:bracket_blaze_participants(display_name)
-      )
-    `)
-    .neq("id", matchId)
-    .not("court_id", "is", null)
-    .in("status", ["scheduled", "ready", "on_court"])
-    .in("division_id", divisionIds)
+  // 2. Fetch active court matches + recent completed matches in parallel (2 queries, parallel)
+  const cutoffTime = new Date(Date.now() - restWindowMinutes * 60 * 1000).toISOString()
 
-  for (const otherMatch of otherMatches || []) {
-    const otherSideAIds = await resolveEntryParticipantIds(supabase, otherMatch.side_a)
-    const otherSideBIds = await resolveEntryParticipantIds(supabase, otherMatch.side_b)
-    const otherParticipantIds = [...otherSideAIds, ...otherSideBIds]
+  const [activeResult, recentResult] = await Promise.all([
+    supabase
+      .from(TABLE_NAMES.MATCHES)
+      .select(`
+        *,
+        court:bracket_blaze_courts(name),
+        side_a:bracket_blaze_entries!side_a_entry_id(participant_id, team_id),
+        side_b:bracket_blaze_entries!side_b_entry_id(participant_id, team_id)
+      `)
+      .neq("id", matchId)
+      .not("court_id", "is", null)
+      .in("status", ["scheduled", "ready", "on_court"])
+      .in("division_id", divisionIds),
+    supabase
+      .from(TABLE_NAMES.MATCHES)
+      .select(`
+        *,
+        side_a:bracket_blaze_entries!side_a_entry_id(participant_id, team_id),
+        side_b:bracket_blaze_entries!side_b_entry_id(participant_id, team_id)
+      `)
+      .neq("id", matchId)
+      .in("status", ["completed", "walkover"])
+      .not("actual_end_time", "is", null)
+      .gte("actual_end_time", cutoffTime)
+      .in("division_id", divisionIds),
+  ])
 
-    const overlap = participantIds.some(id => otherParticipantIds.includes(id))
+  // 3. Collect ALL team_ids from all matches, batch-fetch team_members (1 query)
+  const allMatches = [match, ...(activeResult.data || []), ...(recentResult.data || [])]
+  const allTeamIds = new Set<string>()
+  for (const m of allMatches) {
+    if (m.side_a?.team_id) allTeamIds.add(m.side_a.team_id)
+    if (m.side_b?.team_id) allTeamIds.add(m.side_b.team_id)
+  }
 
-    if (overlap) {
-      const conflictingId = participantIds.find(id => otherParticipantIds.includes(id))
-      // Look up the conflicting player's name
-      const { data: conflictPlayer } = await supabase
-        .from(TABLE_NAMES.PARTICIPANTS)
-        .select("display_name")
-        .eq("id", conflictingId!)
-        .single()
+  const teamMemberMap = new Map<string, string[]>()
+  if (allTeamIds.size > 0) {
+    const { data: members } = await supabase
+      .from(TABLE_NAMES.TEAM_MEMBERS)
+      .select("team_id, participant_id")
+      .in("team_id", Array.from(allTeamIds))
 
+    for (const member of members || []) {
+      const existing = teamMemberMap.get(member.team_id) || []
+      existing.push(member.participant_id)
+      teamMemberMap.set(member.team_id, existing)
+    }
+  }
+
+  // Helper: resolve participant IDs from entry using the pre-fetched map (no queries)
+  function resolveIds(entry: { participant_id: string | null; team_id: string | null } | null): string[] {
+    if (!entry) return []
+    if (entry.participant_id) return [entry.participant_id]
+    if (entry.team_id) return teamMemberMap.get(entry.team_id) || []
+    return []
+  }
+
+  const matchParticipantIds = [...resolveIds(match.side_a), ...resolveIds(match.side_b)]
+  if (matchParticipantIds.length === 0) return warnings
+
+  // 4. Check player overlaps (in-memory, no queries)
+  const conflictParticipantIds = new Set<string>()
+
+  for (const otherMatch of activeResult.data || []) {
+    const otherIds = [...resolveIds(otherMatch.side_a), ...resolveIds(otherMatch.side_b)]
+    const overlapping = matchParticipantIds.filter(id => otherIds.includes(id))
+    for (const id of overlapping) {
+      conflictParticipantIds.add(id)
       warnings.push({
         type: "player_overlap",
         severity: "error",
-        message: `${conflictPlayer?.display_name || "A player"} is already assigned to ${otherMatch.court?.name}`,
+        message: `__PLAYER_${id}__ is already assigned to ${otherMatch.court?.name}`,
       })
     }
   }
 
-  // Check for rest period violations — only matches in this tournament
-  const { data: tournament } = await supabase
-    .from(TABLE_NAMES.TOURNAMENTS)
-    .select("rest_window_minutes")
-    .eq("id", tournamentId)
-    .single()
+  // 5. Check rest violations (in-memory, no queries)
+  for (const recentMatch of recentResult.data || []) {
+    const recentIds = [...resolveIds(recentMatch.side_a), ...resolveIds(recentMatch.side_b)]
+    const overlapping = matchParticipantIds.filter(id => recentIds.includes(id))
 
-  const restWindowMinutes = tournament?.rest_window_minutes || 15
-
-  const { data: recentMatches } = await supabase
-    .from(TABLE_NAMES.MATCHES)
-    .select(`
-      *,
-      side_a:bracket_blaze_entries!side_a_entry_id(participant_id, team_id),
-      side_b:bracket_blaze_entries!side_b_entry_id(participant_id, team_id)
-    `)
-    .neq("id", matchId)
-    .eq("status", "completed")
-    .not("actual_end_time", "is", null)
-    .in("division_id", divisionIds)
-
-  for (const recentMatch of recentMatches || []) {
-    const recentSideAIds = await resolveEntryParticipantIds(supabase, recentMatch.side_a)
-    const recentSideBIds = await resolveEntryParticipantIds(supabase, recentMatch.side_b)
-    const recentParticipantIds = [...recentSideAIds, ...recentSideBIds]
-
-    const overlap = participantIds.some(id => recentParticipantIds.includes(id))
-
-    if (overlap && recentMatch.actual_end_time) {
+    if (overlapping.length > 0 && recentMatch.actual_end_time) {
       const endTime = new Date(recentMatch.actual_end_time)
-      const now = new Date()
-      const minutesSinceEnd = (now.getTime() - endTime.getTime()) / (1000 * 60)
+      const minutesSinceEnd = (Date.now() - endTime.getTime()) / (1000 * 60)
 
       if (minutesSinceEnd < restWindowMinutes) {
-        const conflictingId = participantIds.find(id =>
-          recentParticipantIds.includes(id)
-        )
-        const { data: conflictPlayer } = await supabase
-          .from(TABLE_NAMES.PARTICIPANTS)
-          .select("display_name")
-          .eq("id", conflictingId!)
-          .single()
-
         const remainingRest = Math.ceil(restWindowMinutes - minutesSinceEnd)
+        for (const id of overlapping) {
+          conflictParticipantIds.add(id)
+          warnings.push({
+            type: "rest_violation",
+            severity: "warning",
+            message: `__PLAYER_${id}__ finished a match ${Math.floor(minutesSinceEnd)} minutes ago (needs ${remainingRest} more minutes rest)`,
+          })
+        }
+      }
+    }
+  }
 
-        warnings.push({
-          type: "rest_violation",
-          severity: "warning",
-          message: `${conflictPlayer?.display_name || "A player"} finished a match ${Math.floor(minutesSinceEnd)} minutes ago (needs ${remainingRest} more minutes rest)`,
-        })
+  // 6. Batch-fetch all conflicting participant names (1 query, only if conflicts found)
+  if (conflictParticipantIds.size > 0) {
+    const { data: players } = await supabase
+      .from(TABLE_NAMES.PARTICIPANTS)
+      .select("id, display_name")
+      .in("id", Array.from(conflictParticipantIds))
+
+    const nameMap = new Map(players?.map((p: { id: string; display_name: string }) => [p.id, p.display_name]) || [])
+
+    for (const w of warnings) {
+      const placeholderMatch = w.message.match(/__PLAYER_(.+?)__/)
+      if (placeholderMatch) {
+        w.message = w.message.replace(
+          `__PLAYER_${placeholderMatch[1]}__`,
+          nameMap.get(placeholderMatch[1]) || "A player"
+        )
       }
     }
   }
@@ -187,23 +186,14 @@ export async function assignMatchToCourt(
     if (!auth) return { error: "Unauthorized" }
     const { supabase, user } = auth
 
-    const isAdmin = await isTournamentAdminForMatch(supabase, matchId, user.id)
-    if (!isAdmin) return { error: "Not authorized for this tournament" }
+    const adminCheck = await requireTournamentAdminForMatch(supabase, matchId, user.id)
+    if (!adminCheck.authorized) return { error: "Not authorized for this tournament" }
 
-    // Get tournament ID for scoped conflict checks
-    const { data: matchDiv } = await supabase
-      .from(TABLE_NAMES.MATCHES)
-      .select("division_id")
-      .eq("id", matchId)
-      .single()
-
-    if (!matchDiv) return { error: "Match not found" }
-
-    const tournamentId = await getTournamentIdForDivision(supabase, matchDiv.division_id)
+    const { tournamentId, restWindowMinutes } = adminCheck
     if (!tournamentId) return { error: "Tournament not found" }
 
     // Check conflicts (scoped to tournament)
-    const warnings = await checkConflicts(supabase, matchId, tournamentId)
+    const warnings = await checkConflicts(supabase, matchId, tournamentId, restWindowMinutes!)
 
     // Block if there are errors (not just warnings)
     const errors = warnings.filter(w => w.severity === "error")
