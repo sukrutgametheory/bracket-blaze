@@ -1,0 +1,131 @@
+MATCHES EXCLUDED FROM DUPR UPLOAD
+=================================
+Total completed matches: 149
+Uploadable to DUPR: 101
+Excluded (missing DUPR IDs): 48
+
+PLAYERS WITHOUT DUPR IDs:
+-------------------------
+  - Abhinav Kumar
+  - Abishek Karthikeyan
+  - Amar Sanmathi
+  - Arun Srinivasan
+  - Aswathi
+  - Badri
+  - Bharath
+  - Darshan
+  - Haripriya
+  - Imran
+  - Kunal Mathew
+  - Naveen
+  - Nekeen KP
+  - Nihal
+  - Pranav Katta
+  - Saikrishna Kondaraju
+
+AFFECTED MATCHES (excluded from upload):
+----------------------------------------
+
+Women's Singles:
+  swiss R1: Manjushree JH vs Aswathi (11-2)
+    Missing DUPR: Aswathi
+  swiss R2: Shilpa Sham vs Aswathi (11-0)
+    Missing DUPR: Aswathi
+  swiss R3: Hita vs Aswathi (10-12)
+    Missing DUPR: Aswathi
+
+Men's Singles - Intermediate:
+  swiss R1: Ranjit Kupli vs Abhinav Kumar (11-3)
+    Missing DUPR: Abhinav Kumar
+  swiss R1: Aman vs Darshan (11-3)
+    Missing DUPR: Darshan
+  swiss R1: Dinakar Naidu vs Bharath (11-0)
+    Missing DUPR: Bharath
+  swiss R1: Shankar vs Saikrishna Kondaraju (8-11)
+    Missing DUPR: Saikrishna Kondaraju
+  swiss R2: Darshan vs Abhinav Kumar (2-11)
+    Missing DUPR: Darshan, Abhinav Kumar
+  swiss R2: Rahul Yadav vs Saikrishna Kondaraju (11-1)
+    Missing DUPR: Saikrishna Kondaraju
+  swiss R2: Aman vs Bharath (11-1)
+    Missing DUPR: Bharath
+  swiss R3: Aman vs Saikrishna Kondaraju (11-5)
+    Missing DUPR: Saikrishna Kondaraju
+  swiss R3: Abhinav Kumar vs Bharath (11-8)
+    Missing DUPR: Abhinav Kumar, Bharath
+  swiss R3: Darshan vs Sharva (11-8)
+    Missing DUPR: Darshan
+
+Mixed Doubles:
+  swiss R1: Kunal / Emily vs Shankar / Haripriya (11-0)
+    Missing DUPR: Haripriya
+  swiss R1: Kasturi / Spandan P V vs Bhavika Saini / Nekeen KP (11-0)
+    Missing DUPR: Nekeen KP
+  swiss R2: Vidula Reddy / Kiran Ashish vs Shankar / Haripriya (11-2)
+    Missing DUPR: Haripriya
+  swiss R2: Hita / Vikas vs Bhavika Saini / Nekeen KP (11-0)
+    Missing DUPR: Nekeen KP
+  swiss R3: Melwin / Nupur vs Bhavika Saini / Nekeen KP (11-2)
+    Missing DUPR: Nekeen KP
+  swiss R3: Roshni Naveena S / Athul Krishna R vs Shankar / Haripriya (10-12)
+    Missing DUPR: Haripriya
+
+Men's Doubles:
+  swiss R1: Aniruddha PN / Arun Srinivasan vs Sathiyanarayanan M / Adit Ingole (3-11)
+    Missing DUPR: Arun Srinivasan
+  swiss R1: Ranjit Kupli / Dinakar Naidu vs Sharva / Nihal (11-0)
+    Missing DUPR: Nihal
+  swiss R1: Karthik J / Abishek Karthikeyan vs Jeril Jacob / Keshav Rathi (11-6)
+    Missing DUPR: Abishek Karthikeyan
+  swiss R1: Aman / Shankar vs Siva Sai / Pranav Katta (11-0)
+    Missing DUPR: Pranav Katta
+  swiss R1: Krishna Kumar / Kunal Mathew vs Chandru C R M / Sathvik R G (11-0)
+    Missing DUPR: Kunal Mathew
+  swiss R1: Mitesh / Imran vs Maanav Desai / Arrush Malik (11-1)
+    Missing DUPR: Imran
+  swiss R1: Williams / Akash Shivashankar vs Shomesh Behl / Amar Sanmathi (11-0)
+    Missing DUPR: Amar Sanmathi
+  swiss R1: Vishal Choudhary / Badri vs Shridhar / Manav (11-1)
+    Missing DUPR: Badri
+  swiss R1: Spandan P V / Gowtham vs Chirag / Naveen (11-0)
+    Missing DUPR: Naveen
+  swiss R1: Tshering Wangdi Yolmo / Harsh Pancholi vs Saikrishna Kondaraju / Ankit Pandey (11-0)
+    Missing DUPR: Saikrishna Kondaraju
+  swiss R2: Shridhar / Manav vs Shomesh Behl / Amar Sanmathi (11-1)
+    Missing DUPR: Amar Sanmathi
+  swiss R2: Sathvik Patil / Apurv Ekansh vs Siva Sai / Pranav Katta (8-11)
+    Missing DUPR: Pranav Katta
+  swiss R2: Taarun Sridhar / Hitesh S Reddy vs Chirag / Naveen (11-6)
+    Missing DUPR: Naveen
+  swiss R2: Aniruddha PN / Arun Srinivasan vs Sharva / Nihal (0-11)
+    Missing DUPR: Arun Srinivasan, Nihal
+  swiss R2: Krishna Kumar / Kunal Mathew vs Rahul / Kalyan Kumar (11-0)
+    Missing DUPR: Kunal Mathew
+  swiss R2: Ranjit Kupli / Dinakar Naidu vs Karthik J / Abishek Karthikeyan (11-0)
+    Missing DUPR: Abishek Karthikeyan
+  swiss R2: Spandan P V / Gowtham vs Vishal Choudhary / Badri (11-2)
+    Missing DUPR: Badri
+  swiss R2: Jeril Jacob / Keshav Rathi vs Saikrishna Kondaraju / Ankit Pandey (11-0)
+    Missing DUPR: Saikrishna Kondaraju
+  swiss R2: Aman / Shankar vs Mitesh / Imran (7-11)
+    Missing DUPR: Imran
+  swiss R3: Chirag / Naveen vs Shomesh Behl / Amar Sanmathi (11-0)
+    Missing DUPR: Naveen, Amar Sanmathi
+  swiss R3: Chandru C R M / Sathvik R G vs Aniruddha PN / Arun Srinivasan (5-11)
+    Missing DUPR: Arun Srinivasan
+  swiss R3: Krishna Kumar / Kunal Mathew vs Tshering Wangdi Yolmo / Harsh Pancholi (10-12)
+    Missing DUPR: Kunal Mathew
+  swiss R3: Shridhar / Manav vs Sharva / Nihal (6-11)
+    Missing DUPR: Nihal
+  swiss R3: Vishal Choudhary / Badri vs Rahul / Kalyan Kumar (11-4)
+    Missing DUPR: Badri
+  swiss R3: Spandan P V / Gowtham vs Siva Sai / Pranav Katta (11-1)
+    Missing DUPR: Pranav Katta
+  swiss R3: Aman / Shankar vs Karthik J / Abishek Karthikeyan (11-4)
+    Missing DUPR: Abishek Karthikeyan
+  swiss R3: Ashwin Hanagudu / Anup Basti vs Saikrishna Kondaraju / Ankit Pandey (11-0)
+    Missing DUPR: Saikrishna Kondaraju
+  swiss R3: Ranjit Kupli / Dinakar Naidu vs Mitesh / Imran (11-6)
+    Missing DUPR: Imran
+  knockout R1: Tshering Wangdi Yolmo / Harsh Pancholi vs Krishna Kumar / Kunal Mathew (11-0)
+    Missing DUPR: Kunal Mathew
