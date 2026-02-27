@@ -79,6 +79,14 @@ export const participantSchema = z.object({
     .refine(isValidE164, "Invalid phone number format"),
 })
 
+// Schema for participant updates (phone excluded — immutable after creation)
+export const updateParticipantSchema = z.object({
+  display_name: z.string().min(2, "Name must be at least 2 characters").max(100),
+  club: z.string().max(100).optional(),
+  email: z.string().email().optional().or(z.literal("")),
+})
+
+export type UpdateParticipantFormData = z.infer<typeof updateParticipantSchema>
 export type TournamentFormData = z.infer<typeof tournamentSchema>
 export type CourtFormData = z.infer<typeof courtSchema>
 export type DivisionFormData = z.infer<typeof divisionFormSchema>

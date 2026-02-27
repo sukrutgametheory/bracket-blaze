@@ -11,8 +11,8 @@ const E164_PATTERN = /^\+[1-9]\d{6,14}$/
  * - Prepends +91 if no country code provided
  * - Handles 0-prefixed Indian numbers (e.g., 09876543210)
  *
- * @returns Normalized E.164 phone string (e.g., "+919876543210")
- * @throws Error if the result is not a valid E.164 number
+ * @returns Normalized phone string (e.g., "+919876543210"). May not be valid E.164 for
+ *   malformed inputs — callers should validate with isValidE164() if needed.
  */
 export function normalizePhone(raw: string): string {
   // Strip everything except digits and leading +

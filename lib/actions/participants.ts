@@ -2,10 +2,10 @@
 
 import { revalidatePath } from "next/cache"
 import { createClient } from "@/lib/supabase/server"
-import { participantSchema, type ParticipantFormData } from "@/lib/validations/tournament"
+import { participantSchema, updateParticipantSchema, type ParticipantFormData, type UpdateParticipantFormData } from "@/lib/validations/tournament"
 import { TABLE_NAMES, type Participant } from "@/types/database"
 import { findOrCreatePlayer } from "@/lib/actions/players"
-import { normalizePhone } from "@/lib/utils/phone"
+import { normalizePhone, isValidE164 } from "@/lib/utils/phone"
 
 export async function createParticipant(data: ParticipantFormData, tournamentId: string) {
   try {
@@ -71,8 +71,9 @@ export async function createParticipant(data: ParticipantFormData, tournamentId:
 }
 
 // Update participant details (phone is immutable — not included in updates)
-export async function updateParticipant(participantId: string, data: Omit<ParticipantFormData, "phone">) {
+export async function updateParticipant(participantId: string, data: UpdateParticipantFormData) {
   try {
+    const validatedData = updateParticipantSchema.parse(data)
     const supabase = await createClient()
 
     // Get tournament_id and player_id for revalidation and global update
@@ -90,9 +91,9 @@ export async function updateParticipant(participantId: string, data: Omit<Partic
     const { data: updatedParticipant, error } = await supabase
       .from(TABLE_NAMES.PARTICIPANTS)
       .update({
-        display_name: data.display_name,
-        club: data.club || null,
-        email: data.email || null,
+        display_name: validatedData.display_name,
+        club: validatedData.club || null,
+        email: validatedData.email || null,
       })
       .eq("id", participantId)
       .select()
@@ -108,9 +109,9 @@ export async function updateParticipant(participantId: string, data: Omit<Partic
       await supabase
         .from(TABLE_NAMES.PLAYERS)
         .update({
-          display_name: data.display_name,
-          club: data.club || null,
-          email: data.email || null,
+          display_name: validatedData.display_name,
+          club: validatedData.club || null,
+          email: validatedData.email || null,
         })
         .eq("id", participant.player_id)
     }
@@ -184,6 +185,9 @@ export async function linkParticipantToPlayer(
 ) {
   try {
     const phone = normalizePhone(rawPhone)
+    if (!isValidE164(phone)) {
+      return { error: "Invalid phone number format" }
+    }
     const supabase = await createClient()
 
     // Find or create the global player

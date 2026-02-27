@@ -2,7 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server"
 import { TABLE_NAMES, type Player } from "@/types/database"
-import { normalizePhone } from "@/lib/utils/phone"
+import { normalizePhone, isValidE164 } from "@/lib/utils/phone"
 
 export async function findPlayerByPhone(rawPhone: string): Promise<{ data: Player | null; error?: string }> {
   try {
@@ -35,6 +35,9 @@ export async function findOrCreatePlayer(
 ): Promise<{ data: string | null; error?: string }> {
   try {
     const phone = normalizePhone(rawPhone)
+    if (!isValidE164(phone)) {
+      return { data: null, error: "Invalid phone number format" }
+    }
 
     const supabase = await createClient()
     const { data, error } = await supabase
