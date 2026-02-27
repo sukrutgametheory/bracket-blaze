@@ -4,6 +4,7 @@ import { TABLE_NAMES, type Tournament, type Participant } from "@/types/database
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { ParticipantList } from "@/components/participants/participant-list"
+import { BackfillModal } from "@/components/participants/backfill-modal"
 
 interface ParticipantsPageProps {
   params: Promise<{ id: string }>
@@ -43,6 +44,9 @@ export default async function ParticipantsPage({ params }: ParticipantsPageProps
 
   const typedParticipants = (participants as Participant[]) || []
 
+  // Find participants that need phone numbers (player_id is NULL)
+  const unlinkedParticipants = typedParticipants.filter((p) => !p.player_id)
+
   return (
     <div className="container mx-auto py-10">
       <div className="max-w-4xl mx-auto">
@@ -63,6 +67,13 @@ export default async function ParticipantsPage({ params }: ParticipantsPageProps
           tournamentId={id}
           userId={user.id}
         />
+
+        {unlinkedParticipants.length > 0 && (
+          <BackfillModal
+            unlinkedParticipants={unlinkedParticipants}
+            tournamentId={id}
+          />
+        )}
       </div>
     </div>
   )

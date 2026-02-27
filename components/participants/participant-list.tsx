@@ -102,10 +102,15 @@ export function ParticipantList({ participants, tournamentId, userId }: Particip
                       {participant.club && (
                         <Badge variant="outline">{participant.club}</Badge>
                       )}
+                      {!participant.player_id && (
+                        <Badge variant="destructive" className="text-xs">Needs phone</Badge>
+                      )}
                     </div>
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                      {participant.phone && (
+                        <span className="font-mono">{participant.phone}</span>
+                      )}
                       {participant.email && <span>{participant.email}</span>}
-                      {participant.phone && <span>{participant.phone}</span>}
                       <span>Added {new Date(participant.created_at).toLocaleDateString()}</span>
                     </div>
                   </div>
