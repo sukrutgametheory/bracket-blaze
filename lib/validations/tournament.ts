@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { normalizePhone, isValidE164 } from "@/lib/utils/phone"
 
 export const tournamentSchema = z.object({
   name: z.string().min(3, "Tournament name must be at least 3 characters").max(100),
@@ -71,7 +72,11 @@ export const participantSchema = z.object({
   display_name: z.string().min(2, "Name must be at least 2 characters").max(100),
   club: z.string().max(100).optional(),
   email: z.string().email().optional().or(z.literal("")),
-  phone: z.string().max(20).optional(),
+  phone: z.string()
+    .min(1, "Phone number is required")
+    .max(20)
+    .transform(normalizePhone)
+    .refine(isValidE164, "Invalid phone number format"),
 })
 
 export type TournamentFormData = z.infer<typeof tournamentSchema>

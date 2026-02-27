@@ -32,6 +32,7 @@ export const TABLE_NAMES = {
   STANDINGS: 'bracket_blaze_standings',
   MATCH_CONFLICTS: 'bracket_blaze_match_conflicts',
   COURT_ASSIGNMENTS: 'bracket_blaze_court_assignments',
+  PLAYERS: 'bracket_blaze_players',
 } as const
 
 export interface Tournament {
@@ -71,8 +72,20 @@ export interface Division {
   created_at: string
 }
 
+export interface Player {
+  id: string
+  phone: string
+  display_name: string
+  email: string | null
+  club: string | null
+  created_at: string
+  updated_at: string
+}
+
 export interface Participant {
   id: string
+  tournament_id: string
+  player_id: string | null
   user_id: string | null
   display_name: string
   club: string | null
