@@ -15,6 +15,7 @@ import { assignMatchToCourt, clearCourt } from "@/lib/actions/court-assignments"
 import { startMatch, completeMatch, recordWalkover, editMatchScore, approveMatch, rejectMatch } from "@/lib/actions/matches"
 import { generateNextSwissRound, generateKnockoutDraw } from "@/lib/actions/draws"
 import { generateScoringToken } from "@/lib/actions/scoring-token"
+import { toggleRegistration } from "@/lib/actions/tournaments"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
 import type { RankedStanding } from "@/lib/services/standings-engine"
@@ -213,6 +214,24 @@ export function ControlCenterClient({
     router.refresh()
   }
 
+  const handleToggleRegistration = async () => {
+    const newValue = !tournament.registration_open
+    const result = await toggleRegistration(tournament.id, newValue)
+    if (result.error) {
+      toast({ title: "Error", description: result.error, variant: "destructive" })
+      return
+    }
+
+    if (newValue) {
+      const url = `${window.location.origin}/register/${tournament.id}`
+      await navigator.clipboard.writeText(url)
+      toast({ title: "Registration Opened", description: "Registration URL copied to clipboard" })
+    } else {
+      toast({ title: "Registration Closed" })
+    }
+    router.refresh()
+  }
+
   const pendingSignoffCount = matches.filter(m => m.status === 'pending_signoff').length
 
   return (
@@ -261,6 +280,26 @@ export function ControlCenterClient({
         >
           Open Live Portal
         </Button>
+        <Button
+          variant={tournament.registration_open ? "default" : "outline"}
+          size="sm"
+          onClick={handleToggleRegistration}
+        >
+          {tournament.registration_open ? "Close Registration" : "Open Registration"}
+        </Button>
+        {tournament.registration_open && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              const url = `${window.location.origin}/register/${tournament.id}`
+              navigator.clipboard.writeText(url)
+              toast({ title: "Registration Link Copied", description: url })
+            }}
+          >
+            Copy Registration Link
+          </Button>
+        )}
         {pendingSignoffCount > 0 && (
           <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 text-xs font-medium">
             {pendingSignoffCount} pending sign-off
