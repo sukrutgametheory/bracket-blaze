@@ -32,6 +32,7 @@ interface ExistingEntry {
 interface PartnerFields {
   name: string
   phone: string
+  duprId: string
 }
 
 interface RegistrationFormProps {
@@ -155,7 +156,7 @@ export function RegistrationForm({
       if (div?.play_mode === "doubles") {
         setPartnerFields((prev) => ({
           ...prev,
-          [divisionId]: { name: "", phone: "" },
+          [divisionId]: { name: "", phone: "", duprId: "" },
         }))
       }
     } else {
@@ -173,7 +174,7 @@ export function RegistrationForm({
   // Update partner fields
   const handlePartnerChange = (
     divisionId: string,
-    field: "name" | "phone",
+    field: "name" | "phone" | "duprId",
     value: string
   ) => {
     setPartnerFields((prev) => ({
@@ -253,6 +254,7 @@ export function RegistrationForm({
           type: "doubles",
           partner_name: partner.name.trim(),
           partner_phone: normalizePhone(partner.phone),
+          partner_dupr_id: partner.duprId?.trim() || null,
         }
       }
       return { division_id: divId, type: "singles" }
@@ -515,6 +517,26 @@ export function RegistrationForm({
                                   disabled={isSubmitting}
                                 />
                               </div>
+                              {div.sport === "pickleball" && (
+                                <div className="space-y-2">
+                                  <Label htmlFor={`partner-dupr-${div.id}`}>
+                                    Partner DUPR ID (Optional)
+                                  </Label>
+                                  <Input
+                                    id={`partner-dupr-${div.id}`}
+                                    placeholder="e.g., 12345678"
+                                    value={partnerFields[div.id]?.duprId || ""}
+                                    onChange={(e) =>
+                                      handlePartnerChange(
+                                        div.id,
+                                        "duprId",
+                                        e.target.value
+                                      )
+                                    }
+                                    disabled={isSubmitting}
+                                  />
+                                </div>
+                              )}
                             </div>
                           )}
                       </div>
