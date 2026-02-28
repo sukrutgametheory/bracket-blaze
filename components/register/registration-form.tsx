@@ -360,7 +360,7 @@ export function RegistrationForm({
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               onBlur={handlePhoneLookup}
-              disabled={isSubmitting}
+              disabled={isSubmitting || phoneLookedUp}
             />
             {!phoneLookedUp && (
               <Button
