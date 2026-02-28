@@ -51,7 +51,7 @@ export function RegistrationForm({
   supabaseUrl,
   supabaseAnonKey,
 }: RegistrationFormProps) {
-  const supabase = createClient(supabaseUrl, supabaseAnonKey)
+  const [supabase] = useState(() => createClient(supabaseUrl, supabaseAnonKey))
 
   // Phone-first flow state
   const [phone, setPhone] = useState("")
@@ -196,8 +196,15 @@ export function RegistrationForm({
   // Validate form
   const validateForm = (): string | null => {
     if (!phone || phone.length < 7) return "Phone number is required"
+    try {
+      const norm = normalizePhone(phone)
+      if (!isValidE164(norm)) return "Please enter a valid phone number"
+    } catch {
+      return "Please enter a valid phone number"
+    }
     if (!displayName.trim()) return "Name is required"
     if (!email.trim()) return "Email is required"
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) return "Please enter a valid email address"
     if (selectedDivisions.size === 0) return "Select at least one division"
 
     // Check partner fields for doubles
@@ -210,6 +217,12 @@ export function RegistrationForm({
         }
         if (!partner?.phone || partner.phone.length < 7) {
           return `Partner phone is required for ${div.name}`
+        }
+        try {
+          const partnerNorm = normalizePhone(partner.phone)
+          if (!isValidE164(partnerNorm)) return `Invalid partner phone for ${div.name}`
+        } catch {
+          return `Invalid partner phone for ${div.name}`
         }
       }
     }

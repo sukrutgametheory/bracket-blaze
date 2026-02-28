@@ -1,3 +1,4 @@
+import { cache } from "react"
 import { createClient } from "@/lib/supabase/server"
 import { notFound } from "next/navigation"
 import { RegistrationForm } from "@/components/register/registration-form"
@@ -6,13 +7,16 @@ interface RegisterPageProps {
   params: Promise<{ tournamentId: string }>
 }
 
-export async function generateMetadata({ params }: RegisterPageProps) {
-  const { tournamentId } = await params
+const getRegistrationData = cache(async (tournamentId: string) => {
   const supabase = await createClient()
-
-  const { data } = await supabase.rpc("bracket_blaze_registration_lookup", {
+  return supabase.rpc("bracket_blaze_registration_lookup", {
     p_tournament_id: tournamentId,
   })
+})
+
+export async function generateMetadata({ params }: RegisterPageProps) {
+  const { tournamentId } = await params
+  const { data } = await getRegistrationData(tournamentId)
 
   const tournament = data?.tournament
   return {
@@ -24,13 +28,7 @@ export async function generateMetadata({ params }: RegisterPageProps) {
 
 export default async function RegisterPage({ params }: RegisterPageProps) {
   const { tournamentId } = await params
-  const supabase = await createClient()
-
-  // Call lookup RPC without phone to get tournament + division info
-  const { data, error } = await supabase.rpc(
-    "bracket_blaze_registration_lookup",
-    { p_tournament_id: tournamentId }
-  )
+  const { data, error } = await getRegistrationData(tournamentId)
 
   if (error || !data?.tournament) {
     notFound()
