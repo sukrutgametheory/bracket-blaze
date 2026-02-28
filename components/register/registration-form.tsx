@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
+import Image from "next/image"
 import { RegistrationConfirmation } from "./registration-confirmation"
 
 interface DivisionInfo {
@@ -330,6 +331,13 @@ export function RegistrationForm({
   return (
     <Card>
       <CardHeader className="text-center">
+        <Image
+          src="/game-theory-logo.png"
+          alt="Game Theory"
+          width={80}
+          height={80}
+          className="mx-auto mb-2"
+        />
         <CardTitle className="text-xl">{tournamentName}</CardTitle>
         <p className="text-sm text-muted-foreground">{tournamentVenue}</p>
       </CardHeader>

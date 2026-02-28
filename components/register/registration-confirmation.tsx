@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -35,6 +36,13 @@ export function RegistrationConfirmation({
   return (
     <Card>
       <CardHeader className="text-center">
+        <Image
+          src="/game-theory-logo.png"
+          alt="Game Theory"
+          width={80}
+          height={80}
+          className="mx-auto mb-2"
+        />
         <div className="text-4xl mb-2">&#10003;</div>
         <CardTitle className="text-xl">You&apos;re all set!</CardTitle>
         <p className="text-sm text-muted-foreground">{tournamentName}</p>
