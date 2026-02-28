@@ -362,11 +362,16 @@ export function RegistrationForm({
               onBlur={handlePhoneLookup}
               disabled={isSubmitting}
             />
-            <p className="text-xs text-muted-foreground">
-              {isLookingUp
-                ? "Looking up player..."
-                : "Enter your phone number to get started"}
-            </p>
+            {!phoneLookedUp && (
+              <Button
+                type="button"
+                className="w-full"
+                onClick={handlePhoneLookup}
+                disabled={isLookingUp || !phone || phone.length < 7}
+              >
+                {isLookingUp ? "Looking up..." : "Continue"}
+              </Button>
+            )}
           </div>
 
           {/* Show rest of form after phone lookup */}
