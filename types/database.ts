@@ -43,6 +43,7 @@ export interface Tournament {
   status: TournamentStatus
   rest_window_minutes: number
   scoring_token: string | null
+  registration_open: boolean
   created_at: string
   updated_at: string
   created_by: string | null
@@ -78,6 +79,7 @@ export interface Player {
   display_name: string
   email: string | null
   club: string | null
+  dupr_id: string | null
   created_at: string
   updated_at: string
 }
