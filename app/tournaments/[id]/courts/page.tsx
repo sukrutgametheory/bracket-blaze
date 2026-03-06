@@ -4,6 +4,7 @@ import { TABLE_NAMES, type Tournament, type Court } from "@/types/database"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { CourtList } from "@/components/courts/court-list"
+import { sortByNaturalName } from "@/lib/utils"
 
 interface CourtsPageProps {
   params: Promise<{ id: string }>
@@ -39,9 +40,8 @@ export default async function CourtsPage({ params }: CourtsPageProps) {
     .from(TABLE_NAMES.COURTS)
     .select("*")
     .eq("tournament_id", id)
-    .order("name", { ascending: true })
 
-  const typedCourts = (courts as Court[]) || []
+  const typedCourts = sortByNaturalName((courts as Court[]) || [])
 
   return (
     <div className="container mx-auto py-10">
