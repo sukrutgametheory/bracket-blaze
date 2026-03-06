@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { notFound } from "next/navigation"
 import { TABLE_NAMES } from "@/types/database"
 import { SingleCourtTvClient } from "@/components/court-tv/single-court-tv-client"
+import { sortByNaturalName } from "@/lib/utils"
 
 interface SingleCourtTvPageProps {
   params: Promise<{ tournamentId: string }>
@@ -27,7 +28,8 @@ export default async function SingleCourtTvPage({ params }: SingleCourtTvPagePro
     .select("*")
     .eq("tournament_id", tournamentId)
     .eq("is_active", true)
-    .order("name", { ascending: true })
+
+  const sortedCourts = sortByNaturalName(courts || [])
 
   const { data: divisions } = await supabase
     .from(TABLE_NAMES.DIVISIONS)
@@ -51,14 +53,14 @@ export default async function SingleCourtTvPage({ params }: SingleCourtTvPagePro
         team:bracket_blaze_teams(name)
       )
     `)
-    .in("court_id", (courts || []).map(court => court.id))
+    .in("court_id", sortedCourts.map(court => court.id))
     .in("status", ["ready", "on_court", "pending_signoff", "completed"])
 
   return (
     <SingleCourtTvClient
       tournamentId={tournament.id}
       tournamentName={tournament.name}
-      courts={courts || []}
+      courts={sortedCourts}
       divisionIds={divisionIds}
       initialMatches={matches || []}
       supabaseUrl={process.env.NEXT_PUBLIC_SUPABASE_URL!}

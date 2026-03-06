@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 import { TABLE_NAMES } from "@/types/database"
 import { ScoringClient } from "@/components/scoring/scoring-client"
 import { getEntryDisplayName } from "@/lib/utils/display-name"
+import { sortByNaturalName } from "@/lib/utils"
 
 interface ScoringPageProps {
   params: Promise<{ token: string }>
@@ -41,7 +42,8 @@ export default async function ScoringPage({ params, searchParams }: ScoringPageP
     .select("*")
     .eq("tournament_id", tournament.id)
     .eq("is_active", true)
-    .order("name", { ascending: true })
+
+  const sortedCourts = sortByNaturalName(courts || [])
 
   // If no court param, show court selection
   if (!courtId) {
@@ -59,7 +61,7 @@ export default async function ScoringPage({ params, searchParams }: ScoringPageP
           team:bracket_blaze_teams(name)
         )
       `)
-      .in("court_id", (courts || []).map(c => c.id))
+      .in("court_id", sortedCourts.map(c => c.id))
       .in("status", ["ready", "on_court", "pending_signoff"])
 
     const courtMatchMap = new Map(
@@ -75,7 +77,7 @@ export default async function ScoringPage({ params, searchParams }: ScoringPageP
           </div>
 
           <div className="grid gap-3">
-            {(courts || []).map(court => {
+            {sortedCourts.map(court => {
               const match = courtMatchMap.get(court.id) as any
               const hasMatch = !!match
               const sideAName = getEntryDisplayName(match?.side_a as any)
@@ -134,7 +136,7 @@ export default async function ScoringPage({ params, searchParams }: ScoringPageP
     .in("status", ["ready", "on_court", "pending_signoff"])
     .single()
 
-  const court = (courts || []).find(c => c.id === courtId)
+  const court = sortedCourts.find(c => c.id === courtId)
   const courtName = court?.name || "Unknown Court"
 
   // No active match on this court

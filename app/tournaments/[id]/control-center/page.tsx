@@ -3,6 +3,7 @@ import { redirect, notFound } from "next/navigation"
 import { TABLE_NAMES, type Tournament } from "@/types/database"
 import { ControlCenterClient } from "@/components/control-center/control-center-client"
 import { calculateStandings, type RankedStanding } from "@/lib/services/standings-engine"
+import { sortByNaturalName } from "@/lib/utils"
 
 interface ControlCenterPageProps {
   params: Promise<{ id: string }>
@@ -39,7 +40,6 @@ export default async function ControlCenterPage({ params }: ControlCenterPagePro
     .select("*")
     .eq("tournament_id", id)
     .eq("is_active", true)
-    .order("name", { ascending: true })
 
   // Fetch divisions with published draws
   const { data: divisions } = await supabase
@@ -111,7 +111,7 @@ export default async function ControlCenterPage({ params }: ControlCenterPagePro
 
       <ControlCenterClient
         tournament={typedTournament}
-        courts={courts || []}
+        courts={sortByNaturalName(courts || [])}
         divisions={divisions || []}
         matches={matches || []}
         draws={draws || []}
