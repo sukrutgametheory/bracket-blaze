@@ -419,43 +419,46 @@ export function DivisionDialog({
                     )}
                   />
 
-                  <FormItem>
-                    <FormLabel>Knockout Qualification</FormLabel>
-                    <Select
-                      value={swissKnockoutOptionValue}
-                      onValueChange={(value) => {
-                        const [qualifierValue, variantValue] = value.split(":")
-                        form.setValue("swiss_qualifiers", parseInt(qualifierValue, 10), {
-                          shouldDirty: true,
-                          shouldValidate: true,
-                        })
-                        form.setValue("swiss_knockout_variant", variantValue as KnockoutVariant, {
-                          shouldDirty: true,
-                          shouldValidate: true,
-                        })
-                      }}
-                      disabled={isLoading}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {swissKnockoutOptions.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormDescription>
-                      Choose how many players advance and whether Swiss uses the special Pre Quarter path
-                    </FormDescription>
-                    <FormMessage>
-                      {form.formState.errors.swiss_qualifiers?.message || form.formState.errors.swiss_knockout_variant?.message}
-                    </FormMessage>
-                  </FormItem>
+                  <FormField
+                    control={form.control}
+                    name="swiss_qualifiers"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Knockout Qualification</FormLabel>
+                        <Select
+                          value={swissKnockoutOptionValue}
+                          onValueChange={(value) => {
+                            const [qualifierValue, variantValue] = value.split(":")
+                            field.onChange(parseInt(qualifierValue, 10))
+                            form.setValue("swiss_knockout_variant", variantValue as KnockoutVariant, {
+                              shouldDirty: true,
+                              shouldValidate: true,
+                            })
+                          }}
+                          disabled={isLoading}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {swissKnockoutOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormDescription>
+                          Choose how many players advance and whether Swiss uses the special Pre Quarter path
+                        </FormDescription>
+                        <FormMessage>
+                          {form.formState.errors.swiss_qualifiers?.message || form.formState.errors.swiss_knockout_variant?.message}
+                        </FormMessage>
+                      </FormItem>
+                    )}
+                  />
                 </div>
               </>
             )}
