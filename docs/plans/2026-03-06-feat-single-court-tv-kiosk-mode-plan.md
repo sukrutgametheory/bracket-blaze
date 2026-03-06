@@ -1,7 +1,7 @@
 ---
 title: "feat: Single-Court TV Kiosk Mode"
 type: feat
-status: active
+status: completed
 date: 2026-03-06
 origin: docs/brainstorms/2026-03-06-single-court-tv-kiosk-brainstorm.md
 ---
@@ -174,9 +174,9 @@ Client responsibilities:
 
 - [x] Manual test on desktop and 1920x1080 simulation.
 - [x] Validate keyboard/remote navigation in selector.
-- [ ] Verify all match states with seeded data and live scoring path.
+- [x] Verify all match states with seeded data and live scoring path.
 - [x] Confirm `/tv/[tournamentId]` behavior unchanged.
-  - Current active dataset has no court-assigned `ready/on_court/pending_signoff/completed` matches, so full live-state browser validation is pending data setup.
+  - Validation executed using temporary court assignment and status transitions (`ready -> on_court -> pending_signoff -> completed`) with data restored afterward.
 
 ## Alternative Approaches Considered
 
@@ -195,10 +195,10 @@ Client responsibilities:
 - [x] First-time load shows court selector.
 - [x] Returning load defaults to last selected active court.
 - [x] User can change court from TV UI at any time.
-- [ ] `ready` displays player/team names, division, and `Starting Soon`.
-- [ ] `on_court` displays live score updates from referee actions.
-- [ ] `pending_signoff` displays pending state without losing score context.
-- [ ] `completed` keeps final score visible until a new match is assigned to that court.
+- [x] `ready` displays player/team names, division, and `Starting Soon`.
+- [x] `on_court` displays live score updates from referee actions.
+- [x] `pending_signoff` displays pending state without losing score context.
+- [x] `completed` keeps final score visible until a new match is assigned to that court.
 - [x] Idle court displays only `Awaiting Assignment`.
 - [x] Existing multi-court TV page remains unchanged.
 
@@ -206,15 +206,15 @@ Client responsibilities:
 
 - [x] Score and names are legible on 42-inch 1080p display at ~3m distance.
 - [x] Selector is operable via keyboard/TV remote inputs.
-- [ ] Realtime updates remain stable when switching courts.
+- [x] Realtime updates remain stable when switching courts.
 - [x] TV continues updating without any manual browser refresh after initial URL load.
-- [ ] No additional auth requirement is introduced for TV routes.
+- [x] No additional auth requirement is introduced for TV routes.
 
 ### Quality Gates
 
 - [x] No N+1 query loops introduced in new server fetch logic.
 - [x] TypeScript passes without introducing new `any` in new files.
-- [ ] Existing TV and scoring flows smoke-tested after change.
+- [x] Existing TV and scoring flows smoke-tested after change.
 
 ## Success Metrics
 
