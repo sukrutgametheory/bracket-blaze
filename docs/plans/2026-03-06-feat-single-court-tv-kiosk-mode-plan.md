@@ -82,8 +82,8 @@ Skipped. This feature is UI + local realtime composition on established internal
   - Resolution: clear invalid stored value and show selector.
 - **Remote input model**: keyboard/remote navigation was unspecified.
   - Resolution: selector must support arrow/tab focus + Enter selection + visible focus state.
-- **Status transition refresh strategy**: current TV client hard-reloads on postgres updates.
-  - Resolution: retain current strategy in first release for risk control; optimize later if needed.
+- **Status transition update strategy**: TV must run continuously without manual refresh or full-page reload.
+  - Resolution: use in-memory reconciliation on `postgres_changes`, automatic reconnect, and silent selected-court refetch for self-healing.
 
 ## Proposed Solution
 
@@ -105,6 +105,7 @@ Client responsibilities:
 - Subscribe to live Broadcast channel for selected match (`match:{matchId}`)
 - Subscribe to `bracket_blaze_matches` `postgres_changes` for assignment/status changes and reconcile selected-court view
 - Preserve completed score display until replacement assignment arrives
+- Run continuously with zero manual refresh requirement after initial URL load
 
 ## Technical Considerations
 
@@ -113,6 +114,7 @@ Client responsibilities:
 - **Realtime channel scope**:
   - Broadcast subscription only for selected active match
   - status updates via `postgres_changes` to detect reassignment/completion
+  - no full-page navigation reloads for status changes
 - **Performance**:
   - Keep eager loading on initial server query (no per-court loops)
   - Do not introduce N+1 query patterns (from learnings)
@@ -126,10 +128,10 @@ Client responsibilities:
   - Ref taps score in `components/scoring/scoring-client.tsx:118-183` → Broadcast `match:{id}` event emitted (`components/scoring/scoring-client.tsx:98-103`) → new single-court TV client receives and updates score.
   - Match status/court assignment changes in backend → postgres changes stream → TV client updates selected-court state.
 - **Error propagation**:
-  - Supabase subscribe failures should degrade to stale view; visibilitychange reload remains fallback (pattern from existing TV client `components/court-tv/court-tv-client.tsx:107-116`).
+  - Supabase subscribe failures should auto-reconnect; after reconnect, perform silent selected-court data refetch to self-heal without page reload.
 - **State lifecycle risks**:
   - Risk: stale stored court id after court deactivation/tournament edit.
-  - Mitigation: validate selected court against active court list on every mount/data refresh.
+  - Mitigation: validate selected court against active court list on mount and each sync reconciliation pass.
 - **API surface parity**:
   - Existing `/tv/[tournamentId]` remains unchanged.
   - New route shares query shape and display-name resolution helper.
@@ -144,29 +146,29 @@ Client responsibilities:
 
 ### Phase 1: Route + Data Foundation
 
-- [ ] Create `app/tv/[tournamentId]/court/page.tsx` server page using the same public fetch strategy as `app/tv/[tournamentId]/page.tsx`.
-- [ ] Query active courts and assigned matches with eager-loaded participant/team + division fields.
-- [ ] Return `notFound()` for inactive/missing tournament.
+- [x] Create `app/tv/[tournamentId]/court/page.tsx` server page using the same public fetch strategy as `app/tv/[tournamentId]/page.tsx`.
+- [x] Query active courts and assigned matches with eager-loaded participant/team + division fields.
+- [x] Return `notFound()` for inactive/missing tournament.
 
 ### Phase 2: Single-Court Kiosk UI
 
-- [ ] Create `components/court-tv/single-court-tv-client.tsx`.
-- [ ] Implement court selector overlay and `localStorage` persistence key (scoped by tournament id).
-- [ ] Implement top-level “Change Court” control for remote-driven switching.
-- [ ] Implement state views:
+- [x] Create `components/court-tv/single-court-tv-client.tsx`.
+- [x] Implement court selector overlay and `localStorage` persistence key (scoped by tournament id).
+- [x] Implement top-level “Change Court” control for remote-driven switching.
+- [x] Implement state views:
   - `ready`: names + division + `Starting Soon`
   - `on_court`: live scores
   - `pending_signoff`: submitted state + score
   - `completed`: final score persists
   - no match: `Awaiting Assignment` only
-- [ ] Apply 42-inch-optimized typography and spacing (single content column, oversized names and scores).
+- [x] Apply 42-inch-optimized typography and spacing (single content column, oversized names and scores).
 
 ### Phase 3: Realtime + Robustness
 
-- [ ] Subscribe to Broadcast for selected match only (`match:{matchId}`).
-- [ ] Subscribe to `postgres_changes` for match updates and reconcile selected-court match entity.
-- [ ] Handle selected-court invalidation if court is removed/inactive.
-- [ ] Keep visibility wake/reload fallback for kiosk reliability.
+- [x] Subscribe to Broadcast for selected match only (`match:{matchId}`).
+- [x] Subscribe to `postgres_changes` for match updates and reconcile selected-court match entity in memory (no full-page reload).
+- [x] Handle selected-court invalidation if court is removed/inactive.
+- [x] Implement automatic reconnect and silent selected-court refetch on reconnect/visibility wake (no manual refresh action required).
 
 ### Phase 4: Verification
 
@@ -204,17 +206,18 @@ Client responsibilities:
 - [ ] Score and names are legible on 42-inch 1080p display at ~3m distance.
 - [ ] Selector is operable via keyboard/TV remote inputs.
 - [ ] Realtime updates remain stable when switching courts.
+- [ ] TV continues updating without any manual browser refresh after initial URL load.
 - [ ] No additional auth requirement is introduced for TV routes.
 
 ### Quality Gates
 
-- [ ] No N+1 query loops introduced in new server fetch logic.
-- [ ] TypeScript passes without introducing new `any` in new files.
+- [x] No N+1 query loops introduced in new server fetch logic.
+- [x] TypeScript passes without introducing new `any` in new files.
 - [ ] Existing TV and scoring flows smoke-tested after change.
 
 ## Success Metrics
 
-- Court TVs show the correct selected court without operator reconfiguration after reload.
+- Court TVs show the correct selected court without operator reconfiguration after reconnect/resume.
 - Score changes appear on selected-court TV within existing realtime expectations.
 - On-site operators can switch courts within 2-3 remote actions.
 - No regressions reported on existing `/tv/[tournamentId]` wallboard.
@@ -229,11 +232,11 @@ Client responsibilities:
 ### Risks
 
 - **Stale persisted court ID** if court config changes during event.
-  - Mitigation: validate against active courts each refresh and force selector fallback.
+  - Mitigation: validate against active courts each sync pass and force selector fallback.
 - **Selector usability on heterogeneous TV remotes.**
   - Mitigation: rely on semantic focusable controls and explicit visible focus states.
-- **Over-refresh flicker from status update handling.**
-  - Mitigation: start with proven reload strategy; optimize to in-memory merge in follow-up.
+- **Event desync after transient websocket disconnect.**
+  - Mitigation: automatic reconnect + targeted selected-court refetch on reconnect; avoid full-page reload.
 
 ## Out of Scope
 
