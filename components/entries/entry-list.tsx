@@ -2,11 +2,12 @@
 
 import { useState } from "react"
 import { Division, Participant } from "@/types/database"
+import type { SwissRepairWindowStatus } from "@/lib/services/swiss-repair"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { EntryDialog } from "./entry-dialog"
-import { deleteEntry } from "@/lib/actions/entries"
+import { deleteEntry, revokeEntry } from "@/lib/actions/entries"
 import { getEntryDisplayName } from "@/lib/utils/display-name"
 import { generateDraw, deleteAllMatches } from "@/lib/actions/draws"
 import { useToast } from "@/hooks/use-toast"
@@ -30,20 +31,34 @@ interface EntryListProps {
   division: Division
   participants: Participant[]
   tournamentId: string
-  userId: string
+  repairWindowStatus: SwissRepairWindowStatus | null
 }
 
-export function EntryList({ entries, division, participants, tournamentId, userId }: EntryListProps) {
+export function EntryList({
+  entries,
+  division,
+  participants,
+  tournamentId,
+  repairWindowStatus,
+}: EntryListProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [selectedEntry, setSelectedEntry] = useState<EntryWithParticipant | null>(null)
   const [isDeleting, setIsDeleting] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [isDeletingDraw, setIsDeletingDraw] = useState(false)
+  const [dialogMode, setDialogMode] = useState<"standard" | "late_add">("standard")
   const { toast } = useToast()
   const router = useRouter()
 
   const handleAdd = () => {
     setSelectedEntry(null)
+    setDialogMode("standard")
+    setIsDialogOpen(true)
+  }
+
+  const handleAddLateAdd = () => {
+    setSelectedEntry(null)
+    setDialogMode("late_add")
     setIsDialogOpen(true)
   }
 
@@ -53,6 +68,10 @@ export function EntryList({ entries, division, participants, tournamentId, userI
   }
 
   const isDoubles = division.play_mode === "doubles"
+  const isSwissRepairWindow = division.format === "swiss" && !!repairWindowStatus?.available
+  const competitionEntriesCount = entries.filter((entry) => entry.status !== "withdrawn").length
+  const withdrawnCount = entries.filter((entry) => entry.status === "withdrawn").length
+  const canAddLateAdd = isSwissRepairWindow && competitionEntriesCount < division.draw_size
 
   const handleDelete = async (entryId: string, participantName: string) => {
     if (!confirm(`Are you sure you want to remove ${participantName} from this division?`)) {
@@ -81,6 +100,40 @@ export function EntryList({ entries, division, participants, tournamentId, userI
       toast({
         title: "Error",
         description: "Failed to remove entry",
+        variant: "destructive",
+      })
+    } finally {
+      setIsDeleting(null)
+    }
+  }
+
+  const handleRevoke = async (entryId: string, participantName: string) => {
+    if (!confirm(`Revoke ${participantName} from this Swiss division? Their Round 1 match will remain in results history, but they will be excluded from future draws.`)) {
+      return
+    }
+
+    setIsDeleting(entryId)
+    try {
+      const result = await revokeEntry(entryId)
+
+      if (result.error) {
+        toast({
+          title: "Error",
+          description: result.error,
+          variant: "destructive",
+        })
+        return
+      }
+
+      toast({
+        title: "Entry Revoked",
+        description: `${participantName} has been removed from future Swiss rounds`,
+      })
+      router.refresh()
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to revoke entry",
         variant: "destructive",
       })
     } finally {
@@ -176,7 +229,7 @@ export function EntryList({ entries, division, participants, tournamentId, userI
   // Filter available participants (not already entered)
   const availableParticipants = participants.filter(p => !enteredParticipantIds.has(p.id))
 
-  const entriesCount = entries.length
+  const entriesCount = competitionEntriesCount
   const drawSize = division.draw_size
   const canGenerateDraw = entriesCount >= 2 && !division.is_published
 
@@ -191,6 +244,9 @@ export function EntryList({ entries, division, participants, tournamentId, userI
                 {division.is_published && (
                   <Badge variant="default" className="ml-2">Draw Published</Badge>
                 )}
+                {withdrawnCount > 0 && (
+                  <Badge variant="outline" className="ml-2">{withdrawnCount} Withdrawn</Badge>
+                )}
               </CardTitle>
               <CardDescription>
                 {isDoubles ? "Teams" : "Participants"} registered for this division
@@ -204,6 +260,11 @@ export function EntryList({ entries, division, participants, tournamentId, userI
                       View Matches
                     </Link>
                   </Button>
+                  {canAddLateAdd && (
+                    <Button variant="outline" onClick={handleAddLateAdd}>
+                      {isDoubles ? "Add Late Add Team" : "Add Late Add"}
+                    </Button>
+                  )}
                   <Button
                     variant="destructive"
                     onClick={handleDeleteDraw}
@@ -234,12 +295,38 @@ export function EntryList({ entries, division, participants, tournamentId, userI
           </div>
         </CardHeader>
         <CardContent>
+          {division.is_published && division.format === "swiss" && (
+            <div className="mb-4 rounded-lg border bg-muted/30 p-4">
+              <p className="text-sm font-medium">
+                {isSwissRepairWindow
+                  ? "Swiss repair window is open"
+                  : "Swiss repair window is closed"}
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {isSwissRepairWindow
+                  ? "You can revoke misclassified entries and optionally add a swing late add before Round 2 is generated."
+                  : repairWindowStatus?.reason || "Repair actions are unavailable for this division right now."}
+              </p>
+            </div>
+          )}
+
           {entries.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground mb-4">
                 No {isDoubles ? "teams have" : "participants have"} been added to this division yet
               </p>
-              <Button onClick={handleAdd}>{isDoubles ? "Add First Team" : "Add First Entry"}</Button>
+              <Button
+                onClick={division.is_published ? handleAddLateAdd : handleAdd}
+                disabled={division.is_published && !canAddLateAdd}
+              >
+                {division.is_published
+                  ? isDoubles
+                    ? "Add First Late Add Team"
+                    : "Add First Late Add"
+                  : isDoubles
+                    ? "Add First Team"
+                    : "Add First Entry"}
+              </Button>
             </div>
           ) : (
             <div className="space-y-3">
@@ -285,6 +372,11 @@ export function EntryList({ entries, division, participants, tournamentId, userI
                         <p className="text-sm text-muted-foreground">
                           Added {new Date(entry.created_at).toLocaleDateString()}
                         </p>
+                        {entry.status === "late_add" && (
+                          <p className="text-sm text-muted-foreground">
+                            Starts Round 2 at 0-1
+                          </p>
+                        )}
                       </div>
                     </div>
                     <div className="flex gap-2">
@@ -295,14 +387,26 @@ export function EntryList({ entries, division, participants, tournamentId, userI
                       >
                         Edit Seed
                       </Button>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => handleDelete(entry.id, displayName)}
-                        disabled={isDeleting === entry.id}
-                      >
-                        {isDeleting === entry.id ? "Removing..." : "Remove"}
-                      </Button>
+                      {!division.is_published && (
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleDelete(entry.id, displayName)}
+                          disabled={isDeleting === entry.id}
+                        >
+                          {isDeleting === entry.id ? "Removing..." : "Remove"}
+                        </Button>
+                      )}
+                      {division.is_published && isSwissRepairWindow && entry.status !== "withdrawn" && (
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleRevoke(entry.id, displayName)}
+                          disabled={isDeleting === entry.id}
+                        >
+                          {isDeleting === entry.id ? "Revoking..." : "Revoke"}
+                        </Button>
+                      )}
                     </div>
                   </div>
                 )
@@ -318,7 +422,7 @@ export function EntryList({ entries, division, participants, tournamentId, userI
         entry={selectedEntry}
         division={division}
         availableParticipants={availableParticipants}
-        tournamentId={tournamentId}
+        mode={dialogMode}
       />
     </div>
   )

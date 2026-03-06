@@ -3,7 +3,13 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Division, Participant } from "@/types/database"
-import { createEntry, createDoubleEntry, updateEntry } from "@/lib/actions/entries"
+import {
+  createEntry,
+  createDoubleEntry,
+  createLateAddDoubleEntry,
+  createLateAddEntry,
+  updateEntry,
+} from "@/lib/actions/entries"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -42,7 +48,7 @@ interface EntryDialogProps {
   entry: EntryWithParticipant | null
   division: Division
   availableParticipants: Participant[]
-  tournamentId: string
+  mode?: "standard" | "late_add"
 }
 
 export function EntryDialog({
@@ -51,7 +57,7 @@ export function EntryDialog({
   entry,
   division,
   availableParticipants,
-  tournamentId,
+  mode = "standard",
 }: EntryDialogProps) {
   const router = useRouter()
   const { toast } = useToast()
@@ -62,6 +68,7 @@ export function EntryDialog({
   const [multiDivisionWarning, setMultiDivisionWarning] = useState<string[]>([])
 
   const isDoubles = division.play_mode === "doubles"
+  const isLateAddMode = !entry && mode === "late_add"
 
   // Update form when entry changes
   useEffect(() => {
@@ -119,12 +126,18 @@ export function EntryDialog({
           return
         }
 
-        const result = await createDoubleEntry(
-          division.id,
-          selectedParticipantId,
-          selectedParticipantId2,
-          seedNumber
-        )
+        const result = isLateAddMode
+          ? await createLateAddDoubleEntry(
+              division.id,
+              selectedParticipantId,
+              selectedParticipantId2
+            )
+          : await createDoubleEntry(
+              division.id,
+              selectedParticipantId,
+              selectedParticipantId2,
+              seedNumber
+            )
 
         if (result.error) {
           toast({
@@ -137,7 +150,9 @@ export function EntryDialog({
 
         toast({
           title: "Success",
-          description: "Doubles team added to division",
+          description: isLateAddMode
+            ? "Late add team added to division"
+            : "Doubles team added to division",
         })
       } else {
         // Create singles entry
@@ -150,11 +165,13 @@ export function EntryDialog({
           return
         }
 
-        const result = await createEntry(
-          division.id,
-          selectedParticipantId,
-          seedNumber
-        )
+        const result = isLateAddMode
+          ? await createLateAddEntry(division.id, selectedParticipantId)
+          : await createEntry(
+              division.id,
+              selectedParticipantId,
+              seedNumber
+            )
 
         if (result.error) {
           toast({
@@ -167,7 +184,9 @@ export function EntryDialog({
 
         toast({
           title: "Success",
-          description: "Participant added to division",
+          description: isLateAddMode
+            ? "Late add added to division"
+            : "Participant added to division",
         })
       }
 
@@ -189,11 +208,23 @@ export function EntryDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {entry ? "Edit Entry Seed" : isDoubles ? "Add Doubles Team" : "Add Entry to Division"}
+            {entry
+              ? "Edit Entry Seed"
+              : isLateAddMode
+                ? isDoubles
+                  ? "Add Late Add Team"
+                  : "Add Late Add"
+                : isDoubles
+                  ? "Add Doubles Team"
+                  : "Add Entry to Division"}
           </DialogTitle>
           <DialogDescription>
             {entry
               ? `Update seeding for ${entry.participant?.display_name || entry.team?.name}`
+              : isLateAddMode
+              ? isDoubles
+                ? `Add a swing team to ${division.name}. The team will start Round 2 at 0-1.`
+                : `Add a swing participant to ${division.name}. They will start Round 2 at 0-1.`
               : isDoubles
               ? `Select two players to form a doubles team in ${division.name}`
               : `Add a participant to ${division.name}`}
@@ -327,36 +358,50 @@ export function EntryDialog({
             </>
           )}
 
-          <div className="space-y-2">
-            <Label htmlFor="seed">
-              Seed (Optional)
-            </Label>
-            <Input
-              id="seed"
-              type="number"
-              min={1}
-              max={division.draw_size}
-              placeholder="Leave empty for auto-seeding"
-              value={seed}
-              onChange={(e) => setSeed(e.target.value)}
-              disabled={isLoading}
-            />
-            <p className="text-sm text-muted-foreground">
-              Seeding determines bracket position. Leave empty to auto-assign.
-            </p>
-          </div>
+          {!isLateAddMode && (
+            <div className="space-y-2">
+              <Label htmlFor="seed">
+                Seed (Optional)
+              </Label>
+              <Input
+                id="seed"
+                type="number"
+                min={1}
+                max={division.draw_size}
+                placeholder="Leave empty for auto-seeding"
+                value={seed}
+                onChange={(e) => setSeed(e.target.value)}
+                disabled={isLoading}
+              />
+              <p className="text-sm text-muted-foreground">
+                Seeding determines bracket position. Leave empty to auto-assign.
+              </p>
+            </div>
+          )}
+
+          {isLateAddMode && (
+            <div className="rounded-md bg-muted px-3 py-2 text-sm text-muted-foreground">
+              This late add will enter the Swiss repair flow and start with a 0-1 record for Round 2 pairing.
+            </div>
+          )}
 
           <div className="flex gap-4">
             <Button type="submit" disabled={isLoading} className="flex-1">
               {isLoading
                 ? entry
                   ? "Updating..."
-                  : "Adding..."
+                  : isLateAddMode
+                    ? "Adding Late Add..."
+                    : "Adding..."
                 : entry
                   ? "Update Seed"
-                  : isDoubles
-                  ? "Add Team"
-                  : "Add to Division"}
+                  : isLateAddMode
+                    ? isDoubles
+                      ? "Add Late Add Team"
+                      : "Add Late Add"
+                    : isDoubles
+                      ? "Add Team"
+                      : "Add to Division"}
             </Button>
             <Button
               type="button"

@@ -4,6 +4,7 @@ import { TABLE_NAMES, type Tournament, type Division, type Entry, type Participa
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { EntryList } from "@/components/entries/entry-list"
+import { getSwissRepairWindowStatus } from "@/lib/services/swiss-repair"
 
 interface EntriesPageProps {
   params: Promise<{ id: string; divisionId: string }>
@@ -66,6 +67,21 @@ export default async function EntriesPage({ params }: EntriesPageProps) {
 
   const typedEntries = (entries as any[]) || []
 
+  const { data: draw } = await supabase
+    .from(TABLE_NAMES.DRAWS)
+    .select("state_json")
+    .eq("division_id", divisionId)
+    .maybeSingle()
+
+  const { data: matches } = await supabase
+    .from(TABLE_NAMES.MATCHES)
+    .select("id, round, status, phase")
+    .eq("division_id", divisionId)
+
+  const repairWindowStatus = typedDivision.format === "swiss"
+    ? getSwissRepairWindowStatus((matches as any[]) || [], draw?.state_json)
+    : null
+
   // Fetch all participants for this tournament (for adding new entries)
   const { data: participants, error: participantsError } = await supabase
     .from(TABLE_NAMES.PARTICIPANTS)
@@ -96,7 +112,7 @@ export default async function EntriesPage({ params }: EntriesPageProps) {
           division={typedDivision}
           participants={typedParticipants}
           tournamentId={id}
-          userId={user.id}
+          repairWindowStatus={repairWindowStatus}
         />
       </div>
     </div>
