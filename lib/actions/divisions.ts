@@ -3,12 +3,31 @@
 import { revalidatePath } from "next/cache"
 import { createClient } from "@/lib/supabase/server"
 import { divisionSchema, type DivisionFormData } from "@/lib/validations/tournament"
+import { DEFAULT_KNOCKOUT_VARIANT } from "@/lib/utils/knockout"
+import { validateSwissConfig } from "@/lib/services/draw-generators/swiss-engine"
 import { TABLE_NAMES } from "@/types/database"
+
+function validateDivisionRules(data: DivisionFormData): string | null {
+  if (data.format !== "swiss") return null
+
+  const rulesJson = (data.rules_json as Record<string, unknown>) || {}
+  const validation = validateSwissConfig({
+    rounds: Number(rulesJson.swiss_rounds || 0),
+    qualifiers: Number(rulesJson.swiss_qualifiers || 0),
+    knockoutVariant: rulesJson.swiss_knockout_variant === "pre_quarter_12"
+      ? "pre_quarter_12"
+      : DEFAULT_KNOCKOUT_VARIANT,
+  }, data.draw_size)
+
+  return validation.valid ? null : (validation.error || "Invalid Swiss configuration")
+}
 
 export async function createDivision(data: DivisionFormData, tournamentId: string) {
   try {
     // Validate input
     const validatedData = divisionSchema.parse(data)
+    const rulesError = validateDivisionRules(validatedData)
+    if (rulesError) return { error: rulesError }
 
     const supabase = await createClient()
 
@@ -57,6 +76,8 @@ export async function updateDivision(divisionId: string, data: DivisionFormData)
   try {
     // Validate input
     const validatedData = divisionSchema.parse(data)
+    const rulesError = validateDivisionRules(validatedData)
+    if (rulesError) return { error: rulesError }
 
     const supabase = await createClient()
 

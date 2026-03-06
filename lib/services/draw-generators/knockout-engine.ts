@@ -3,9 +3,15 @@
  *
  * Generates single-elimination brackets from Swiss qualifiers.
  * Handles seeded bracket positioning so top seeds meet latest.
- *
- * Qualifier count must be a power of 2 (2, 4, 8, 16, 32).
  */
+
+import type { KnockoutVariant } from "@/types/database"
+import {
+  DEFAULT_KNOCKOUT_VARIANT,
+  PRE_QUARTER_QUALIFIER_COUNT,
+  getKnockoutRoundLabel as getRoundLabel,
+  isPowerOf2,
+} from "@/lib/utils/knockout"
 
 interface KnockoutMatch {
   division_id: string
@@ -28,23 +34,12 @@ interface Qualifier {
  * Generate standard seeded bracket positions.
  *
  * For a bracket of size N (power of 2), returns array of [seedA, seedB] pairs.
- * Seeds are 1-based. The bracket ensures:
- * - Seed 1 and 2 can only meet in the final
- * - Seeds 1-4 can only meet in semis or later
- * - Standard bracket progression
- *
- * For 8 players: [[1,8], [4,5], [2,7], [3,6]]
+ * Seeds are 1-based.
  */
 function generateBracketSeedings(size: number): [number, number][] {
   if (size === 2) return [[1, 2]]
 
-  // Recursive bracket building
-  // For each round, the bracket follows: if seed S is in position P,
-  // they play against seed (bracketSize + 1 - S)
   const pairings: [number, number][] = []
-
-  // Use the standard bracket algorithm
-  // Start with [1] and iteratively expand
   let seeds = [1]
 
   while (seeds.length < size) {
@@ -57,7 +52,6 @@ function generateBracketSeedings(size: number): [number, number][] {
     seeds = newSeeds
   }
 
-  // Pair consecutive entries
   for (let i = 0; i < seeds.length; i += 2) {
     pairings.push([seeds[i], seeds[i + 1]])
   }
@@ -65,106 +59,85 @@ function generateBracketSeedings(size: number): [number, number][] {
   return pairings
 }
 
-/**
- * Calculate the number of rounds needed for a bracket
- */
 function bracketRounds(size: number): number {
   return Math.log2(size)
 }
 
-/**
- * Generate a full knockout bracket.
- *
- * Creates all matches for all rounds:
- * - Round 1: All qualifier matchups populated
- * - Rounds 2+: Empty slots with next_match linkage
- *
- * Returns the matches to insert (without IDs — those are assigned by DB).
- * After insert, the caller must update next_match_id references.
- */
-export function generateKnockoutBracketStructure(
+function createMatch(
   divisionId: string,
-  qualifiers: Qualifier[]
+  round: number,
+  sequence: number,
+  sideAEntryId: string | null,
+  sideBEntryId: string | null
+): KnockoutMatch {
+  return {
+    division_id: divisionId,
+    round,
+    sequence,
+    phase: 'knockout',
+    side_a_entry_id: sideAEntryId,
+    side_b_entry_id: sideBEntryId,
+    status: 'scheduled',
+  }
+}
+
+function buildStandardBracketStructure(
+  divisionId: string,
+  seedEntryMap: Map<number, string | null>,
+  size: number,
+  roundOffset = 0
 ): {
   matches: KnockoutMatch[]
-  // Map of "round-sequence" to the match at that position, for linkage
-  positionMap: Map<string, number> // key → index in matches array
+  positionMap: Map<string, number>
 } {
-  const size = qualifiers.length
-
-  // Validate power of 2
-  if (size <= 0 || (size & (size - 1)) !== 0) {
-    throw new Error(`Qualifier count must be a power of 2, got ${size}`)
-  }
-
   const totalRounds = bracketRounds(size)
   const matches: KnockoutMatch[] = []
   const positionMap = new Map<string, number>()
-
-  // Build qualifier lookup: rank → entry_id
-  const qualifierMap = new Map(qualifiers.map(q => [q.rank, q.entry_id]))
-
-  // Generate Round 1 with seeded pairings
-  const seedings = generateBracketSeedings(size)
   let matchIndex = 0
 
+  const seedings = generateBracketSeedings(size)
   for (let seq = 0; seq < seedings.length; seq++) {
     const [seedA, seedB] = seedings[seq]
-    const key = `1-${seq + 1}`
+    const actualRound = 1 + roundOffset
+    const key = `${actualRound}-${seq + 1}`
 
-    matches.push({
-      division_id: divisionId,
-      round: 1,
-      sequence: seq + 1,
-      phase: 'knockout',
-      side_a_entry_id: qualifierMap.get(seedA) || null,
-      side_b_entry_id: qualifierMap.get(seedB) || null,
-      status: 'scheduled',
-    })
+    matches.push(createMatch(
+      divisionId,
+      actualRound,
+      seq + 1,
+      seedEntryMap.get(seedA) ?? null,
+      seedEntryMap.get(seedB) ?? null
+    ))
 
     positionMap.set(key, matchIndex)
     matchIndex++
   }
 
-  // Generate subsequent rounds (empty slots)
   for (let round = 2; round <= totalRounds; round++) {
+    const actualRound = round + roundOffset
     const matchesInRound = size / Math.pow(2, round)
 
     for (let seq = 1; seq <= matchesInRound; seq++) {
-      const key = `${round}-${seq}`
-
-      matches.push({
-        division_id: divisionId,
-        round,
-        sequence: seq,
-        phase: 'knockout',
-        side_a_entry_id: null,
-        side_b_entry_id: null,
-        status: 'scheduled',
-      })
-
+      const key = `${actualRound}-${seq}`
+      matches.push(createMatch(divisionId, actualRound, seq, null, null))
       positionMap.set(key, matchIndex)
       matchIndex++
     }
   }
 
-  // Set up next_match linkage
-  // Each match in round R, sequence S feeds into round R+1, sequence ceil(S/2)
-  // If S is odd → side A of next match; if S is even → side B
   for (let round = 1; round < totalRounds; round++) {
+    const actualRound = round + roundOffset
+    const nextRound = actualRound + 1
     const matchesInRound = size / Math.pow(2, round)
 
     for (let seq = 1; seq <= matchesInRound; seq++) {
-      const currentKey = `${round}-${seq}`
+      const currentKey = `${actualRound}-${seq}`
       const nextSeq = Math.ceil(seq / 2)
-      const nextKey = `${round + 1}-${nextSeq}`
+      const nextKey = `${nextRound}-${nextSeq}`
       const nextSide: 'A' | 'B' = seq % 2 === 1 ? 'A' : 'B'
 
       const currentIdx = positionMap.get(currentKey)!
-      // Store linkage info — next_match_id will be set after DB insert
       matches[currentIdx].next_match_side = nextSide
-      // Store the target position key temporarily in next_match_id
-      // The caller will resolve this to actual DB IDs after insert
       ;(matches[currentIdx] as any)._next_match_key = nextKey
     }
   }
@@ -172,13 +145,104 @@ export function generateKnockoutBracketStructure(
   return { matches, positionMap }
 }
 
+function buildStandardSeedEntryMap(qualifiers: Qualifier[]): Map<number, string | null> {
+  return new Map(qualifiers.map(q => [q.rank, q.entry_id]))
+}
+
+function generatePreQuarter12BracketStructure(
+  divisionId: string,
+  qualifiers: Qualifier[]
+): {
+  matches: KnockoutMatch[]
+  positionMap: Map<string, number>
+} {
+  if (qualifiers.length !== PRE_QUARTER_QUALIFIER_COUNT) {
+    throw new Error(`Pre Quarter knockout requires ${PRE_QUARTER_QUALIFIER_COUNT} qualifiers, got ${qualifiers.length}`)
+  }
+
+  const qualifierMap = new Map(qualifiers.map(q => [q.rank, q.entry_id]))
+  const quarterFinalSeedMap = new Map<number, string | null>([
+    [1, qualifierMap.get(1) ?? null],
+    [2, qualifierMap.get(2) ?? null],
+    [3, qualifierMap.get(3) ?? null],
+    [4, qualifierMap.get(4) ?? null],
+    [5, null],
+    [6, null],
+    [7, null],
+    [8, null],
+  ])
+
+  const { matches: seededMatches, positionMap } = buildStandardBracketStructure(
+    divisionId,
+    quarterFinalSeedMap,
+    8,
+    1
+  )
+
+  const preQuarterConfigs = [
+    { sequence: 1, seedA: 5, seedB: 12, nextMatchKey: '2-2' },
+    { sequence: 2, seedA: 6, seedB: 11, nextMatchKey: '2-4' },
+    { sequence: 3, seedA: 7, seedB: 10, nextMatchKey: '2-3' },
+    { sequence: 4, seedA: 8, seedB: 9, nextMatchKey: '2-1' },
+  ]
+
+  const preQuarterMatches = preQuarterConfigs.map((config, index) => {
+    const match = createMatch(
+      divisionId,
+      1,
+      config.sequence,
+      qualifierMap.get(config.seedA) ?? null,
+      qualifierMap.get(config.seedB) ?? null
+    )
+    match.next_match_side = 'B'
+    ;(match as any)._next_match_key = config.nextMatchKey
+    positionMap.set(`1-${config.sequence}`, index)
+    return match
+  })
+
+  const combinedMatches = [...preQuarterMatches, ...seededMatches]
+  seededMatches.forEach((_, index) => {
+    const match = seededMatches[index]
+    positionMap.set(`${match.round}-${match.sequence}`, preQuarterMatches.length + index)
+  })
+
+  return {
+    matches: combinedMatches,
+    positionMap,
+  }
+}
+
 /**
- * Get the display label for a knockout round
+ * Generate a full knockout bracket.
  */
-export function getKnockoutRoundLabel(round: number, totalRounds: number): string {
-  const roundsFromEnd = totalRounds - round
-  if (roundsFromEnd === 0) return 'Final'
-  if (roundsFromEnd === 1) return 'Semi-Final'
-  if (roundsFromEnd === 2) return 'Quarter-Final'
-  return `Round of ${Math.pow(2, roundsFromEnd + 1)}`
+export function generateKnockoutBracketStructure(
+  divisionId: string,
+  qualifiers: Qualifier[],
+  variant: KnockoutVariant = DEFAULT_KNOCKOUT_VARIANT
+): {
+  matches: KnockoutMatch[]
+  positionMap: Map<string, number>
+} {
+  if (variant === 'pre_quarter_12') {
+    return generatePreQuarter12BracketStructure(divisionId, qualifiers)
+  }
+
+  const size = qualifiers.length
+  if (size <= 0 || !isPowerOf2(size)) {
+    throw new Error(`Qualifier count must be a power of 2, got ${size}`)
+  }
+
+  return buildStandardBracketStructure(
+    divisionId,
+    buildStandardSeedEntryMap(qualifiers),
+    size
+  )
+}
+
+export function getKnockoutRoundLabel(
+  round: number,
+  totalRounds: number,
+  variant: KnockoutVariant = DEFAULT_KNOCKOUT_VARIANT
+): string {
+  return getRoundLabel(round, totalRounds, variant)
 }

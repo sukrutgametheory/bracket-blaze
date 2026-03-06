@@ -41,6 +41,10 @@ export function LivePortalClient({
   const [supabase] = useState(() => createClient(supabaseUrl, supabaseAnonKey))
   const [matches, setMatches] = useState(initialMatches)
   const [divisionFilter, setDivisionFilter] = useState<string>("all")
+  const drawMap = useMemo(
+    () => new Map(draws.map(draw => [draw.division_id, draw.state_json as any])),
+    [draws]
+  )
 
   // Stable key for Broadcast subscription dependencies
   const matchKey = matches.map(m => `${m.id}:${m.status}`).join(",")
@@ -183,6 +187,7 @@ export function LivePortalClient({
                     key={match.id}
                     match={match}
                     isLive={match.status === "on_court"}
+                    drawState={drawMap.get(match.division_id)}
                   />
                 ))}
               </div>

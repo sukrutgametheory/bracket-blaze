@@ -21,8 +21,13 @@ import {
 } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
 import { Pencil } from "lucide-react"
-import type { Division, MatchScoreData } from "@/types/database"
+import type { Division, KnockoutVariant, MatchScoreData } from "@/types/database"
 import { getEntryDisplayName } from "@/lib/utils/display-name"
+import {
+  getKnockoutRoundCount,
+  getKnockoutRoundLabel,
+  getKnockoutVariant,
+} from "@/lib/utils/knockout"
 
 interface EntryInfo {
   id: string
@@ -33,8 +38,14 @@ interface EntryInfo {
 interface ResultsSectionProps {
   divisions: Division[]
   matches: any[]
+  draws: { division_id: string; state_json: any }[]
   entries: EntryInfo[]
   onEditScore: (match: any) => void
+}
+
+interface DrawState {
+  bracket_size?: number
+  knockout_variant?: KnockoutVariant
 }
 
 function formatScore(metaJson: any): string {
@@ -45,17 +56,10 @@ function formatScore(metaJson: any): string {
   return data.games.map(g => `${g.score_a}-${g.score_b}`).join(", ")
 }
 
-function getKnockoutRoundLabel(round: number, totalKnockoutRounds: number): string {
-  const roundsFromEnd = totalKnockoutRounds - round
-  if (roundsFromEnd === 0) return "Final"
-  if (roundsFromEnd === 1) return "Semi-Final"
-  if (roundsFromEnd === 2) return "Quarter-Final"
-  return `Round of ${Math.pow(2, roundsFromEnd + 1)}`
-}
-
 export function ResultsSection({
   divisions,
   matches,
+  draws,
   entries,
   onEditScore,
 }: ResultsSectionProps) {
@@ -97,15 +101,21 @@ export function ResultsSection({
     : roundFilter
 
   const entryMap = new Map(entries.map(e => [e.id, e]))
+  const drawMap = new Map(draws.map(d => [d.division_id, d.state_json as DrawState]))
 
   // Compute total knockout rounds per division for round labels
   const knockoutRoundsMap = new Map<string, number>()
+  const knockoutVariantMap = new Map<string, KnockoutVariant>()
   if (hasKnockout) {
     for (const div of divisions) {
+      const drawState = drawMap.get(div.id)
       const koMatches = completedMatches.filter(m => m.division_id === div.id && m.phase === "knockout")
       if (koMatches.length > 0) {
+        const knockoutVariant = getKnockoutVariant(drawState?.knockout_variant)
+        knockoutVariantMap.set(div.id, knockoutVariant)
+        const derivedRounds = getKnockoutRoundCount(drawState?.bracket_size, knockoutVariant)
         const maxRound = Math.max(...koMatches.map(m => m.round))
-        knockoutRoundsMap.set(div.id, maxRound)
+        knockoutRoundsMap.set(div.id, derivedRounds || maxRound)
       }
     }
     // Also check scheduled knockout matches for total rounds
@@ -155,9 +165,15 @@ export function ResultsSection({
                   (phaseFilter === "all" && phaseFiltered.some(m => m.round === r && m.phase === "knockout"))
                 const label = isKoRound && phaseFilter === "knockout"
                   ? (() => {
-                    // Find total knockout rounds from any division
-                    const totalKo = Math.max(...Array.from(knockoutRoundsMap.values()), 1)
-                    return getKnockoutRoundLabel(r, totalKo)
+                    const divisionsForRound = phaseFiltered
+                      .filter(m => m.phase === "knockout" && m.round === r)
+                      .map(m => m.division_id)
+                    const labels = Array.from(new Set(divisionsForRound.map(divisionId => {
+                      const totalKo = knockoutRoundsMap.get(divisionId) || 1
+                      const variant = knockoutVariantMap.get(divisionId) || "standard"
+                      return getKnockoutRoundLabel(r, totalKo, variant)
+                    })))
+                    return labels.length === 1 ? labels[0] : `Knockout Round ${r}`
                   })()
                   : `Round ${r}`
                 return (
@@ -192,6 +208,7 @@ export function ResultsSection({
         if (divMatches.length === 0) return null
 
         const totalKoRounds = knockoutRoundsMap.get(division.id) || 1
+        const knockoutVariant = knockoutVariantMap.get(division.id) || "standard"
 
         return (
           <Card key={division.id} className="border">
@@ -225,7 +242,7 @@ export function ResultsSection({
                     const isKnockout = match.phase === "knockout"
 
                     const roundLabel = isKnockout
-                      ? getKnockoutRoundLabel(match.round, totalKoRounds)
+                      ? getKnockoutRoundLabel(match.round, totalKoRounds, knockoutVariant)
                       : `Round ${match.round}`
 
                     return (

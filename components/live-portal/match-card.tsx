@@ -3,20 +3,21 @@
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
-import type { GameScore, LiveScore, MatchScoreData } from "@/types/database"
+import type { GameScore, KnockoutVariant, LiveScore, MatchScoreData } from "@/types/database"
 import { getEntryDisplayName } from "@/lib/utils/display-name"
+import {
+  getKnockoutRoundCount,
+  getKnockoutRoundLabel,
+  getKnockoutVariant,
+} from "@/lib/utils/knockout"
 
 interface MatchCardProps {
   match: any
   isLive: boolean
-}
-
-function getKnockoutRoundLabel(round: number, totalRounds: number): string {
-  const roundsFromEnd = totalRounds - round
-  if (roundsFromEnd === 0) return "Final"
-  if (roundsFromEnd === 1) return "Semi-Final"
-  if (roundsFromEnd === 2) return "Quarter-Final"
-  return `Round of ${Math.pow(2, roundsFromEnd + 1)}`
+  drawState?: {
+    bracket_size?: number
+    knockout_variant?: KnockoutVariant
+  }
 }
 
 function formatDuration(startTime: string | null): string {
@@ -28,7 +29,7 @@ function formatDuration(startTime: string | null): string {
   return `${mins}m`
 }
 
-export function MatchCard({ match, isLive }: MatchCardProps) {
+export function MatchCard({ match, isLive, drawState }: MatchCardProps) {
   const sideA = match.side_a as any
   const sideB = match.side_b as any
   const nameA = getEntryDisplayName(sideA)
@@ -43,9 +44,10 @@ export function MatchCard({ match, isLive }: MatchCardProps) {
 
   // Round label
   const isKnockout = match.phase === "knockout"
-  // For knockout, estimate total rounds from the match round (best we can do without draw state)
+  const knockoutVariant = getKnockoutVariant(drawState?.knockout_variant)
+  const totalKnockoutRounds = getKnockoutRoundCount(drawState?.bracket_size, knockoutVariant) || match.round
   const roundLabel = isKnockout
-    ? getKnockoutRoundLabel(match.round, match.round) // Will show "Final" for highest round
+    ? getKnockoutRoundLabel(match.round, totalKnockoutRounds, knockoutVariant)
     : `Round ${match.round}`
 
   // Duration

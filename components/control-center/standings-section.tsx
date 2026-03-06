@@ -12,9 +12,14 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
-import type { Division } from "@/types/database"
+import type { Division, KnockoutVariant } from "@/types/database"
 import type { RankedStanding } from "@/lib/services/standings-engine"
 import { getEntryDisplayName } from "@/lib/utils/display-name"
+import {
+  getKnockoutRoundCount,
+  getKnockoutRoundLabel,
+  getKnockoutVariant,
+} from "@/lib/utils/knockout"
 
 interface EntryInfo {
   id: string
@@ -29,6 +34,7 @@ interface DrawState {
   qualifiers: number
   phase: string
   bracket_size?: number
+  knockout_variant?: KnockoutVariant
 }
 
 interface StandingsSectionProps {
@@ -37,14 +43,6 @@ interface StandingsSectionProps {
   draws: { division_id: string; state_json: any }[]
   entries: EntryInfo[]
   matches?: any[]
-}
-
-function getKnockoutRoundLabel(round: number, totalRounds: number): string {
-  const roundsFromEnd = totalRounds - round
-  if (roundsFromEnd === 0) return "Final"
-  if (roundsFromEnd === 1) return "Semi-Final"
-  if (roundsFromEnd === 2) return "Quarter-Final"
-  return `Round of ${Math.pow(2, roundsFromEnd + 1)}`
 }
 
 function SwissStandingsTable({
@@ -149,10 +147,12 @@ function KnockoutBracketView({
   divisionId,
   matches,
   entryMap,
+  drawState,
 }: {
   divisionId: string
   matches: any[]
   entryMap: Map<string, EntryInfo>
+  drawState?: DrawState
 }) {
   const koMatches = matches
     .filter(m => m.division_id === divisionId && m.phase === "knockout")
@@ -169,7 +169,9 @@ function KnockoutBracketView({
     )
   }
 
-  const totalRounds = Math.max(...koMatches.map(m => m.round))
+  const knockoutVariant = getKnockoutVariant(drawState?.knockout_variant)
+  const totalRounds = getKnockoutRoundCount(drawState?.bracket_size, knockoutVariant)
+    || Math.max(...koMatches.map(m => m.round))
 
   // Group by round
   const roundGroups = new Map<number, any[]>()
@@ -182,7 +184,7 @@ function KnockoutBracketView({
   return (
     <div className="space-y-4">
       {Array.from(roundGroups.entries()).map(([round, roundMatches]) => {
-        const roundLabel = getKnockoutRoundLabel(round, totalRounds)
+        const roundLabel = getKnockoutRoundLabel(round, totalRounds, knockoutVariant)
 
         return (
           <div key={round}>
@@ -342,6 +344,7 @@ export function StandingsSection({
                       divisionId={division.id}
                       matches={matches}
                       entryMap={entryMap}
+                      drawState={drawState}
                     />
                   </TabsContent>
 

@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Read DUPR ID mapping from the CSV
-const duprCsvPath = path.join(__dirname, '..', '..', '..', 'Downloads', "B'luru Open Contender Tour - Indiranagar Pickleball - Copy of dupr.csv");
+const duprCsvPath = path.join(__dirname, '..', '..', '..', 'Downloads', "B'luru Open Contender Tour - Indiranagar Pickleball - Copy of dupr (3).csv");
 const duprCsv = fs.readFileSync(duprCsvPath, 'utf-8');
 const duprLines = duprCsv.trim().split('\n');
 const duprMap = {}; // participant_id -> { display_name, dupr_id }
@@ -53,7 +53,7 @@ for (const m of singlesData) {
     matchType: 'S',
     scoreType: 'SIDEOUT',
     event: `B'luru Open Contender Tour - Indiranagar - ${m.division_name}`,
-    date: '02/22/2026',
+    date: '2026-02-22',
     playerA1: sideAInfo.display_name,
     playerA1DuprId: sideAInfo.dupr_id,
     playerA2: '',
@@ -132,7 +132,7 @@ for (const m of doublesData) {
     matchType: 'D',
     scoreType: 'SIDEOUT',
     event: `B'luru Open Contender Tour - Indiranagar - ${m.division_name}`,
-    date: '02/22/2026',
+    date: '2026-02-22',
     playerA1: sideA1Info.display_name,
     playerA1DuprId: sideA1Info.dupr_id,
     playerA2: sideA2Info.display_name,

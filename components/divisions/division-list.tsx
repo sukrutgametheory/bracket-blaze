@@ -10,6 +10,7 @@ import { deleteDivision } from "@/lib/actions/divisions"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { describeSwissKnockoutOption, getKnockoutVariant } from "@/lib/utils/knockout"
 
 interface DivisionListProps {
   divisions: Division[]
@@ -112,7 +113,8 @@ export function DivisionList({ divisions, tournamentId, userId }: DivisionListPr
                 if (division.format === "swiss") {
                   const rounds = rulesJson.swiss_rounds || "?"
                   const qualifiers = rulesJson.swiss_qualifiers || 0
-                  formatDetails = `${rounds} rounds${qualifiers > 0 ? ` → Top ${qualifiers} to knockout` : ""}`
+                  const variant = getKnockoutVariant(rulesJson.swiss_knockout_variant)
+                  formatDetails = `${rounds} rounds${qualifiers > 0 ? ` → ${describeSwissKnockoutOption(qualifiers, variant)}` : ""}`
                 } else if (division.format === "groups_knockout") {
                   const groups = rulesJson.groups_count || "?"
                   const qualifiers = rulesJson.group_qualifiers_per_group || "?"

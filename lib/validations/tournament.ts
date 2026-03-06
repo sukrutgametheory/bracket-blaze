@@ -1,5 +1,9 @@
 import { z } from "zod"
 import { normalizePhone, isValidE164 } from "@/lib/utils/phone"
+import {
+  DEFAULT_KNOCKOUT_VARIANT,
+  isValidSwissKnockoutConfig,
+} from "@/lib/utils/knockout"
 
 export const tournamentSchema = z.object({
   name: z.string().min(3, "Tournament name must be at least 3 characters").max(100),
@@ -29,6 +33,7 @@ export const divisionFormSchema = divisionSchema.extend({
   // For Swiss format
   swiss_rounds: z.number().int().min(1).max(10).optional(),
   swiss_qualifiers: z.number().int().min(0).optional(),
+  swiss_knockout_variant: z.enum(["standard", "pre_quarter_12"]).optional(),
 
   // For Groups + Knockout format
   groups_count: z.number().int().min(2).max(16).optional(),
@@ -42,10 +47,13 @@ export const divisionFormSchema = divisionSchema.extend({
   if (data.format === "swiss") {
     if (!data.swiss_rounds || data.swiss_rounds < 3) return false
     if (data.swiss_qualifiers !== undefined && data.swiss_qualifiers > data.draw_size) return false
-    // Qualifiers must be a power of 2 (for clean knockout brackets)
     if (data.swiss_qualifiers !== undefined && data.swiss_qualifiers > 0) {
-      const isPowerOf2 = (n: number) => n > 0 && (n & (n - 1)) === 0
-      if (!isPowerOf2(data.swiss_qualifiers)) return false
+      const variant = data.swiss_knockout_variant || DEFAULT_KNOCKOUT_VARIANT
+      if (!isValidSwissKnockoutConfig(data.swiss_qualifiers, variant)) return false
+    }
+    if ((data.swiss_qualifiers || 0) === 0) {
+      const variant = data.swiss_knockout_variant || DEFAULT_KNOCKOUT_VARIANT
+      if (variant !== DEFAULT_KNOCKOUT_VARIANT) return false
     }
   }
 

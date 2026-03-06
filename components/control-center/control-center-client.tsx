@@ -385,6 +385,7 @@ export function ControlCenterClient({
           <ResultsSection
             divisions={divisions}
             matches={matches}
+            draws={draws}
             entries={entries}
             onEditScore={handleOpenEditDialog}
           />

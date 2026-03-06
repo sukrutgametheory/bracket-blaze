@@ -1,0 +1,2722 @@
+[
+  {
+    "match_id": "9cff2510-2d84-4d28-9ff1-a872d07e21b0",
+    "division_name": "Women's Doubles",
+    "round": 1,
+    "sequence": 2,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 0
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 0
+    },
+    "actual_start_time": "2026-02-22T04:37:52.363962+00:00",
+    "actual_end_time": "2026-02-22T04:46:04.973+00:00",
+    "assigned_at": "2026-02-22T04:34:34.249+00:00",
+    "created_at": "2026-02-22T04:30:36.614916+00:00",
+    "side_a_team_name": "Shilpa Sham / Umera Salma",
+    "side_b_team_name": "Dikshita Jain / Sarika Mehtha",
+    "side_a_p1_id": "49385b3e-6e0d-48bc-bcbc-a65dac835990",
+    "side_a_p1_name": "Shilpa Sham",
+    "side_a_p2_id": "6bf83f19-746c-48e3-860d-26b7eb5bf758",
+    "side_a_p2_name": "Umera Salma",
+    "side_b_p1_id": "16e0dd7e-40c9-4bd3-a64f-4254553973dd",
+    "side_b_p1_name": "Dikshita Jain",
+    "side_b_p2_id": "e36f7023-2ac9-4ebf-a54c-f72ba36af3d4",
+    "side_b_p2_name": "Sarika Mehtha"
+  },
+  {
+    "match_id": "5e6980d8-fe5b-4044-afa9-1bd7ed11340b",
+    "division_name": "Women's Doubles",
+    "round": 1,
+    "sequence": 3,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 6
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 6
+    },
+    "actual_start_time": "2026-02-22T04:34:29.607198+00:00",
+    "actual_end_time": "2026-02-22T04:49:45.013+00:00",
+    "assigned_at": "2026-02-22T04:31:31.511+00:00",
+    "created_at": "2026-02-22T04:30:36.614916+00:00",
+    "side_a_team_name": "Andrea Das / Kavya J",
+    "side_b_team_name": "Divyashree N / Sneha Ankitha",
+    "side_a_p1_id": "3fc6efe0-2892-4929-85f9-cb2041596eba",
+    "side_a_p1_name": "Kavya J",
+    "side_a_p2_id": "3221c784-e769-4c20-b0a3-0080964cb2af",
+    "side_a_p2_name": "Andrea Das",
+    "side_b_p1_id": "e24e75e5-3e17-4932-a2e2-7ffc81a696ae",
+    "side_b_p1_name": "Divyashree N",
+    "side_b_p2_id": "1fbc1865-403a-409e-83e2-01fbb543f73a",
+    "side_b_p2_name": "Sneha Ankitha"
+  },
+  {
+    "match_id": "99fb5387-8195-4736-b021-e818089286b2",
+    "division_name": "Women's Doubles",
+    "round": 1,
+    "sequence": 1,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 1
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 1
+    },
+    "actual_start_time": "2026-02-22T04:52:52.860425+00:00",
+    "actual_end_time": "2026-02-22T05:00:25.461+00:00",
+    "assigned_at": "2026-02-22T04:46:18.883+00:00",
+    "created_at": "2026-02-22T04:30:36.614916+00:00",
+    "side_a_team_name": "Sonam / Kasturi",
+    "side_b_team_name": "Nandini Sarin / Bhavika Saini",
+    "side_a_p1_id": "afec4a0c-a886-4136-953c-7a58d1cc3a35",
+    "side_a_p1_name": "Sonam",
+    "side_a_p2_id": "ed54d193-c865-4ddf-8d9b-6bf26b701bb7",
+    "side_a_p2_name": "Kasturi",
+    "side_b_p1_id": "1d1da521-d3c5-40cf-91db-45aa8a9b4cf7",
+    "side_b_p1_name": "Nandini Sarin",
+    "side_b_p2_id": "d122879b-924c-4083-95be-ad5c7ab08003",
+    "side_b_p2_name": "Bhavika Saini"
+  },
+  {
+    "match_id": "35d303ca-b809-4cc9-a929-17f67e31b695",
+    "division_name": "Women's Doubles",
+    "round": 1,
+    "sequence": 4,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 9,
+          "score_b": 11
+        }
+      ],
+      "total_points_a": 9,
+      "total_points_b": 11
+    },
+    "actual_start_time": "2026-02-22T05:02:46.085706+00:00",
+    "actual_end_time": "2026-02-22T05:20:00.871+00:00",
+    "assigned_at": "2026-02-22T05:00:10.483+00:00",
+    "created_at": "2026-02-22T04:30:36.614916+00:00",
+    "side_a_team_name": "Manjushree JH / Bhavya Vishwanath",
+    "side_b_team_name": "Hita / Aashna Bhardwaj",
+    "side_a_p1_id": "ff25e856-a853-4b02-b7db-b18effb33580",
+    "side_a_p1_name": "Manjushree JH",
+    "side_a_p2_id": "6abc41c5-1923-46cb-9268-9d8c8f55c715",
+    "side_a_p2_name": "Bhavya Vishwanath",
+    "side_b_p1_id": "0341898d-613f-4353-8a78-4ccdfb8477f0",
+    "side_b_p1_name": "Aashna Bhardwaj",
+    "side_b_p2_id": "6e96cf87-3648-4609-ab5e-bbaa99bd481c",
+    "side_b_p2_name": "Hita"
+  },
+  {
+    "match_id": "12281657-91d5-4bba-a838-56f1649dfd10",
+    "division_name": "Women's Doubles",
+    "round": 2,
+    "sequence": 4,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 0
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 0
+    },
+    "actual_start_time": "2026-02-22T05:23:36.016758+00:00",
+    "actual_end_time": "2026-02-22T05:33:32.69+00:00",
+    "assigned_at": "2026-02-22T05:20:56.508+00:00",
+    "created_at": "2026-02-22T05:20:24.283649+00:00",
+    "side_a_team_name": "Divyashree N / Sneha Ankitha",
+    "side_b_team_name": "Nandini Sarin / Bhavika Saini",
+    "side_a_p1_id": "e24e75e5-3e17-4932-a2e2-7ffc81a696ae",
+    "side_a_p1_name": "Divyashree N",
+    "side_a_p2_id": "1fbc1865-403a-409e-83e2-01fbb543f73a",
+    "side_a_p2_name": "Sneha Ankitha",
+    "side_b_p1_id": "1d1da521-d3c5-40cf-91db-45aa8a9b4cf7",
+    "side_b_p1_name": "Nandini Sarin",
+    "side_b_p2_id": "d122879b-924c-4083-95be-ad5c7ab08003",
+    "side_b_p2_name": "Bhavika Saini"
+  },
+  {
+    "match_id": "eecef7e7-7d0e-4cb7-b091-70ad17586ae7",
+    "division_name": "Women's Doubles",
+    "round": 2,
+    "sequence": 3,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 1
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 1
+    },
+    "actual_start_time": "2026-02-22T05:35:02.74344+00:00",
+    "actual_end_time": "2026-02-22T05:42:12.483+00:00",
+    "assigned_at": "2026-02-22T05:33:50.225+00:00",
+    "created_at": "2026-02-22T05:20:24.283649+00:00",
+    "side_a_team_name": "Manjushree JH / Bhavya Vishwanath",
+    "side_b_team_name": "Dikshita Jain / Sarika Mehtha",
+    "side_a_p1_id": "ff25e856-a853-4b02-b7db-b18effb33580",
+    "side_a_p1_name": "Manjushree JH",
+    "side_a_p2_id": "6abc41c5-1923-46cb-9268-9d8c8f55c715",
+    "side_a_p2_name": "Bhavya Vishwanath",
+    "side_b_p1_id": "16e0dd7e-40c9-4bd3-a64f-4254553973dd",
+    "side_b_p1_name": "Dikshita Jain",
+    "side_b_p2_id": "e36f7023-2ac9-4ebf-a54c-f72ba36af3d4",
+    "side_b_p2_name": "Sarika Mehtha"
+  },
+  {
+    "match_id": "227b686f-9869-4af2-b35a-c41fdcc9868c",
+    "division_name": "Women's Doubles",
+    "round": 2,
+    "sequence": 2,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 5
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 5
+    },
+    "actual_start_time": "2026-02-22T05:25:48.513121+00:00",
+    "actual_end_time": "2026-02-22T05:44:29.849+00:00",
+    "assigned_at": "2026-02-22T05:20:47.126+00:00",
+    "created_at": "2026-02-22T05:20:24.283649+00:00",
+    "side_a_team_name": "Sonam / Kasturi",
+    "side_b_team_name": "Andrea Das / Kavya J",
+    "side_a_p1_id": "afec4a0c-a886-4136-953c-7a58d1cc3a35",
+    "side_a_p1_name": "Sonam",
+    "side_a_p2_id": "ed54d193-c865-4ddf-8d9b-6bf26b701bb7",
+    "side_a_p2_name": "Kasturi",
+    "side_b_p1_id": "3fc6efe0-2892-4929-85f9-cb2041596eba",
+    "side_b_p1_name": "Kavya J",
+    "side_b_p2_id": "3221c784-e769-4c20-b0a3-0080964cb2af",
+    "side_b_p2_name": "Andrea Das"
+  },
+  {
+    "match_id": "42f33630-a7a5-4cc7-9e1a-944872e52df5",
+    "division_name": "Women's Doubles",
+    "round": 2,
+    "sequence": 1,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 6,
+          "score_b": 11
+        }
+      ],
+      "total_points_a": 6,
+      "total_points_b": 11
+    },
+    "actual_start_time": "2026-02-22T05:26:35.719135+00:00",
+    "actual_end_time": "2026-02-22T05:45:12.029+00:00",
+    "assigned_at": "2026-02-22T05:23:41.723+00:00",
+    "created_at": "2026-02-22T05:20:24.283649+00:00",
+    "side_a_team_name": "Shilpa Sham / Umera Salma",
+    "side_b_team_name": "Hita / Aashna Bhardwaj",
+    "side_a_p1_id": "49385b3e-6e0d-48bc-bcbc-a65dac835990",
+    "side_a_p1_name": "Shilpa Sham",
+    "side_a_p2_id": "6bf83f19-746c-48e3-860d-26b7eb5bf758",
+    "side_a_p2_name": "Umera Salma",
+    "side_b_p1_id": "0341898d-613f-4353-8a78-4ccdfb8477f0",
+    "side_b_p1_name": "Aashna Bhardwaj",
+    "side_b_p2_id": "6e96cf87-3648-4609-ab5e-bbaa99bd481c",
+    "side_b_p2_name": "Hita"
+  },
+  {
+    "match_id": "54030c38-8af2-49e6-a34d-24befaa6a269",
+    "division_name": "Women's Doubles",
+    "round": 3,
+    "sequence": 3,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 7,
+          "score_b": 11
+        }
+      ],
+      "total_points_a": 7,
+      "total_points_b": 11
+    },
+    "actual_start_time": "2026-02-22T05:52:49.534777+00:00",
+    "actual_end_time": "2026-02-22T06:05:13.868+00:00",
+    "assigned_at": "2026-02-22T05:48:19.572+00:00",
+    "created_at": "2026-02-22T05:45:32.113101+00:00",
+    "side_a_team_name": "Divyashree N / Sneha Ankitha",
+    "side_b_team_name": "Shilpa Sham / Umera Salma",
+    "side_a_p1_id": "e24e75e5-3e17-4932-a2e2-7ffc81a696ae",
+    "side_a_p1_name": "Divyashree N",
+    "side_a_p2_id": "1fbc1865-403a-409e-83e2-01fbb543f73a",
+    "side_a_p2_name": "Sneha Ankitha",
+    "side_b_p1_id": "49385b3e-6e0d-48bc-bcbc-a65dac835990",
+    "side_b_p1_name": "Shilpa Sham",
+    "side_b_p2_id": "6bf83f19-746c-48e3-860d-26b7eb5bf758",
+    "side_b_p2_name": "Umera Salma"
+  },
+  {
+    "match_id": "bcfaa33c-b65c-4c09-b8a2-54ea295b286e",
+    "division_name": "Women's Doubles",
+    "round": 3,
+    "sequence": 2,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 3,
+          "score_b": 11
+        }
+      ],
+      "total_points_a": 3,
+      "total_points_b": 11
+    },
+    "actual_start_time": "2026-02-22T05:52:25.755452+00:00",
+    "actual_end_time": "2026-02-22T06:06:11.985+00:00",
+    "assigned_at": "2026-02-22T05:46:39.576+00:00",
+    "created_at": "2026-02-22T05:45:32.113101+00:00",
+    "side_a_team_name": "Manjushree JH / Bhavya Vishwanath",
+    "side_b_team_name": "Andrea Das / Kavya J",
+    "side_a_p1_id": "ff25e856-a853-4b02-b7db-b18effb33580",
+    "side_a_p1_name": "Manjushree JH",
+    "side_a_p2_id": "6abc41c5-1923-46cb-9268-9d8c8f55c715",
+    "side_a_p2_name": "Bhavya Vishwanath",
+    "side_b_p1_id": "3fc6efe0-2892-4929-85f9-cb2041596eba",
+    "side_b_p1_name": "Kavya J",
+    "side_b_p2_id": "3221c784-e769-4c20-b0a3-0080964cb2af",
+    "side_b_p2_name": "Andrea Das"
+  },
+  {
+    "match_id": "b7ca6da2-cbb8-427a-a66e-7f1ad034676d",
+    "division_name": "Women's Doubles",
+    "round": 3,
+    "sequence": 1,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 5
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 5
+    },
+    "actual_start_time": "2026-02-22T05:53:06.985265+00:00",
+    "actual_end_time": "2026-02-22T06:10:15.81+00:00",
+    "assigned_at": "2026-02-22T05:46:09.822+00:00",
+    "created_at": "2026-02-22T05:45:32.113101+00:00",
+    "side_a_team_name": "Sonam / Kasturi",
+    "side_b_team_name": "Hita / Aashna Bhardwaj",
+    "side_a_p1_id": "afec4a0c-a886-4136-953c-7a58d1cc3a35",
+    "side_a_p1_name": "Sonam",
+    "side_a_p2_id": "ed54d193-c865-4ddf-8d9b-6bf26b701bb7",
+    "side_a_p2_name": "Kasturi",
+    "side_b_p1_id": "0341898d-613f-4353-8a78-4ccdfb8477f0",
+    "side_b_p1_name": "Aashna Bhardwaj",
+    "side_b_p2_id": "6e96cf87-3648-4609-ab5e-bbaa99bd481c",
+    "side_b_p2_name": "Hita"
+  },
+  {
+    "match_id": "af033595-995c-4391-b168-5012eff3261f",
+    "division_name": "Women's Doubles",
+    "round": 3,
+    "sequence": 4,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 9,
+          "score_b": 11
+        }
+      ],
+      "total_points_a": 9,
+      "total_points_b": 11
+    },
+    "actual_start_time": "2026-02-22T05:53:39.587772+00:00",
+    "actual_end_time": "2026-02-22T06:10:23.907+00:00",
+    "assigned_at": "2026-02-22T05:47:09.696+00:00",
+    "created_at": "2026-02-22T05:45:32.113101+00:00",
+    "side_a_team_name": "Nandini Sarin / Bhavika Saini",
+    "side_b_team_name": "Dikshita Jain / Sarika Mehtha",
+    "side_a_p1_id": "1d1da521-d3c5-40cf-91db-45aa8a9b4cf7",
+    "side_a_p1_name": "Nandini Sarin",
+    "side_a_p2_id": "d122879b-924c-4083-95be-ad5c7ab08003",
+    "side_a_p2_name": "Bhavika Saini",
+    "side_b_p1_id": "16e0dd7e-40c9-4bd3-a64f-4254553973dd",
+    "side_b_p1_name": "Dikshita Jain",
+    "side_b_p2_id": "e36f7023-2ac9-4ebf-a54c-f72ba36af3d4",
+    "side_b_p2_name": "Sarika Mehtha"
+  },
+  {
+    "match_id": "5f8511f0-7166-4808-bf3c-aae4a2be7d15",
+    "division_name": "Women's Doubles",
+    "round": 1,
+    "sequence": 1,
+    "phase": "knockout",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 15,
+          "score_b": 6
+        }
+      ],
+      "total_points_a": 15,
+      "total_points_b": 6
+    },
+    "actual_start_time": "2026-02-22T06:15:34.89108+00:00",
+    "actual_end_time": "2026-02-22T06:36:07.389+00:00",
+    "assigned_at": "2026-02-22T06:13:53.414+00:00",
+    "created_at": "2026-02-22T06:13:21.678347+00:00",
+    "side_a_team_name": "Sonam / Kasturi",
+    "side_b_team_name": "Hita / Aashna Bhardwaj",
+    "side_a_p1_id": "afec4a0c-a886-4136-953c-7a58d1cc3a35",
+    "side_a_p1_name": "Sonam",
+    "side_a_p2_id": "ed54d193-c865-4ddf-8d9b-6bf26b701bb7",
+    "side_a_p2_name": "Kasturi",
+    "side_b_p1_id": "0341898d-613f-4353-8a78-4ccdfb8477f0",
+    "side_b_p1_name": "Aashna Bhardwaj",
+    "side_b_p2_id": "6e96cf87-3648-4609-ab5e-bbaa99bd481c",
+    "side_b_p2_name": "Hita"
+  },
+  {
+    "match_id": "b3022e7f-79d5-422e-aebc-051d4639c0e8",
+    "division_name": "Women's Doubles",
+    "round": 1,
+    "sequence": 2,
+    "phase": "knockout",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 15
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 15
+    },
+    "actual_start_time": "2026-02-22T06:16:56.904246+00:00",
+    "actual_end_time": "2026-02-22T06:44:24.593+00:00",
+    "assigned_at": "2026-02-22T06:14:10.308+00:00",
+    "created_at": "2026-02-22T06:13:21.678347+00:00",
+    "side_a_team_name": "Shilpa Sham / Umera Salma",
+    "side_b_team_name": "Andrea Das / Kavya J",
+    "side_a_p1_id": "49385b3e-6e0d-48bc-bcbc-a65dac835990",
+    "side_a_p1_name": "Shilpa Sham",
+    "side_a_p2_id": "6bf83f19-746c-48e3-860d-26b7eb5bf758",
+    "side_a_p2_name": "Umera Salma",
+    "side_b_p1_id": "3fc6efe0-2892-4929-85f9-cb2041596eba",
+    "side_b_p1_name": "Kavya J",
+    "side_b_p2_id": "3221c784-e769-4c20-b0a3-0080964cb2af",
+    "side_b_p2_name": "Andrea Das"
+  },
+  {
+    "match_id": "2ea19084-421c-4b4e-8522-4cb007063242",
+    "division_name": "Mixed Doubles",
+    "round": 1,
+    "sequence": 7,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 2,
+          "score_b": 11
+        }
+      ],
+      "total_points_a": 2,
+      "total_points_b": 11
+    },
+    "actual_start_time": "2026-02-22T06:46:41.644858+00:00",
+    "actual_end_time": "2026-02-22T06:55:43.955+00:00",
+    "assigned_at": "2026-02-22T06:34:37.88+00:00",
+    "created_at": "2026-02-22T06:31:17.329825+00:00",
+    "side_a_team_name": "Divyashree N / Williams",
+    "side_b_team_name": "Vidula Reddy / Kiran Ashish",
+    "side_a_p1_id": "e24e75e5-3e17-4932-a2e2-7ffc81a696ae",
+    "side_a_p1_name": "Divyashree N",
+    "side_a_p2_id": "b979329d-2415-4d65-8872-178166804c57",
+    "side_a_p2_name": "Williams",
+    "side_b_p1_id": "ed20cf15-307c-48eb-8968-23037af3c6c8",
+    "side_b_p1_name": "Vidula Reddy",
+    "side_b_p2_id": "86ddfa47-c2db-4d72-8be2-fb9d141005f9",
+    "side_b_p2_name": "Kiran Ashish"
+  },
+  {
+    "match_id": "b304089b-9813-4461-9d6b-c2417cec92fa",
+    "division_name": "Mixed Doubles",
+    "round": 1,
+    "sequence": 6,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 0
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 0
+    },
+    "actual_start_time": "2026-02-22T06:48:59.759504+00:00",
+    "actual_end_time": "2026-02-22T06:57:18.414+00:00",
+    "assigned_at": "2026-02-22T06:45:26.015+00:00",
+    "created_at": "2026-02-22T06:31:17.329825+00:00",
+    "side_a_team_name": "Kunal / Emily",
+    "side_b_team_name": "Shankar / Haripriya",
+    "side_a_p1_id": "48a062a7-354f-46a4-92cf-d4e95da747d9",
+    "side_a_p1_name": "Kunal",
+    "side_a_p2_id": "6c3a111e-7edc-49c3-b923-0a6fa2cc22f5",
+    "side_a_p2_name": "Emily",
+    "side_b_p1_id": "b19b4641-9b4f-4cf2-bd38-b3e5d4cfdffb",
+    "side_b_p1_name": "Shankar",
+    "side_b_p2_id": "b18ec586-c044-43c8-a8c1-03ebb5d831dc",
+    "side_b_p2_name": "Haripriya"
+  },
+  {
+    "match_id": "d6f2ea3f-5020-403d-9ca9-f5cb18d03688",
+    "division_name": "Mixed Doubles",
+    "round": 1,
+    "sequence": 2,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 0
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 0
+    },
+    "actual_start_time": "2026-02-22T06:57:44.201715+00:00",
+    "actual_end_time": "2026-02-22T07:08:09.135+00:00",
+    "assigned_at": "2026-02-22T06:49:08.19+00:00",
+    "created_at": "2026-02-22T06:31:17.329825+00:00",
+    "side_a_team_name": "Gowtham / Prarthana",
+    "side_b_team_name": "Rakshita Rathore / Sharva",
+    "side_a_p1_id": "7de7af5a-9245-40e8-839a-eddf7b80a56c",
+    "side_a_p1_name": "Gowtham",
+    "side_a_p2_id": "5cb611e0-41c5-4af9-8a1f-1d92c3a3f5a3",
+    "side_a_p2_name": "Prarthana",
+    "side_b_p1_id": "fc3dba3f-d6c2-4c42-b79c-d12c02852fad",
+    "side_b_p1_name": "Sharva",
+    "side_b_p2_id": "c49b7e42-eeb0-4bdb-850a-47195286b01a",
+    "side_b_p2_name": "Rakshita Rathore"
+  },
+  {
+    "match_id": "c9f4b732-8419-4d37-8611-47615caf2537",
+    "division_name": "Women's Doubles",
+    "round": 2,
+    "sequence": 1,
+    "phase": "knockout",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 15,
+          "score_b": 6
+        }
+      ],
+      "total_points_a": 15,
+      "total_points_b": 6
+    },
+    "actual_start_time": "2026-02-22T06:55:05.885301+00:00",
+    "actual_end_time": "2026-02-22T07:34:12.304+00:00",
+    "assigned_at": "2026-02-22T06:47:55.457+00:00",
+    "created_at": "2026-02-22T06:13:21.678347+00:00",
+    "side_a_team_name": "Sonam / Kasturi",
+    "side_b_team_name": "Andrea Das / Kavya J",
+    "side_a_p1_id": "afec4a0c-a886-4136-953c-7a58d1cc3a35",
+    "side_a_p1_name": "Sonam",
+    "side_a_p2_id": "ed54d193-c865-4ddf-8d9b-6bf26b701bb7",
+    "side_a_p2_name": "Kasturi",
+    "side_b_p1_id": "3fc6efe0-2892-4929-85f9-cb2041596eba",
+    "side_b_p1_name": "Kavya J",
+    "side_b_p2_id": "3221c784-e769-4c20-b0a3-0080964cb2af",
+    "side_b_p2_name": "Andrea Das"
+  },
+  {
+    "match_id": "50d5af24-52a2-4b5e-946b-dbe425975a60",
+    "division_name": "Mixed Doubles",
+    "round": 1,
+    "sequence": 1,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 0
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 0
+    },
+    "actual_start_time": "2026-02-22T07:44:03.719943+00:00",
+    "actual_end_time": "2026-02-22T07:47:31.16+00:00",
+    "assigned_at": "2026-02-22T07:35:20.128+00:00",
+    "created_at": "2026-02-22T06:31:17.329825+00:00",
+    "side_a_team_name": "Spandan P V / Kasturi",
+    "side_b_team_name": "Nekeen KP / Bhavika Saini",
+    "side_a_p1_id": "ed54d193-c865-4ddf-8d9b-6bf26b701bb7",
+    "side_a_p1_name": "Kasturi",
+    "side_a_p2_id": "f8554e71-c2c4-4daf-81ce-196922be38dc",
+    "side_a_p2_name": "Spandan P V",
+    "side_b_p1_id": "d122879b-924c-4083-95be-ad5c7ab08003",
+    "side_b_p1_name": "Bhavika Saini",
+    "side_b_p2_id": "135a037f-8075-411c-a7a7-39615f3ec219",
+    "side_b_p2_name": "Nekeen KP"
+  },
+  {
+    "match_id": "49a56267-edfa-42e4-ad34-31c8267053e5",
+    "division_name": "Mixed Doubles",
+    "round": 1,
+    "sequence": 3,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 3
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 3
+    },
+    "actual_start_time": "2026-02-22T07:40:37.325025+00:00",
+    "actual_end_time": "2026-02-22T07:47:51.303+00:00",
+    "assigned_at": "2026-02-22T07:35:55.062+00:00",
+    "created_at": "2026-02-22T06:31:17.329825+00:00",
+    "side_a_team_name": "Kavya J / Akash Shivashankar",
+    "side_b_team_name": "Melwin / Nupur",
+    "side_a_p1_id": "3fc6efe0-2892-4929-85f9-cb2041596eba",
+    "side_a_p1_name": "Kavya J",
+    "side_a_p2_id": "8f3daed2-e99c-4a72-b54a-30baaff1533b",
+    "side_a_p2_name": "Akash Shivashankar",
+    "side_b_p1_id": "c400e8e6-4cec-4cfe-b750-5557eddeb372",
+    "side_b_p1_name": "Melwin",
+    "side_b_p2_id": "b702a691-ee18-4f8c-a5d3-3575d66f8591",
+    "side_b_p2_name": "Nupur"
+  },
+  {
+    "match_id": "11252da1-6800-4049-8ad6-cde2c1431ef5",
+    "division_name": "Mixed Doubles",
+    "round": 1,
+    "sequence": 4,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 2
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 2
+    },
+    "actual_start_time": "2026-02-22T07:40:17.373024+00:00",
+    "actual_end_time": "2026-02-22T07:49:30.644+00:00",
+    "assigned_at": "2026-02-22T07:36:43.172+00:00",
+    "created_at": "2026-02-22T06:31:17.329825+00:00",
+    "side_a_team_name": "Tshering Wangdi Yolmo / Andrea Das",
+    "side_b_team_name": "Roshni Naveena S / Athul Krishna R",
+    "side_a_p1_id": "3221c784-e769-4c20-b0a3-0080964cb2af",
+    "side_a_p1_name": "Andrea Das",
+    "side_a_p2_id": "f9c0e341-d77e-498e-bf23-67c818404bad",
+    "side_a_p2_name": "Tshering Wangdi Yolmo",
+    "side_b_p1_id": "ec1b61ee-a402-426d-92fb-82b4a51dc924",
+    "side_b_p1_name": "Roshni Naveena S",
+    "side_b_p2_id": "81cdddae-4b9e-4130-a63a-e1fa858c41f2",
+    "side_b_p2_name": "Athul Krishna R"
+  },
+  {
+    "match_id": "b927c36b-eae1-4376-9d5f-695ad846cee4",
+    "division_name": "Mixed Doubles",
+    "round": 1,
+    "sequence": 5,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 8
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 8
+    },
+    "actual_start_time": "2026-02-22T07:41:45.655743+00:00",
+    "actual_end_time": "2026-02-22T08:06:37.855+00:00",
+    "assigned_at": "2026-02-22T07:37:18.338+00:00",
+    "created_at": "2026-02-22T06:31:17.329825+00:00",
+    "side_a_team_name": "Sonam / Nirup",
+    "side_b_team_name": "Hita / Vikas",
+    "side_a_p1_id": "afec4a0c-a886-4136-953c-7a58d1cc3a35",
+    "side_a_p1_name": "Sonam",
+    "side_a_p2_id": "f5705a40-2152-450b-adb1-ed19b301ee83",
+    "side_a_p2_name": "Nirup",
+    "side_b_p1_id": "6e96cf87-3648-4609-ab5e-bbaa99bd481c",
+    "side_b_p1_name": "Hita",
+    "side_b_p2_id": "20239967-8192-43a0-ae73-6deca46c8c92",
+    "side_b_p2_name": "Vikas"
+  },
+  {
+    "match_id": "5f456363-2930-4392-9e0e-a4b481e08448",
+    "division_name": "Mixed Doubles",
+    "round": 2,
+    "sequence": 4,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 2
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 2
+    },
+    "actual_start_time": "2026-02-22T08:09:58.267646+00:00",
+    "actual_end_time": "2026-02-22T08:17:43.469+00:00",
+    "assigned_at": "2026-02-22T08:08:14.685+00:00",
+    "created_at": "2026-02-22T08:06:46.936105+00:00",
+    "side_a_team_name": "Vidula Reddy / Kiran Ashish",
+    "side_b_team_name": "Shankar / Haripriya",
+    "side_a_p1_id": "ed20cf15-307c-48eb-8968-23037af3c6c8",
+    "side_a_p1_name": "Vidula Reddy",
+    "side_a_p2_id": "86ddfa47-c2db-4d72-8be2-fb9d141005f9",
+    "side_a_p2_name": "Kiran Ashish",
+    "side_b_p1_id": "b19b4641-9b4f-4cf2-bd38-b3e5d4cfdffb",
+    "side_b_p1_name": "Shankar",
+    "side_b_p2_id": "b18ec586-c044-43c8-a8c1-03ebb5d831dc",
+    "side_b_p2_name": "Haripriya"
+  },
+  {
+    "match_id": "985b1ef5-ec13-44d1-9ec2-88ea26f190e6",
+    "division_name": "Mixed Doubles",
+    "round": 2,
+    "sequence": 3,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 1,
+          "score_b": 11
+        }
+      ],
+      "total_points_a": 1,
+      "total_points_b": 11
+    },
+    "actual_start_time": "2026-02-22T08:11:29.277917+00:00",
+    "actual_end_time": "2026-02-22T08:23:39.855+00:00",
+    "assigned_at": "2026-02-22T08:07:42.879+00:00",
+    "created_at": "2026-02-22T08:06:46.936105+00:00",
+    "side_a_team_name": "Kunal / Emily",
+    "side_b_team_name": "Tshering Wangdi Yolmo / Andrea Das",
+    "side_a_p1_id": "48a062a7-354f-46a4-92cf-d4e95da747d9",
+    "side_a_p1_name": "Kunal",
+    "side_a_p2_id": "6c3a111e-7edc-49c3-b923-0a6fa2cc22f5",
+    "side_a_p2_name": "Emily",
+    "side_b_p1_id": "3221c784-e769-4c20-b0a3-0080964cb2af",
+    "side_b_p1_name": "Andrea Das",
+    "side_b_p2_id": "f9c0e341-d77e-498e-bf23-67c818404bad",
+    "side_b_p2_name": "Tshering Wangdi Yolmo"
+  },
+  {
+    "match_id": "f75538cc-6aca-429f-bee2-2b834d981453",
+    "division_name": "Mixed Doubles",
+    "round": 2,
+    "sequence": 6,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 4,
+          "score_b": 11
+        }
+      ],
+      "total_points_a": 4,
+      "total_points_b": 11
+    },
+    "actual_start_time": "2026-02-22T08:12:10.684102+00:00",
+    "actual_end_time": "2026-02-22T08:24:43.37+00:00",
+    "assigned_at": "2026-02-22T08:08:49.651+00:00",
+    "created_at": "2026-02-22T08:06:46.936105+00:00",
+    "side_a_team_name": "Melwin / Nupur",
+    "side_b_team_name": "Rakshita Rathore / Sharva",
+    "side_a_p1_id": "c400e8e6-4cec-4cfe-b750-5557eddeb372",
+    "side_a_p1_name": "Melwin",
+    "side_a_p2_id": "b702a691-ee18-4f8c-a5d3-3575d66f8591",
+    "side_a_p2_name": "Nupur",
+    "side_b_p1_id": "fc3dba3f-d6c2-4c42-b79c-d12c02852fad",
+    "side_b_p1_name": "Sharva",
+    "side_b_p2_id": "c49b7e42-eeb0-4bdb-850a-47195286b01a",
+    "side_b_p2_name": "Rakshita Rathore"
+  },
+  {
+    "match_id": "bdf7f032-e063-471a-ac93-9ab31247a2b1",
+    "division_name": "Mixed Doubles",
+    "round": 2,
+    "sequence": 2,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 5
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 5
+    },
+    "actual_start_time": "2026-02-22T08:12:53.285844+00:00",
+    "actual_end_time": "2026-02-22T08:26:30.745+00:00",
+    "assigned_at": "2026-02-22T08:07:13.07+00:00",
+    "created_at": "2026-02-22T08:06:46.936105+00:00",
+    "side_a_team_name": "Gowtham / Prarthana",
+    "side_b_team_name": "Kavya J / Akash Shivashankar",
+    "side_a_p1_id": "7de7af5a-9245-40e8-839a-eddf7b80a56c",
+    "side_a_p1_name": "Gowtham",
+    "side_a_p2_id": "5cb611e0-41c5-4af9-8a1f-1d92c3a3f5a3",
+    "side_a_p2_name": "Prarthana",
+    "side_b_p1_id": "3fc6efe0-2892-4929-85f9-cb2041596eba",
+    "side_b_p1_name": "Kavya J",
+    "side_b_p2_id": "8f3daed2-e99c-4a72-b54a-30baaff1533b",
+    "side_b_p2_name": "Akash Shivashankar"
+  },
+  {
+    "match_id": "e194e98c-4a18-4286-a94e-62e125a214ee",
+    "division_name": "Mixed Doubles",
+    "round": 2,
+    "sequence": 7,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 2
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 2
+    },
+    "actual_start_time": "2026-02-22T08:19:24.378049+00:00",
+    "actual_end_time": "2026-02-22T08:30:15.367+00:00",
+    "assigned_at": "2026-02-22T08:18:08.15+00:00",
+    "created_at": "2026-02-22T08:06:46.936105+00:00",
+    "side_a_team_name": "Divyashree N / Williams",
+    "side_b_team_name": "Roshni Naveena S / Athul Krishna R",
+    "side_a_p1_id": "e24e75e5-3e17-4932-a2e2-7ffc81a696ae",
+    "side_a_p1_name": "Divyashree N",
+    "side_a_p2_id": "b979329d-2415-4d65-8872-178166804c57",
+    "side_a_p2_name": "Williams",
+    "side_b_p1_id": "ec1b61ee-a402-426d-92fb-82b4a51dc924",
+    "side_b_p1_name": "Roshni Naveena S",
+    "side_b_p2_id": "81cdddae-4b9e-4130-a63a-e1fa858c41f2",
+    "side_b_p2_name": "Athul Krishna R"
+  },
+  {
+    "match_id": "8f27d959-4b19-4516-88b0-14f16967164c",
+    "division_name": "Mixed Doubles",
+    "round": 2,
+    "sequence": 5,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 0
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 0
+    },
+    "actual_start_time": "2026-02-22T08:26:18.031881+00:00",
+    "actual_end_time": "2026-02-22T08:36:04.08+00:00",
+    "assigned_at": "2026-02-22T08:25:05.76+00:00",
+    "created_at": "2026-02-22T08:06:46.936105+00:00",
+    "side_a_team_name": "Hita / Vikas",
+    "side_b_team_name": "Nekeen KP / Bhavika Saini",
+    "side_a_p1_id": "6e96cf87-3648-4609-ab5e-bbaa99bd481c",
+    "side_a_p1_name": "Hita",
+    "side_a_p2_id": "20239967-8192-43a0-ae73-6deca46c8c92",
+    "side_a_p2_name": "Vikas",
+    "side_b_p1_id": "d122879b-924c-4083-95be-ad5c7ab08003",
+    "side_b_p1_name": "Bhavika Saini",
+    "side_b_p2_id": "135a037f-8075-411c-a7a7-39615f3ec219",
+    "side_b_p2_name": "Nekeen KP"
+  },
+  {
+    "match_id": "cdf13f68-8b8b-4d5f-9976-83afd52d36e0",
+    "division_name": "Mixed Doubles",
+    "round": 2,
+    "sequence": 1,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 9
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 9
+    },
+    "actual_start_time": "2026-02-22T08:24:18.956656+00:00",
+    "actual_end_time": "2026-02-22T08:47:16.096+00:00",
+    "assigned_at": "2026-02-22T08:24:06.708+00:00",
+    "created_at": "2026-02-22T08:06:46.936105+00:00",
+    "side_a_team_name": "Spandan P V / Kasturi",
+    "side_b_team_name": "Sonam / Nirup",
+    "side_a_p1_id": "ed54d193-c865-4ddf-8d9b-6bf26b701bb7",
+    "side_a_p1_name": "Kasturi",
+    "side_a_p2_id": "f8554e71-c2c4-4daf-81ce-196922be38dc",
+    "side_a_p2_name": "Spandan P V",
+    "side_b_p1_id": "afec4a0c-a886-4136-953c-7a58d1cc3a35",
+    "side_b_p1_name": "Sonam",
+    "side_b_p2_id": "f5705a40-2152-450b-adb1-ed19b301ee83",
+    "side_b_p2_name": "Nirup"
+  },
+  {
+    "match_id": "801815d3-e19a-49ce-8922-0a9aa6673d1c",
+    "division_name": "Mixed Doubles",
+    "round": 3,
+    "sequence": 6,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 2
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 2
+    },
+    "actual_start_time": "2026-02-22T08:52:14.802853+00:00",
+    "actual_end_time": "2026-02-22T08:57:49.684+00:00",
+    "assigned_at": "2026-02-22T08:49:13.839+00:00",
+    "created_at": "2026-02-22T08:47:26.395928+00:00",
+    "side_a_team_name": "Melwin / Nupur",
+    "side_b_team_name": "Nekeen KP / Bhavika Saini",
+    "side_a_p1_id": "c400e8e6-4cec-4cfe-b750-5557eddeb372",
+    "side_a_p1_name": "Melwin",
+    "side_a_p2_id": "b702a691-ee18-4f8c-a5d3-3575d66f8591",
+    "side_a_p2_name": "Nupur",
+    "side_b_p1_id": "d122879b-924c-4083-95be-ad5c7ab08003",
+    "side_b_p1_name": "Bhavika Saini",
+    "side_b_p2_id": "135a037f-8075-411c-a7a7-39615f3ec219",
+    "side_b_p2_name": "Nekeen KP"
+  },
+  {
+    "match_id": "f5015edb-8673-4ba6-aa38-ed936b0d2af9",
+    "division_name": "Mixed Doubles",
+    "round": 3,
+    "sequence": 3,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 0
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 0
+    },
+    "actual_start_time": "2026-02-22T08:53:43.091272+00:00",
+    "actual_end_time": "2026-02-22T08:59:15.942+00:00",
+    "assigned_at": "2026-02-22T08:49:38.932+00:00",
+    "created_at": "2026-02-22T08:47:26.395928+00:00",
+    "side_a_team_name": "Hita / Vikas",
+    "side_b_team_name": "Rakshita Rathore / Sharva",
+    "side_a_p1_id": "6e96cf87-3648-4609-ab5e-bbaa99bd481c",
+    "side_a_p1_name": "Hita",
+    "side_a_p2_id": "20239967-8192-43a0-ae73-6deca46c8c92",
+    "side_a_p2_name": "Vikas",
+    "side_b_p1_id": "fc3dba3f-d6c2-4c42-b79c-d12c02852fad",
+    "side_b_p1_name": "Sharva",
+    "side_b_p2_id": "c49b7e42-eeb0-4bdb-850a-47195286b01a",
+    "side_b_p2_name": "Rakshita Rathore"
+  },
+  {
+    "match_id": "ce32c0f0-802e-4a9f-8de5-4fffdaf81525",
+    "division_name": "Mixed Doubles",
+    "round": 3,
+    "sequence": 5,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 2
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 2
+    },
+    "actual_start_time": "2026-02-22T08:53:07.783804+00:00",
+    "actual_end_time": "2026-02-22T09:01:43.17+00:00",
+    "assigned_at": "2026-02-22T08:50:02.287+00:00",
+    "created_at": "2026-02-22T08:47:26.395928+00:00",
+    "side_a_team_name": "Kunal / Emily",
+    "side_b_team_name": "Divyashree N / Williams",
+    "side_a_p1_id": "48a062a7-354f-46a4-92cf-d4e95da747d9",
+    "side_a_p1_name": "Kunal",
+    "side_a_p2_id": "6c3a111e-7edc-49c3-b923-0a6fa2cc22f5",
+    "side_a_p2_name": "Emily",
+    "side_b_p1_id": "e24e75e5-3e17-4932-a2e2-7ffc81a696ae",
+    "side_b_p1_name": "Divyashree N",
+    "side_b_p2_id": "b979329d-2415-4d65-8872-178166804c57",
+    "side_b_p2_name": "Williams"
+  },
+  {
+    "match_id": "cffb7ed8-71ea-4f5a-b1d9-e6a1e6df64cb",
+    "division_name": "Mixed Doubles",
+    "round": 3,
+    "sequence": 2,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 8
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 8
+    },
+    "actual_start_time": "2026-02-22T08:51:48.522962+00:00",
+    "actual_end_time": "2026-02-22T09:15:46.48+00:00",
+    "assigned_at": "2026-02-22T08:48:47.544+00:00",
+    "created_at": "2026-02-22T08:47:26.395928+00:00",
+    "side_a_team_name": "Tshering Wangdi Yolmo / Andrea Das",
+    "side_b_team_name": "Vidula Reddy / Kiran Ashish",
+    "side_a_p1_id": "3221c784-e769-4c20-b0a3-0080964cb2af",
+    "side_a_p1_name": "Andrea Das",
+    "side_a_p2_id": "f9c0e341-d77e-498e-bf23-67c818404bad",
+    "side_a_p2_name": "Tshering Wangdi Yolmo",
+    "side_b_p1_id": "ed20cf15-307c-48eb-8968-23037af3c6c8",
+    "side_b_p1_name": "Vidula Reddy",
+    "side_b_p2_id": "86ddfa47-c2db-4d72-8be2-fb9d141005f9",
+    "side_b_p2_name": "Kiran Ashish"
+  },
+  {
+    "match_id": "7e20eaaf-cba7-4471-9579-33145e59d36b",
+    "division_name": "Mixed Doubles",
+    "round": 3,
+    "sequence": 7,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 10,
+          "score_b": 12
+        }
+      ],
+      "total_points_a": 10,
+      "total_points_b": 12
+    },
+    "actual_start_time": "2026-02-22T09:04:25.586635+00:00",
+    "actual_end_time": "2026-02-22T09:24:40.276+00:00",
+    "assigned_at": "2026-02-22T09:02:17.526+00:00",
+    "created_at": "2026-02-22T08:47:26.395928+00:00",
+    "side_a_team_name": "Roshni Naveena S / Athul Krishna R",
+    "side_b_team_name": "Shankar / Haripriya",
+    "side_a_p1_id": "ec1b61ee-a402-426d-92fb-82b4a51dc924",
+    "side_a_p1_name": "Roshni Naveena S",
+    "side_a_p2_id": "81cdddae-4b9e-4130-a63a-e1fa858c41f2",
+    "side_a_p2_name": "Athul Krishna R",
+    "side_b_p1_id": "b19b4641-9b4f-4cf2-bd38-b3e5d4cfdffb",
+    "side_b_p1_name": "Shankar",
+    "side_b_p2_id": "b18ec586-c044-43c8-a8c1-03ebb5d831dc",
+    "side_b_p2_name": "Haripriya"
+  },
+  {
+    "match_id": "34284fde-79e2-4f3c-bf07-995fc8723b95",
+    "division_name": "Mixed Doubles",
+    "round": 3,
+    "sequence": 4,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 13,
+          "score_b": 11
+        }
+      ],
+      "total_points_a": 13,
+      "total_points_b": 11
+    },
+    "actual_start_time": "2026-02-22T09:04:40.939389+00:00",
+    "actual_end_time": "2026-02-22T09:27:53.163+00:00",
+    "assigned_at": "2026-02-22T09:00:39.497+00:00",
+    "created_at": "2026-02-22T08:47:26.395928+00:00",
+    "side_a_team_name": "Kavya J / Akash Shivashankar",
+    "side_b_team_name": "Sonam / Nirup",
+    "side_a_p1_id": "3fc6efe0-2892-4929-85f9-cb2041596eba",
+    "side_a_p1_name": "Kavya J",
+    "side_a_p2_id": "8f3daed2-e99c-4a72-b54a-30baaff1533b",
+    "side_a_p2_name": "Akash Shivashankar",
+    "side_b_p1_id": "afec4a0c-a886-4136-953c-7a58d1cc3a35",
+    "side_b_p1_name": "Sonam",
+    "side_b_p2_id": "f5705a40-2152-450b-adb1-ed19b301ee83",
+    "side_b_p2_name": "Nirup"
+  },
+  {
+    "match_id": "c9cbc4de-540c-49c0-a7d7-e60b2f58ba9c",
+    "division_name": "Mixed Doubles",
+    "round": 3,
+    "sequence": 1,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 12,
+          "score_b": 10
+        }
+      ],
+      "total_points_a": 12,
+      "total_points_b": 10
+    },
+    "actual_start_time": "2026-02-22T09:03:39.268262+00:00",
+    "actual_end_time": "2026-02-22T09:36:36.701+00:00",
+    "assigned_at": "2026-02-22T08:59:46.314+00:00",
+    "created_at": "2026-02-22T08:47:26.395928+00:00",
+    "side_a_team_name": "Spandan P V / Kasturi",
+    "side_b_team_name": "Gowtham / Prarthana",
+    "side_a_p1_id": "ed54d193-c865-4ddf-8d9b-6bf26b701bb7",
+    "side_a_p1_name": "Kasturi",
+    "side_a_p2_id": "f8554e71-c2c4-4daf-81ce-196922be38dc",
+    "side_a_p2_name": "Spandan P V",
+    "side_b_p1_id": "7de7af5a-9245-40e8-839a-eddf7b80a56c",
+    "side_b_p1_name": "Gowtham",
+    "side_b_p2_id": "5cb611e0-41c5-4af9-8a1f-1d92c3a3f5a3",
+    "side_b_p2_name": "Prarthana"
+  },
+  {
+    "match_id": "cfc2a8b7-40ab-433e-bb1b-dd3e6c5a2b47",
+    "division_name": "Men's Doubles",
+    "round": 1,
+    "sequence": 13,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 3,
+          "score_b": 11
+        }
+      ],
+      "total_points_a": 3,
+      "total_points_b": 11
+    },
+    "actual_start_time": "2026-02-22T09:41:29.212887+00:00",
+    "actual_end_time": "2026-02-22T09:50:07.076+00:00",
+    "assigned_at": "2026-02-22T09:38:54.93+00:00",
+    "created_at": "2026-02-22T09:36:11.119084+00:00",
+    "side_a_team_name": "Aniruddha PN / Arun Srinivasan",
+    "side_b_team_name": "Sathiyanarayanan M / Adit Ingole",
+    "side_a_p1_id": "7e481e1a-4be3-4604-846b-198f81279e61",
+    "side_a_p1_name": "Aniruddha PN",
+    "side_a_p2_id": "5e054f16-6a79-4e63-a101-49bc795759f6",
+    "side_a_p2_name": "Arun Srinivasan",
+    "side_b_p1_id": "bcb9eb06-7045-4f1c-b304-c662315f6a36",
+    "side_b_p1_name": "Sathiyanarayanan M",
+    "side_b_p2_id": "6e812c01-c065-4ce5-8380-afff7e0cfc29",
+    "side_b_p2_name": "Adit Ingole"
+  },
+  {
+    "match_id": "245385a9-fa66-4835-8d26-6899b8e7d9e5",
+    "division_name": "Men's Doubles",
+    "round": 1,
+    "sequence": 12,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 1
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 1
+    },
+    "actual_start_time": "2026-02-22T09:41:09.515627+00:00",
+    "actual_end_time": "2026-02-22T09:50:14.687+00:00",
+    "assigned_at": "2026-02-22T09:39:07.074+00:00",
+    "created_at": "2026-02-22T09:36:11.119084+00:00",
+    "side_a_team_name": "Rahul / Kalyan Kumar",
+    "side_b_team_name": "Sathvik Patil / Apurv Ekansh",
+    "side_a_p1_id": "e4dfa901-c6e7-44bc-b438-a3619cd89125",
+    "side_a_p1_name": "Rahul",
+    "side_a_p2_id": "6997af53-f4af-4609-85a7-f3fb2549aca0",
+    "side_a_p2_name": "Kalyan Kumar",
+    "side_b_p1_id": "7461fce3-922d-4e9f-ad35-85e08ccd7472",
+    "side_b_p1_name": "Sathvik Patil",
+    "side_b_p2_id": "84121f26-418e-498e-908b-845f2b495607",
+    "side_b_p2_name": "Apurv Ekansh"
+  },
+  {
+    "match_id": "bcc4c226-aa94-4ad8-bb05-7a4a9be0125d",
+    "division_name": "Men's Doubles",
+    "round": 1,
+    "sequence": 6,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 0
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 0
+    },
+    "actual_start_time": "2026-02-22T09:55:03.19344+00:00",
+    "actual_end_time": "2026-02-22T10:04:02.817+00:00",
+    "assigned_at": "2026-02-22T09:51:28.392+00:00",
+    "created_at": "2026-02-22T09:36:11.119084+00:00",
+    "side_a_team_name": "Dinakar Naidu / Ranjit Kupli",
+    "side_b_team_name": "Sharva / Nihal",
+    "side_a_p1_id": "cb9fd4fb-88e0-4bab-aaac-a318afbf4aaf",
+    "side_a_p1_name": "Ranjit Kupli",
+    "side_a_p2_id": "91af2eac-8a1e-46f5-a980-e560efb552b8",
+    "side_a_p2_name": "Dinakar Naidu",
+    "side_b_p1_id": "fc3dba3f-d6c2-4c42-b79c-d12c02852fad",
+    "side_b_p1_name": "Sharva",
+    "side_b_p2_id": "a778ee55-8e83-4980-9303-e9f268e6fe16",
+    "side_b_p2_name": "Nihal"
+  },
+  {
+    "match_id": "ee3ed139-ed36-429a-ad5a-2b9c1d45d637",
+    "division_name": "Men's Doubles",
+    "round": 1,
+    "sequence": 11,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 6
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 6
+    },
+    "actual_start_time": "2026-02-22T09:52:35.097708+00:00",
+    "actual_end_time": "2026-02-22T10:10:03.866+00:00",
+    "assigned_at": "2026-02-22T09:50:45.891+00:00",
+    "created_at": "2026-02-22T09:36:11.119084+00:00",
+    "side_a_team_name": "Karthik J / Abishek Karthikeyan",
+    "side_b_team_name": "Jeril Jacob / Keshav Rathi",
+    "side_a_p1_id": "466af843-5b72-4e37-98fb-352132ab8183",
+    "side_a_p1_name": "Karthik J",
+    "side_a_p2_id": "d1069589-3a33-4560-99ec-0ba7602b9465",
+    "side_a_p2_name": "Abishek Karthikeyan",
+    "side_b_p1_id": "ef41d6f0-9eea-4f57-b641-fc937dc741b7",
+    "side_b_p1_name": "Jeril Jacob",
+    "side_b_p2_id": "e4fbe0be-0a6f-4db2-847a-d1b591e8452f",
+    "side_b_p2_name": "Keshav Rathi"
+  },
+  {
+    "match_id": "d8583e72-160b-49f7-84ad-7a42b5274bad",
+    "division_name": "Mixed Doubles",
+    "round": 1,
+    "sequence": 2,
+    "phase": "knockout",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 15,
+          "score_b": 7
+        }
+      ],
+      "total_points_a": 15,
+      "total_points_b": 7
+    },
+    "actual_start_time": "2026-02-22T09:47:20.498632+00:00",
+    "actual_end_time": "2026-02-22T10:10:15.33+00:00",
+    "assigned_at": "2026-02-22T09:46:28.512+00:00",
+    "created_at": "2026-02-22T09:45:12.852334+00:00",
+    "side_a_team_name": "Spandan P V / Kasturi",
+    "side_b_team_name": "Hita / Vikas",
+    "side_a_p1_id": "ed54d193-c865-4ddf-8d9b-6bf26b701bb7",
+    "side_a_p1_name": "Kasturi",
+    "side_a_p2_id": "f8554e71-c2c4-4daf-81ce-196922be38dc",
+    "side_a_p2_name": "Spandan P V",
+    "side_b_p1_id": "6e96cf87-3648-4609-ab5e-bbaa99bd481c",
+    "side_b_p1_name": "Hita",
+    "side_b_p2_id": "20239967-8192-43a0-ae73-6deca46c8c92",
+    "side_b_p2_name": "Vikas"
+  },
+  {
+    "match_id": "a027c6d6-197e-4741-9c42-0dace1da1f38",
+    "division_name": "Men's Doubles",
+    "round": 1,
+    "sequence": 10,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 0
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 0
+    },
+    "actual_start_time": "2026-02-22T10:05:54.695749+00:00",
+    "actual_end_time": "2026-02-22T10:13:25.489+00:00",
+    "assigned_at": "2026-02-22T10:04:50.676+00:00",
+    "created_at": "2026-02-22T09:36:11.119084+00:00",
+    "side_a_team_name": "Shankar / Aman",
+    "side_b_team_name": "Siva Sai / Pranav Katta",
+    "side_a_p1_id": "4056c424-288d-4cfe-9508-bf48751c34c5",
+    "side_a_p1_name": "Aman",
+    "side_a_p2_id": "b19b4641-9b4f-4cf2-bd38-b3e5d4cfdffb",
+    "side_a_p2_name": "Shankar",
+    "side_b_p1_id": "76241527-cec7-4707-a787-0e676a606748",
+    "side_b_p1_name": "Siva Sai",
+    "side_b_p2_id": "1421a631-3c3a-4e87-854f-6f2e96228848",
+    "side_b_p2_name": "Pranav Katta"
+  },
+  {
+    "match_id": "cc86bc7a-c296-4445-bfce-cc0679041c08",
+    "division_name": "Mixed Doubles",
+    "round": 1,
+    "sequence": 1,
+    "phase": "knockout",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 15,
+          "score_b": 13
+        }
+      ],
+      "total_points_a": 15,
+      "total_points_b": 13
+    },
+    "actual_start_time": "2026-02-22T09:47:44.249484+00:00",
+    "actual_end_time": "2026-02-22T10:15:48.998+00:00",
+    "assigned_at": "2026-02-22T09:46:58.371+00:00",
+    "created_at": "2026-02-22T09:45:12.852334+00:00",
+    "side_a_team_name": "Tshering Wangdi Yolmo / Andrea Das",
+    "side_b_team_name": "Gowtham / Prarthana",
+    "side_a_p1_id": "3221c784-e769-4c20-b0a3-0080964cb2af",
+    "side_a_p1_name": "Andrea Das",
+    "side_a_p2_id": "f9c0e341-d77e-498e-bf23-67c818404bad",
+    "side_a_p2_name": "Tshering Wangdi Yolmo",
+    "side_b_p1_id": "7de7af5a-9245-40e8-839a-eddf7b80a56c",
+    "side_b_p1_name": "Gowtham",
+    "side_b_p2_id": "5cb611e0-41c5-4af9-8a1f-1d92c3a3f5a3",
+    "side_b_p2_name": "Prarthana"
+  },
+  {
+    "match_id": "04c0c6c6-f20c-4829-99c5-54a3b83c5f7f",
+    "division_name": "Men's Doubles",
+    "round": 1,
+    "sequence": 8,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 0
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 0
+    },
+    "actual_start_time": "2026-02-22T10:15:49.942629+00:00",
+    "actual_end_time": "2026-02-22T10:20:13.012+00:00",
+    "assigned_at": "2026-02-22T10:12:14.481+00:00",
+    "created_at": "2026-02-22T09:36:11.119084+00:00",
+    "side_a_team_name": "Krishna Kumar / Kunal Mathew",
+    "side_b_team_name": "Chandru C R M / Sathvik R G",
+    "side_a_p1_id": "9454c826-2fbe-4e47-baef-d35abe1bcc31",
+    "side_a_p1_name": "Krishna Kumar",
+    "side_a_p2_id": "cf00512f-7540-4aae-a97e-23363b2f7554",
+    "side_a_p2_name": "Kunal Mathew",
+    "side_b_p1_id": "70bd5719-1988-4b91-82dc-9dda94e925fa",
+    "side_b_p1_name": "Chandru C R M",
+    "side_b_p2_id": "d620b3ee-53c3-4a16-aa51-ad30ec8339dc",
+    "side_b_p2_name": "Sathvik R G"
+  },
+  {
+    "match_id": "b4e8161c-c823-4d71-81bf-f4b4ae506d7b",
+    "division_name": "Men's Doubles",
+    "round": 1,
+    "sequence": 9,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 1
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 1
+    },
+    "actual_start_time": "2026-02-22T10:12:44.906687+00:00",
+    "actual_end_time": "2026-02-22T10:22:25.232+00:00",
+    "assigned_at": "2026-02-22T10:11:59.44+00:00",
+    "created_at": "2026-02-22T09:36:11.119084+00:00",
+    "side_a_team_name": "Mitesh / Imran",
+    "side_b_team_name": "Maanav Desai / Arrush Malik",
+    "side_a_p1_id": "19f77311-c3ca-4e40-8004-5cc2c1da4275",
+    "side_a_p1_name": "Mitesh",
+    "side_a_p2_id": "42bf13e8-2089-4eb4-a05a-62b774466663",
+    "side_a_p2_name": "Imran",
+    "side_b_p1_id": "62600527-3b1a-4a53-8736-c592fedd8eb1",
+    "side_b_p1_name": "Maanav Desai",
+    "side_b_p2_id": "f82ac0d3-78a4-45ee-a6c5-5744181e1d72",
+    "side_b_p2_name": "Arrush Malik"
+  },
+  {
+    "match_id": "0681aac8-bdba-497d-a714-cf08db52ecd6",
+    "division_name": "Men's Doubles",
+    "round": 1,
+    "sequence": 7,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 0
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 0
+    },
+    "actual_start_time": "2026-02-22T10:15:40.369955+00:00",
+    "actual_end_time": "2026-02-22T10:24:02.224+00:00",
+    "assigned_at": "2026-02-22T10:14:30.812+00:00",
+    "created_at": "2026-02-22T09:36:11.119084+00:00",
+    "side_a_team_name": "Ashwin Hanagudu / Anup Basti",
+    "side_b_team_name": "Rohit PV / Anubhav",
+    "side_a_p1_id": "15d74200-dbbc-4538-984b-230bc8fb36ea",
+    "side_a_p1_name": "Ashwin Hanagudu",
+    "side_a_p2_id": "44c3db5c-fc36-4d15-8607-44f200027b40",
+    "side_a_p2_name": "Anup Basti",
+    "side_b_p1_id": "95c41b8d-2e90-42c5-8e05-8b78e85e4e48",
+    "side_b_p1_name": "Rohit PV",
+    "side_b_p2_id": "1f3a585a-1163-4df6-8252-88580511d59f",
+    "side_b_p2_name": "Anubhav"
+  },
+  {
+    "match_id": "2f9c5e2b-0323-47af-a8d6-9481886ba56d",
+    "division_name": "Men's Doubles",
+    "round": 1,
+    "sequence": 5,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 0
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 0
+    },
+    "actual_start_time": "2026-02-22T10:19:09.005905+00:00",
+    "actual_end_time": "2026-02-22T10:24:20.874+00:00",
+    "assigned_at": "2026-02-22T10:16:27.386+00:00",
+    "created_at": "2026-02-22T09:36:11.119084+00:00",
+    "side_a_team_name": "Williams / Akash Shivashankar",
+    "side_b_team_name": "Shomesh Behl / Amar Sanmathi",
+    "side_a_p1_id": "b979329d-2415-4d65-8872-178166804c57",
+    "side_a_p1_name": "Williams",
+    "side_a_p2_id": "8f3daed2-e99c-4a72-b54a-30baaff1533b",
+    "side_a_p2_name": "Akash Shivashankar",
+    "side_b_p1_id": "26c992d6-4148-4912-99a0-730080ab1cba",
+    "side_b_p1_name": "Shomesh Behl",
+    "side_b_p2_id": "a9b90d37-ce79-4bf2-9b03-b6b8affa0698",
+    "side_b_p2_name": "Amar Sanmathi"
+  },
+  {
+    "match_id": "36df145c-dd34-4b3f-b028-d8e0454ce052",
+    "division_name": "Men's Doubles",
+    "round": 1,
+    "sequence": 4,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 2
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 2
+    },
+    "actual_start_time": "2026-02-22T10:26:14.563386+00:00",
+    "actual_end_time": "2026-02-22T10:33:25.405+00:00",
+    "assigned_at": "2026-02-22T10:20:47.847+00:00",
+    "created_at": "2026-02-22T09:36:11.119084+00:00",
+    "side_a_team_name": "Kiran Ashish / Nirup",
+    "side_b_team_name": "Taarun Sridhar / Hitesh S Reddy",
+    "side_a_p1_id": "86ddfa47-c2db-4d72-8be2-fb9d141005f9",
+    "side_a_p1_name": "Kiran Ashish",
+    "side_a_p2_id": "f5705a40-2152-450b-adb1-ed19b301ee83",
+    "side_a_p2_name": "Nirup",
+    "side_b_p1_id": "e47eb904-adf8-4d44-99b8-a448aafb27c2",
+    "side_b_p1_name": "Taarun Sridhar",
+    "side_b_p2_id": "d5dbda01-32ee-4d72-aaca-0acdd7996020",
+    "side_b_p2_name": "Hitesh S Reddy"
+  },
+  {
+    "match_id": "163223cb-70e1-48f0-a68c-75fdb576011c",
+    "division_name": "Men's Doubles",
+    "round": 1,
+    "sequence": 3,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 1
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 1
+    },
+    "actual_start_time": "2026-02-22T10:25:35.580511+00:00",
+    "actual_end_time": "2026-02-22T10:35:13.954+00:00",
+    "assigned_at": "2026-02-22T10:23:04.075+00:00",
+    "created_at": "2026-02-22T09:36:11.119084+00:00",
+    "side_a_team_name": "Vishal Choudhary / Badri",
+    "side_b_team_name": "Shridhar / Manav",
+    "side_a_p1_id": "4e0345c0-0eb5-4b31-a4c9-7966ded4db5d",
+    "side_a_p1_name": "Vishal Choudhary",
+    "side_a_p2_id": "6ac6c384-16af-4bd4-83db-38663b003202",
+    "side_a_p2_name": "Badri",
+    "side_b_p1_id": "a3f0094b-e6c3-4d5c-bb97-324092f3c93d",
+    "side_b_p1_name": "Shridhar",
+    "side_b_p2_id": "24900d4d-0984-4e91-b864-0566b229cc66",
+    "side_b_p2_name": "Manav"
+  },
+  {
+    "match_id": "a4ff4180-4ca2-43ca-9ee7-89970ed39a73",
+    "division_name": "Mixed Doubles",
+    "round": 2,
+    "sequence": 1,
+    "phase": "knockout",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 7,
+          "score_b": 15
+        }
+      ],
+      "total_points_a": 7,
+      "total_points_b": 15
+    },
+    "actual_start_time": "2026-02-22T10:26:14.093746+00:00",
+    "actual_end_time": "2026-02-22T10:50:43.706+00:00",
+    "assigned_at": "2026-02-22T10:25:07.896+00:00",
+    "created_at": "2026-02-22T09:45:12.852334+00:00",
+    "side_a_team_name": "Tshering Wangdi Yolmo / Andrea Das",
+    "side_b_team_name": "Spandan P V / Kasturi",
+    "side_a_p1_id": "3221c784-e769-4c20-b0a3-0080964cb2af",
+    "side_a_p1_name": "Andrea Das",
+    "side_a_p2_id": "f9c0e341-d77e-498e-bf23-67c818404bad",
+    "side_a_p2_name": "Tshering Wangdi Yolmo",
+    "side_b_p1_id": "ed54d193-c865-4ddf-8d9b-6bf26b701bb7",
+    "side_b_p1_name": "Kasturi",
+    "side_b_p2_id": "f8554e71-c2c4-4daf-81ce-196922be38dc",
+    "side_b_p2_name": "Spandan P V"
+  },
+  {
+    "match_id": "59c704b7-d084-45ce-8920-a5975aab07c9",
+    "division_name": "Men's Doubles",
+    "round": 1,
+    "sequence": 1,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 0
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 0
+    },
+    "actual_start_time": "2026-02-22T10:53:49.514524+00:00",
+    "actual_end_time": "2026-02-22T11:00:34.425+00:00",
+    "assigned_at": "2026-02-22T10:53:45.529+00:00",
+    "created_at": "2026-02-22T09:36:11.119084+00:00",
+    "side_a_team_name": "Gowtham / Spandan P V",
+    "side_b_team_name": "Chirag / Naveen",
+    "side_a_p1_id": "f8554e71-c2c4-4daf-81ce-196922be38dc",
+    "side_a_p1_name": "Spandan P V",
+    "side_a_p2_id": "7de7af5a-9245-40e8-839a-eddf7b80a56c",
+    "side_a_p2_name": "Gowtham",
+    "side_b_p1_id": "d552c83b-3ca9-4d3a-9b6e-75c34c0a22c6",
+    "side_b_p1_name": "Chirag",
+    "side_b_p2_id": "1e66beea-3a61-4566-8f6e-a8ffae5e2f3d",
+    "side_b_p2_name": "Naveen"
+  },
+  {
+    "match_id": "4d66f9bd-8dc1-4866-9a57-d77ed63528b4",
+    "division_name": "Men's Doubles",
+    "round": 1,
+    "sequence": 2,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 0
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 0
+    },
+    "actual_start_time": "2026-02-22T10:54:31.910372+00:00",
+    "actual_end_time": "2026-02-22T11:00:50.957+00:00",
+    "assigned_at": "2026-02-22T10:54:21.772+00:00",
+    "created_at": "2026-02-22T09:36:11.119084+00:00",
+    "side_a_team_name": "Tshering Wangdi Yolmo / Harsh Pancholi",
+    "side_b_team_name": "Ankit Pandey / Saikrishna Kondaraju",
+    "side_a_p1_id": "f9c0e341-d77e-498e-bf23-67c818404bad",
+    "side_a_p1_name": "Tshering Wangdi Yolmo",
+    "side_a_p2_id": "859b87ff-f163-4548-9f43-13458057cdd8",
+    "side_a_p2_name": "Harsh Pancholi",
+    "side_b_p1_id": "0d9a1434-b902-4da8-9cb5-e945ed2d16be",
+    "side_b_p1_name": "Saikrishna Kondaraju",
+    "side_b_p2_id": "f8e4084b-0c36-4c45-af7d-45ac9f3d9f60",
+    "side_b_p2_name": "Ankit Pandey"
+  },
+  {
+    "match_id": "27ee2133-7743-4aa6-abf7-d7cd0b0fe391",
+    "division_name": "Men's Doubles",
+    "round": 2,
+    "sequence": 12,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 1
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 1
+    },
+    "actual_start_time": "2026-02-22T11:06:42.669871+00:00",
+    "actual_end_time": "2026-02-22T11:14:27.312+00:00",
+    "assigned_at": "2026-02-22T11:02:38.202+00:00",
+    "created_at": "2026-02-22T11:01:09.391701+00:00",
+    "side_a_team_name": "Shridhar / Manav",
+    "side_b_team_name": "Shomesh Behl / Amar Sanmathi",
+    "side_a_p1_id": "a3f0094b-e6c3-4d5c-bb97-324092f3c93d",
+    "side_a_p1_name": "Shridhar",
+    "side_a_p2_id": "24900d4d-0984-4e91-b864-0566b229cc66",
+    "side_a_p2_name": "Manav",
+    "side_b_p1_id": "26c992d6-4148-4912-99a0-730080ab1cba",
+    "side_b_p1_name": "Shomesh Behl",
+    "side_b_p2_id": "a9b90d37-ce79-4bf2-9b03-b6b8affa0698",
+    "side_b_p2_name": "Amar Sanmathi"
+  },
+  {
+    "match_id": "55067ea5-f654-4e60-9a77-72ba8d737d08",
+    "division_name": "Men's Doubles",
+    "round": 2,
+    "sequence": 13,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 5
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 5
+    },
+    "actual_start_time": "2026-02-22T11:05:55.93885+00:00",
+    "actual_end_time": "2026-02-22T11:18:53.718+00:00",
+    "assigned_at": "2026-02-22T11:01:58.313+00:00",
+    "created_at": "2026-02-22T11:01:09.391701+00:00",
+    "side_a_team_name": "Maanav Desai / Arrush Malik",
+    "side_b_team_name": "Chandru C R M / Sathvik R G",
+    "side_a_p1_id": "62600527-3b1a-4a53-8736-c592fedd8eb1",
+    "side_a_p1_name": "Maanav Desai",
+    "side_a_p2_id": "f82ac0d3-78a4-45ee-a6c5-5744181e1d72",
+    "side_a_p2_name": "Arrush Malik",
+    "side_b_p1_id": "70bd5719-1988-4b91-82dc-9dda94e925fa",
+    "side_b_p1_name": "Chandru C R M",
+    "side_b_p2_id": "d620b3ee-53c3-4a16-aa51-ad30ec8339dc",
+    "side_b_p2_name": "Sathvik R G"
+  },
+  {
+    "match_id": "78892568-4ad2-40c8-846f-601e43f73e52",
+    "division_name": "Men's Doubles",
+    "round": 2,
+    "sequence": 11,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 8,
+          "score_b": 11
+        }
+      ],
+      "total_points_a": 8,
+      "total_points_b": 11
+    },
+    "actual_start_time": "2026-02-22T11:07:04.005813+00:00",
+    "actual_end_time": "2026-02-22T11:20:20.365+00:00",
+    "assigned_at": "2026-02-22T11:03:33.325+00:00",
+    "created_at": "2026-02-22T11:01:09.391701+00:00",
+    "side_a_team_name": "Sathvik Patil / Apurv Ekansh",
+    "side_b_team_name": "Siva Sai / Pranav Katta",
+    "side_a_p1_id": "7461fce3-922d-4e9f-ad35-85e08ccd7472",
+    "side_a_p1_name": "Sathvik Patil",
+    "side_a_p2_id": "84121f26-418e-498e-908b-845f2b495607",
+    "side_a_p2_name": "Apurv Ekansh",
+    "side_b_p1_id": "76241527-cec7-4707-a787-0e676a606748",
+    "side_b_p1_name": "Siva Sai",
+    "side_b_p2_id": "1421a631-3c3a-4e87-854f-6f2e96228848",
+    "side_b_p2_name": "Pranav Katta"
+  },
+  {
+    "match_id": "3658ea70-7c0f-4046-aaba-78d5fdf05d7d",
+    "division_name": "Men's Doubles",
+    "round": 2,
+    "sequence": 10,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 6
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 6
+    },
+    "actual_start_time": "2026-02-22T11:07:21.716129+00:00",
+    "actual_end_time": "2026-02-22T11:22:04.741+00:00",
+    "assigned_at": "2026-02-22T11:05:25.761+00:00",
+    "created_at": "2026-02-22T11:01:09.391701+00:00",
+    "side_a_team_name": "Taarun Sridhar / Hitesh S Reddy",
+    "side_b_team_name": "Chirag / Naveen",
+    "side_a_p1_id": "e47eb904-adf8-4d44-99b8-a448aafb27c2",
+    "side_a_p1_name": "Taarun Sridhar",
+    "side_a_p2_id": "d5dbda01-32ee-4d72-aaca-0acdd7996020",
+    "side_a_p2_name": "Hitesh S Reddy",
+    "side_b_p1_id": "d552c83b-3ca9-4d3a-9b6e-75c34c0a22c6",
+    "side_b_p1_name": "Chirag",
+    "side_b_p2_id": "1e66beea-3a61-4566-8f6e-a8ffae5e2f3d",
+    "side_b_p2_name": "Naveen"
+  },
+  {
+    "match_id": "0f16c994-f4b3-40f1-8913-9b931183fa52",
+    "division_name": "Men's Doubles",
+    "round": 2,
+    "sequence": 9,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 0,
+          "score_b": 11
+        }
+      ],
+      "total_points_a": 0,
+      "total_points_b": 11
+    },
+    "actual_start_time": "2026-02-22T11:15:51.98857+00:00",
+    "actual_end_time": "2026-02-22T11:26:37.073+00:00",
+    "assigned_at": "2026-02-22T11:15:20.715+00:00",
+    "created_at": "2026-02-22T11:01:09.391701+00:00",
+    "side_a_team_name": "Aniruddha PN / Arun Srinivasan",
+    "side_b_team_name": "Sharva / Nihal",
+    "side_a_p1_id": "7e481e1a-4be3-4604-846b-198f81279e61",
+    "side_a_p1_name": "Aniruddha PN",
+    "side_a_p2_id": "5e054f16-6a79-4e63-a101-49bc795759f6",
+    "side_a_p2_name": "Arun Srinivasan",
+    "side_b_p1_id": "fc3dba3f-d6c2-4c42-b79c-d12c02852fad",
+    "side_b_p1_name": "Sharva",
+    "side_b_p2_id": "a778ee55-8e83-4980-9303-e9f268e6fe16",
+    "side_b_p2_name": "Nihal"
+  },
+  {
+    "match_id": "6c535e1a-2693-4c3c-a9f9-9d45df100feb",
+    "division_name": "Men's Doubles",
+    "round": 2,
+    "sequence": 5,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 0
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 0
+    },
+    "actual_start_time": "2026-02-22T11:22:02.388053+00:00",
+    "actual_end_time": "2026-02-22T11:28:55.357+00:00",
+    "assigned_at": "2026-02-22T11:21:13.765+00:00",
+    "created_at": "2026-02-22T11:01:09.391701+00:00",
+    "side_a_team_name": "Krishna Kumar / Kunal Mathew",
+    "side_b_team_name": "Rahul / Kalyan Kumar",
+    "side_a_p1_id": "9454c826-2fbe-4e47-baef-d35abe1bcc31",
+    "side_a_p1_name": "Krishna Kumar",
+    "side_a_p2_id": "cf00512f-7540-4aae-a97e-23363b2f7554",
+    "side_a_p2_name": "Kunal Mathew",
+    "side_b_p1_id": "e4dfa901-c6e7-44bc-b438-a3619cd89125",
+    "side_b_p1_name": "Rahul",
+    "side_b_p2_id": "6997af53-f4af-4609-85a7-f3fb2549aca0",
+    "side_b_p2_name": "Kalyan Kumar"
+  },
+  {
+    "match_id": "b9e4149b-06df-43d2-996d-90e02ccf28de",
+    "division_name": "Men's Doubles",
+    "round": 2,
+    "sequence": 7,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 0
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 0
+    },
+    "actual_start_time": "2026-02-22T11:24:25.637065+00:00",
+    "actual_end_time": "2026-02-22T11:31:24.653+00:00",
+    "assigned_at": "2026-02-22T11:22:42.968+00:00",
+    "created_at": "2026-02-22T11:01:09.391701+00:00",
+    "side_a_team_name": "Williams / Akash Shivashankar",
+    "side_b_team_name": "Rohit PV / Anubhav",
+    "side_a_p1_id": "b979329d-2415-4d65-8872-178166804c57",
+    "side_a_p1_name": "Williams",
+    "side_a_p2_id": "8f3daed2-e99c-4a72-b54a-30baaff1533b",
+    "side_a_p2_name": "Akash Shivashankar",
+    "side_b_p1_id": "95c41b8d-2e90-42c5-8e05-8b78e85e4e48",
+    "side_b_p1_name": "Rohit PV",
+    "side_b_p2_id": "1f3a585a-1163-4df6-8252-88580511d59f",
+    "side_b_p2_name": "Anubhav"
+  },
+  {
+    "match_id": "705f160a-b1ef-4fab-ad4e-5918dd60bc69",
+    "division_name": "Men's Doubles",
+    "round": 2,
+    "sequence": 1,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 0
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 0
+    },
+    "actual_start_time": "2026-02-22T11:26:38.525531+00:00",
+    "actual_end_time": "2026-02-22T11:33:33.012+00:00",
+    "assigned_at": "2026-02-22T11:24:58.619+00:00",
+    "created_at": "2026-02-22T11:01:09.391701+00:00",
+    "side_a_team_name": "Dinakar Naidu / Ranjit Kupli",
+    "side_b_team_name": "Karthik J / Abishek Karthikeyan",
+    "side_a_p1_id": "cb9fd4fb-88e0-4bab-aaac-a318afbf4aaf",
+    "side_a_p1_name": "Ranjit Kupli",
+    "side_a_p2_id": "91af2eac-8a1e-46f5-a980-e560efb552b8",
+    "side_a_p2_name": "Dinakar Naidu",
+    "side_b_p1_id": "466af843-5b72-4e37-98fb-352132ab8183",
+    "side_b_p1_name": "Karthik J",
+    "side_b_p2_id": "d1069589-3a33-4560-99ec-0ba7602b9465",
+    "side_b_p2_name": "Abishek Karthikeyan"
+  },
+  {
+    "match_id": "edfaad31-1a67-435f-a7c9-6775fbd92a3a",
+    "division_name": "Men's Doubles",
+    "round": 2,
+    "sequence": 2,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 5
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 5
+    },
+    "actual_start_time": "2026-02-22T11:27:57.46386+00:00",
+    "actual_end_time": "2026-02-22T11:38:10.013+00:00",
+    "assigned_at": "2026-02-22T11:27:19.992+00:00",
+    "created_at": "2026-02-22T11:01:09.391701+00:00",
+    "side_a_team_name": "Tshering Wangdi Yolmo / Harsh Pancholi",
+    "side_b_team_name": "Sathiyanarayanan M / Adit Ingole",
+    "side_a_p1_id": "f9c0e341-d77e-498e-bf23-67c818404bad",
+    "side_a_p1_name": "Tshering Wangdi Yolmo",
+    "side_a_p2_id": "859b87ff-f163-4548-9f43-13458057cdd8",
+    "side_a_p2_name": "Harsh Pancholi",
+    "side_b_p1_id": "bcb9eb06-7045-4f1c-b304-c662315f6a36",
+    "side_b_p1_name": "Sathiyanarayanan M",
+    "side_b_p2_id": "6e812c01-c065-4ce5-8380-afff7e0cfc29",
+    "side_b_p2_name": "Adit Ingole"
+  },
+  {
+    "match_id": "460d0719-5056-4fc1-a4ee-091f33cb5c81",
+    "division_name": "Men's Doubles",
+    "round": 2,
+    "sequence": 4,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 2
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 2
+    },
+    "actual_start_time": "2026-02-22T11:32:32.213804+00:00",
+    "actual_end_time": "2026-02-22T11:41:51.545+00:00",
+    "assigned_at": "2026-02-22T11:29:35.424+00:00",
+    "created_at": "2026-02-22T11:01:09.391701+00:00",
+    "side_a_team_name": "Gowtham / Spandan P V",
+    "side_b_team_name": "Vishal Choudhary / Badri",
+    "side_a_p1_id": "f8554e71-c2c4-4daf-81ce-196922be38dc",
+    "side_a_p1_name": "Spandan P V",
+    "side_a_p2_id": "7de7af5a-9245-40e8-839a-eddf7b80a56c",
+    "side_a_p2_name": "Gowtham",
+    "side_b_p1_id": "4e0345c0-0eb5-4b31-a4c9-7966ded4db5d",
+    "side_b_p1_name": "Vishal Choudhary",
+    "side_b_p2_id": "6ac6c384-16af-4bd4-83db-38663b003202",
+    "side_b_p2_name": "Badri"
+  },
+  {
+    "match_id": "ef5e0b53-ee4f-4195-80ab-332b2d6a7210",
+    "division_name": "Men's Doubles",
+    "round": 2,
+    "sequence": 8,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 0
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 0
+    },
+    "actual_start_time": "2026-02-22T11:42:06.199882+00:00",
+    "actual_end_time": "2026-02-22T11:42:35.478+00:00",
+    "assigned_at": "2026-02-22T11:41:22.906+00:00",
+    "created_at": "2026-02-22T11:01:09.391701+00:00",
+    "side_a_team_name": "Jeril Jacob / Keshav Rathi",
+    "side_b_team_name": "Ankit Pandey / Saikrishna Kondaraju",
+    "side_a_p1_id": "ef41d6f0-9eea-4f57-b641-fc937dc741b7",
+    "side_a_p1_name": "Jeril Jacob",
+    "side_a_p2_id": "e4fbe0be-0a6f-4db2-847a-d1b591e8452f",
+    "side_a_p2_name": "Keshav Rathi",
+    "side_b_p1_id": "0d9a1434-b902-4da8-9cb5-e945ed2d16be",
+    "side_b_p1_name": "Saikrishna Kondaraju",
+    "side_b_p2_id": "f8e4084b-0c36-4c45-af7d-45ac9f3d9f60",
+    "side_b_p2_name": "Ankit Pandey"
+  },
+  {
+    "match_id": "6d919b54-6847-4841-adaf-cc0f4feca739",
+    "division_name": "Men's Doubles",
+    "round": 2,
+    "sequence": 3,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 0,
+          "score_b": 11
+        }
+      ],
+      "total_points_a": 0,
+      "total_points_b": 11
+    },
+    "actual_start_time": "2026-02-22T11:38:43.739677+00:00",
+    "actual_end_time": "2026-02-22T11:47:03.486+00:00",
+    "assigned_at": "2026-02-22T11:34:15.111+00:00",
+    "created_at": "2026-02-22T11:01:09.391701+00:00",
+    "side_a_team_name": "Ashwin Hanagudu / Anup Basti",
+    "side_b_team_name": "Kiran Ashish / Nirup",
+    "side_a_p1_id": "15d74200-dbbc-4538-984b-230bc8fb36ea",
+    "side_a_p1_name": "Ashwin Hanagudu",
+    "side_a_p2_id": "44c3db5c-fc36-4d15-8607-44f200027b40",
+    "side_a_p2_name": "Anup Basti",
+    "side_b_p1_id": "86ddfa47-c2db-4d72-8be2-fb9d141005f9",
+    "side_b_p1_name": "Kiran Ashish",
+    "side_b_p2_id": "f5705a40-2152-450b-adb1-ed19b301ee83",
+    "side_b_p2_name": "Nirup"
+  },
+  {
+    "match_id": "395c0799-0c25-4011-9312-8bda7e55f174",
+    "division_name": "Men's Doubles",
+    "round": 2,
+    "sequence": 6,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 7,
+          "score_b": 11
+        }
+      ],
+      "total_points_a": 7,
+      "total_points_b": 11
+    },
+    "actual_start_time": "2026-02-22T11:32:17.182495+00:00",
+    "actual_end_time": "2026-02-22T11:47:59.546+00:00",
+    "assigned_at": "2026-02-22T11:32:05.008+00:00",
+    "created_at": "2026-02-22T11:01:09.391701+00:00",
+    "side_a_team_name": "Shankar / Aman",
+    "side_b_team_name": "Mitesh / Imran",
+    "side_a_p1_id": "4056c424-288d-4cfe-9508-bf48751c34c5",
+    "side_a_p1_name": "Aman",
+    "side_a_p2_id": "b19b4641-9b4f-4cf2-bd38-b3e5d4cfdffb",
+    "side_a_p2_name": "Shankar",
+    "side_b_p1_id": "19f77311-c3ca-4e40-8004-5cc2c1da4275",
+    "side_b_p1_name": "Mitesh",
+    "side_b_p2_id": "42bf13e8-2089-4eb4-a05a-62b774466663",
+    "side_b_p2_name": "Imran"
+  },
+  {
+    "match_id": "3d523ea4-a23d-4168-b830-4dc394e5dedb",
+    "division_name": "Men's Doubles",
+    "round": 3,
+    "sequence": 12,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 0
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 0
+    },
+    "actual_start_time": "2026-02-22T11:53:24.000733+00:00",
+    "actual_end_time": "2026-02-22T11:58:18.86+00:00",
+    "assigned_at": "2026-02-22T11:51:11.667+00:00",
+    "created_at": "2026-02-22T11:48:20.48086+00:00",
+    "side_a_team_name": "Chirag / Naveen",
+    "side_b_team_name": "Shomesh Behl / Amar Sanmathi",
+    "side_a_p1_id": "d552c83b-3ca9-4d3a-9b6e-75c34c0a22c6",
+    "side_a_p1_name": "Chirag",
+    "side_a_p2_id": "1e66beea-3a61-4566-8f6e-a8ffae5e2f3d",
+    "side_a_p2_name": "Naveen",
+    "side_b_p1_id": "26c992d6-4148-4912-99a0-730080ab1cba",
+    "side_b_p1_name": "Shomesh Behl",
+    "side_b_p2_id": "a9b90d37-ce79-4bf2-9b03-b6b8affa0698",
+    "side_b_p2_name": "Amar Sanmathi"
+  },
+  {
+    "match_id": "2e5e8cfe-0cd5-469f-b264-e46d2b4343f0",
+    "division_name": "Men's Doubles",
+    "round": 3,
+    "sequence": 13,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 5,
+          "score_b": 11
+        }
+      ],
+      "total_points_a": 5,
+      "total_points_b": 11
+    },
+    "actual_start_time": "2026-02-22T11:53:04.892221+00:00",
+    "actual_end_time": "2026-02-22T12:02:10.447+00:00",
+    "assigned_at": "2026-02-22T11:50:06.682+00:00",
+    "created_at": "2026-02-22T11:48:20.48086+00:00",
+    "side_a_team_name": "Chandru C R M / Sathvik R G",
+    "side_b_team_name": "Aniruddha PN / Arun Srinivasan",
+    "side_a_p1_id": "70bd5719-1988-4b91-82dc-9dda94e925fa",
+    "side_a_p1_name": "Chandru C R M",
+    "side_a_p2_id": "d620b3ee-53c3-4a16-aa51-ad30ec8339dc",
+    "side_a_p2_name": "Sathvik R G",
+    "side_b_p1_id": "7e481e1a-4be3-4604-846b-198f81279e61",
+    "side_b_p1_name": "Aniruddha PN",
+    "side_b_p2_id": "5e054f16-6a79-4e63-a101-49bc795759f6",
+    "side_b_p2_name": "Arun Srinivasan"
+  },
+  {
+    "match_id": "f355ce60-6fe2-4571-9eab-4ec3effd0bc2",
+    "division_name": "Men's Doubles",
+    "round": 3,
+    "sequence": 11,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 6
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 6
+    },
+    "actual_start_time": "2026-02-22T11:53:52.287753+00:00",
+    "actual_end_time": "2026-02-22T12:08:17.508+00:00",
+    "assigned_at": "2026-02-22T11:51:46.132+00:00",
+    "created_at": "2026-02-22T11:48:20.48086+00:00",
+    "side_a_team_name": "Sathvik Patil / Apurv Ekansh",
+    "side_b_team_name": "Rohit PV / Anubhav",
+    "side_a_p1_id": "7461fce3-922d-4e9f-ad35-85e08ccd7472",
+    "side_a_p1_name": "Sathvik Patil",
+    "side_a_p2_id": "84121f26-418e-498e-908b-845f2b495607",
+    "side_a_p2_name": "Apurv Ekansh",
+    "side_b_p1_id": "95c41b8d-2e90-42c5-8e05-8b78e85e4e48",
+    "side_b_p1_name": "Rohit PV",
+    "side_b_p2_id": "1f3a585a-1163-4df6-8252-88580511d59f",
+    "side_b_p2_name": "Anubhav"
+  },
+  {
+    "match_id": "9e8a14b6-ed08-4b2d-be27-e37662461428",
+    "division_name": "Men's Doubles",
+    "round": 3,
+    "sequence": 2,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 10,
+          "score_b": 12
+        }
+      ],
+      "total_points_a": 10,
+      "total_points_b": 12
+    },
+    "actual_start_time": "2026-02-22T11:51:37.425248+00:00",
+    "actual_end_time": "2026-02-22T12:09:22.948+00:00",
+    "assigned_at": "2026-02-22T11:49:18.165+00:00",
+    "created_at": "2026-02-22T11:48:20.48086+00:00",
+    "side_a_team_name": "Krishna Kumar / Kunal Mathew",
+    "side_b_team_name": "Tshering Wangdi Yolmo / Harsh Pancholi",
+    "side_a_p1_id": "9454c826-2fbe-4e47-baef-d35abe1bcc31",
+    "side_a_p1_name": "Krishna Kumar",
+    "side_a_p2_id": "cf00512f-7540-4aae-a97e-23363b2f7554",
+    "side_a_p2_name": "Kunal Mathew",
+    "side_b_p1_id": "f9c0e341-d77e-498e-bf23-67c818404bad",
+    "side_b_p1_name": "Tshering Wangdi Yolmo",
+    "side_b_p2_id": "859b87ff-f163-4548-9f43-13458057cdd8",
+    "side_b_p2_name": "Harsh Pancholi"
+  },
+  {
+    "match_id": "751f8e6c-909c-4299-a9f4-56f2ae980a27",
+    "division_name": "Men's Doubles",
+    "round": 3,
+    "sequence": 9,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 6,
+          "score_b": 11
+        }
+      ],
+      "total_points_a": 6,
+      "total_points_b": 11
+    },
+    "actual_start_time": "2026-02-22T11:59:40.973324+00:00",
+    "actual_end_time": "2026-02-22T12:11:09.551+00:00",
+    "assigned_at": "2026-02-22T11:59:03.337+00:00",
+    "created_at": "2026-02-22T11:48:20.48086+00:00",
+    "side_a_team_name": "Shridhar / Manav",
+    "side_b_team_name": "Sharva / Nihal",
+    "side_a_p1_id": "a3f0094b-e6c3-4d5c-bb97-324092f3c93d",
+    "side_a_p1_name": "Shridhar",
+    "side_a_p2_id": "24900d4d-0984-4e91-b864-0566b229cc66",
+    "side_a_p2_name": "Manav",
+    "side_b_p1_id": "fc3dba3f-d6c2-4c42-b79c-d12c02852fad",
+    "side_b_p1_name": "Sharva",
+    "side_b_p2_id": "a778ee55-8e83-4980-9303-e9f268e6fe16",
+    "side_b_p2_name": "Nihal"
+  },
+  {
+    "match_id": "e2a57755-40ab-42aa-9f35-347e823e3a4d",
+    "division_name": "Men's Doubles",
+    "round": 3,
+    "sequence": 8,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 4
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 4
+    },
+    "actual_start_time": "2026-02-22T12:03:29.486494+00:00",
+    "actual_end_time": "2026-02-22T12:14:58.496+00:00",
+    "assigned_at": "2026-02-22T12:03:14.606+00:00",
+    "created_at": "2026-02-22T11:48:20.48086+00:00",
+    "side_a_team_name": "Vishal Choudhary / Badri",
+    "side_b_team_name": "Rahul / Kalyan Kumar",
+    "side_a_p1_id": "4e0345c0-0eb5-4b31-a4c9-7966ded4db5d",
+    "side_a_p1_name": "Vishal Choudhary",
+    "side_a_p2_id": "6ac6c384-16af-4bd4-83db-38663b003202",
+    "side_a_p2_name": "Badri",
+    "side_b_p1_id": "e4dfa901-c6e7-44bc-b438-a3619cd89125",
+    "side_b_p1_name": "Rahul",
+    "side_b_p2_id": "6997af53-f4af-4609-85a7-f3fb2549aca0",
+    "side_b_p2_name": "Kalyan Kumar"
+  },
+  {
+    "match_id": "0d3fd81d-c681-45f4-aa10-32df7f08c6f2",
+    "division_name": "Men's Doubles",
+    "round": 3,
+    "sequence": 4,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 1
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 1
+    },
+    "actual_start_time": "2026-02-22T12:13:18.578792+00:00",
+    "actual_end_time": "2026-02-22T12:19:21.553+00:00",
+    "assigned_at": "2026-02-22T12:11:54.214+00:00",
+    "created_at": "2026-02-22T11:48:20.48086+00:00",
+    "side_a_team_name": "Gowtham / Spandan P V",
+    "side_b_team_name": "Siva Sai / Pranav Katta",
+    "side_a_p1_id": "f8554e71-c2c4-4daf-81ce-196922be38dc",
+    "side_a_p1_name": "Spandan P V",
+    "side_a_p2_id": "7de7af5a-9245-40e8-839a-eddf7b80a56c",
+    "side_a_p2_name": "Gowtham",
+    "side_b_p1_id": "76241527-cec7-4707-a787-0e676a606748",
+    "side_b_p1_name": "Siva Sai",
+    "side_b_p2_id": "1421a631-3c3a-4e87-854f-6f2e96228848",
+    "side_b_p2_name": "Pranav Katta"
+  },
+  {
+    "match_id": "1b2a3cd7-a7ad-4c7c-9714-2d47e4c0dc41",
+    "division_name": "Men's Doubles",
+    "round": 3,
+    "sequence": 6,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 2
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 2
+    },
+    "actual_start_time": "2026-02-22T12:11:37.568467+00:00",
+    "actual_end_time": "2026-02-22T12:23:02.404+00:00",
+    "assigned_at": "2026-02-22T12:11:00.749+00:00",
+    "created_at": "2026-02-22T11:48:20.48086+00:00",
+    "side_a_team_name": "Jeril Jacob / Keshav Rathi",
+    "side_b_team_name": "Maanav Desai / Arrush Malik",
+    "side_a_p1_id": "ef41d6f0-9eea-4f57-b641-fc937dc741b7",
+    "side_a_p1_name": "Jeril Jacob",
+    "side_a_p2_id": "e4fbe0be-0a6f-4db2-847a-d1b591e8452f",
+    "side_a_p2_name": "Keshav Rathi",
+    "side_b_p1_id": "62600527-3b1a-4a53-8736-c592fedd8eb1",
+    "side_b_p1_name": "Maanav Desai",
+    "side_b_p2_id": "f82ac0d3-78a4-45ee-a6c5-5744181e1d72",
+    "side_b_p2_name": "Arrush Malik"
+  },
+  {
+    "match_id": "8e14fc55-0ace-46d8-bfb5-7274c96ac5ff",
+    "division_name": "Men's Doubles",
+    "round": 3,
+    "sequence": 5,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 4
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 4
+    },
+    "actual_start_time": "2026-02-22T12:11:39.893585+00:00",
+    "actual_end_time": "2026-02-22T12:23:26.756+00:00",
+    "assigned_at": "2026-02-22T12:10:00.569+00:00",
+    "created_at": "2026-02-22T11:48:20.48086+00:00",
+    "side_a_team_name": "Shankar / Aman",
+    "side_b_team_name": "Karthik J / Abishek Karthikeyan",
+    "side_a_p1_id": "4056c424-288d-4cfe-9508-bf48751c34c5",
+    "side_a_p1_name": "Aman",
+    "side_a_p2_id": "b19b4641-9b4f-4cf2-bd38-b3e5d4cfdffb",
+    "side_a_p2_name": "Shankar",
+    "side_b_p1_id": "466af843-5b72-4e37-98fb-352132ab8183",
+    "side_b_p1_name": "Karthik J",
+    "side_b_p2_id": "d1069589-3a33-4560-99ec-0ba7602b9465",
+    "side_b_p2_name": "Abishek Karthikeyan"
+  },
+  {
+    "match_id": "40da03f1-796d-4349-8e3c-0eb88172c798",
+    "division_name": "Men's Doubles",
+    "round": 3,
+    "sequence": 10,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 0
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 0
+    },
+    "actual_start_time": "2026-02-22T12:25:45.744779+00:00",
+    "actual_end_time": "2026-02-22T12:26:32.546+00:00",
+    "assigned_at": "2026-02-22T12:25:12.037+00:00",
+    "created_at": "2026-02-22T11:48:20.48086+00:00",
+    "side_a_team_name": "Ashwin Hanagudu / Anup Basti",
+    "side_b_team_name": "Ankit Pandey / Saikrishna Kondaraju",
+    "side_a_p1_id": "15d74200-dbbc-4538-984b-230bc8fb36ea",
+    "side_a_p1_name": "Ashwin Hanagudu",
+    "side_a_p2_id": "44c3db5c-fc36-4d15-8607-44f200027b40",
+    "side_a_p2_name": "Anup Basti",
+    "side_b_p1_id": "0d9a1434-b902-4da8-9cb5-e945ed2d16be",
+    "side_b_p1_name": "Saikrishna Kondaraju",
+    "side_b_p2_id": "f8e4084b-0c36-4c45-af7d-45ac9f3d9f60",
+    "side_b_p2_name": "Ankit Pandey"
+  },
+  {
+    "match_id": "dc3650fc-d777-4222-8c29-fe70604cf0ca",
+    "division_name": "Men's Doubles",
+    "round": 3,
+    "sequence": 7,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 3
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 3
+    },
+    "actual_start_time": "2026-02-22T12:21:28.559475+00:00",
+    "actual_end_time": "2026-02-22T12:33:32.642+00:00",
+    "assigned_at": "2026-02-22T12:20:57.782+00:00",
+    "created_at": "2026-02-22T11:48:20.48086+00:00",
+    "side_a_team_name": "Sathiyanarayanan M / Adit Ingole",
+    "side_b_team_name": "Taarun Sridhar / Hitesh S Reddy",
+    "side_a_p1_id": "bcb9eb06-7045-4f1c-b304-c662315f6a36",
+    "side_a_p1_name": "Sathiyanarayanan M",
+    "side_a_p2_id": "6e812c01-c065-4ce5-8380-afff7e0cfc29",
+    "side_a_p2_name": "Adit Ingole",
+    "side_b_p1_id": "e47eb904-adf8-4d44-99b8-a448aafb27c2",
+    "side_b_p1_name": "Taarun Sridhar",
+    "side_b_p2_id": "d5dbda01-32ee-4d72-aaca-0acdd7996020",
+    "side_b_p2_name": "Hitesh S Reddy"
+  },
+  {
+    "match_id": "c5541972-6905-43d0-a2d2-f01d15a818b7",
+    "division_name": "Men's Doubles",
+    "round": 3,
+    "sequence": 1,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 6
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 6
+    },
+    "actual_start_time": "2026-02-22T12:15:54.571181+00:00",
+    "actual_end_time": "2026-02-22T12:42:02.87+00:00",
+    "assigned_at": "2026-02-22T12:15:43.982+00:00",
+    "created_at": "2026-02-22T11:48:20.48086+00:00",
+    "side_a_team_name": "Dinakar Naidu / Ranjit Kupli",
+    "side_b_team_name": "Mitesh / Imran",
+    "side_a_p1_id": "cb9fd4fb-88e0-4bab-aaac-a318afbf4aaf",
+    "side_a_p1_name": "Ranjit Kupli",
+    "side_a_p2_id": "91af2eac-8a1e-46f5-a980-e560efb552b8",
+    "side_a_p2_name": "Dinakar Naidu",
+    "side_b_p1_id": "19f77311-c3ca-4e40-8004-5cc2c1da4275",
+    "side_b_p1_name": "Mitesh",
+    "side_b_p2_id": "42bf13e8-2089-4eb4-a05a-62b774466663",
+    "side_b_p2_name": "Imran"
+  },
+  {
+    "match_id": "c542b2c3-4772-4fa8-b8aa-4593d87dffe9",
+    "division_name": "Men's Doubles",
+    "round": 3,
+    "sequence": 3,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 5,
+          "score_b": 11
+        }
+      ],
+      "total_points_a": 5,
+      "total_points_b": 11
+    },
+    "actual_start_time": "2026-02-22T12:25:17.259625+00:00",
+    "actual_end_time": "2026-02-22T12:45:38.553+00:00",
+    "assigned_at": "2026-02-22T12:24:17.864+00:00",
+    "created_at": "2026-02-22T11:48:20.48086+00:00",
+    "side_a_team_name": "Williams / Akash Shivashankar",
+    "side_b_team_name": "Kiran Ashish / Nirup",
+    "side_a_p1_id": "b979329d-2415-4d65-8872-178166804c57",
+    "side_a_p1_name": "Williams",
+    "side_a_p2_id": "8f3daed2-e99c-4a72-b54a-30baaff1533b",
+    "side_a_p2_name": "Akash Shivashankar",
+    "side_b_p1_id": "86ddfa47-c2db-4d72-8be2-fb9d141005f9",
+    "side_b_p1_name": "Kiran Ashish",
+    "side_b_p2_id": "f5705a40-2152-450b-adb1-ed19b301ee83",
+    "side_b_p2_name": "Nirup"
+  },
+  {
+    "match_id": "046b6aa9-e0b0-471d-8366-4e20853b9da9",
+    "division_name": "Men's Doubles",
+    "round": 1,
+    "sequence": 2,
+    "phase": "knockout",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 0
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 0
+    },
+    "actual_start_time": "2026-02-22T12:55:37.20367+00:00",
+    "actual_end_time": "2026-02-22T13:04:26.58+00:00",
+    "assigned_at": "2026-02-22T12:55:00.763+00:00",
+    "created_at": "2026-02-22T12:50:38.080302+00:00",
+    "side_a_team_name": "Tshering Wangdi Yolmo / Harsh Pancholi",
+    "side_b_team_name": "Krishna Kumar / Kunal Mathew",
+    "side_a_p1_id": "f9c0e341-d77e-498e-bf23-67c818404bad",
+    "side_a_p1_name": "Tshering Wangdi Yolmo",
+    "side_a_p2_id": "859b87ff-f163-4548-9f43-13458057cdd8",
+    "side_a_p2_name": "Harsh Pancholi",
+    "side_b_p1_id": "9454c826-2fbe-4e47-baef-d35abe1bcc31",
+    "side_b_p1_name": "Krishna Kumar",
+    "side_b_p2_id": "cf00512f-7540-4aae-a97e-23363b2f7554",
+    "side_b_p2_name": "Kunal Mathew"
+  },
+  {
+    "match_id": "c2a4e08f-d09d-4337-92c9-ed39e87b8f87",
+    "division_name": "Men's Doubles",
+    "round": 1,
+    "sequence": 1,
+    "phase": "knockout",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 15,
+          "score_b": 5
+        }
+      ],
+      "total_points_a": 15,
+      "total_points_b": 5
+    },
+    "actual_start_time": "2026-02-22T12:56:32.612866+00:00",
+    "actual_end_time": "2026-02-22T13:12:44.672+00:00",
+    "assigned_at": "2026-02-22T12:56:14.761+00:00",
+    "created_at": "2026-02-22T12:50:38.080302+00:00",
+    "side_a_team_name": "Gowtham / Spandan P V",
+    "side_b_team_name": "Shankar / Aman",
+    "side_a_p1_id": "f8554e71-c2c4-4daf-81ce-196922be38dc",
+    "side_a_p1_name": "Spandan P V",
+    "side_a_p2_id": "7de7af5a-9245-40e8-839a-eddf7b80a56c",
+    "side_a_p2_name": "Gowtham",
+    "side_b_p1_id": "4056c424-288d-4cfe-9508-bf48751c34c5",
+    "side_b_p1_name": "Aman",
+    "side_b_p2_id": "b19b4641-9b4f-4cf2-bd38-b3e5d4cfdffb",
+    "side_b_p2_name": "Shankar"
+  },
+  {
+    "match_id": "52aed05d-9beb-4d3c-8a43-a4a51bd2624f",
+    "division_name": "Men's Doubles",
+    "round": 1,
+    "sequence": 3,
+    "phase": "knockout",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 15,
+          "score_b": 1
+        }
+      ],
+      "total_points_a": 15,
+      "total_points_b": 1
+    },
+    "actual_start_time": "2026-02-22T13:11:08.01871+00:00",
+    "actual_end_time": "2026-02-22T13:21:25.862+00:00",
+    "assigned_at": "2026-02-22T13:10:42.65+00:00",
+    "created_at": "2026-02-22T12:50:38.080302+00:00",
+    "side_a_team_name": "Dinakar Naidu / Ranjit Kupli",
+    "side_b_team_name": "Jeril Jacob / Keshav Rathi",
+    "side_a_p1_id": "cb9fd4fb-88e0-4bab-aaac-a318afbf4aaf",
+    "side_a_p1_name": "Ranjit Kupli",
+    "side_a_p2_id": "91af2eac-8a1e-46f5-a980-e560efb552b8",
+    "side_a_p2_name": "Dinakar Naidu",
+    "side_b_p1_id": "ef41d6f0-9eea-4f57-b641-fc937dc741b7",
+    "side_b_p1_name": "Jeril Jacob",
+    "side_b_p2_id": "e4fbe0be-0a6f-4db2-847a-d1b591e8452f",
+    "side_b_p2_name": "Keshav Rathi"
+  },
+  {
+    "match_id": "e3755385-319e-4bb3-9e5d-6b867baca41d",
+    "division_name": "Men's Doubles",
+    "round": 1,
+    "sequence": 4,
+    "phase": "knockout",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 15,
+          "score_b": 1
+        }
+      ],
+      "total_points_a": 15,
+      "total_points_b": 1
+    },
+    "actual_start_time": "2026-02-22T13:25:22.417243+00:00",
+    "actual_end_time": "2026-02-22T13:25:51.729+00:00",
+    "assigned_at": "2026-02-22T13:13:38.748+00:00",
+    "created_at": "2026-02-22T12:50:38.080302+00:00",
+    "side_a_team_name": "Kiran Ashish / Nirup",
+    "side_b_team_name": "Williams / Akash Shivashankar",
+    "side_a_p1_id": "86ddfa47-c2db-4d72-8be2-fb9d141005f9",
+    "side_a_p1_name": "Kiran Ashish",
+    "side_a_p2_id": "f5705a40-2152-450b-adb1-ed19b301ee83",
+    "side_a_p2_name": "Nirup",
+    "side_b_p1_id": "b979329d-2415-4d65-8872-178166804c57",
+    "side_b_p1_name": "Williams",
+    "side_b_p2_id": "8f3daed2-e99c-4a72-b54a-30baaff1533b",
+    "side_b_p2_name": "Akash Shivashankar"
+  },
+  {
+    "match_id": "442fc3e9-05f8-4833-8c94-7c22e085a9a2",
+    "division_name": "Men's Doubles",
+    "round": 2,
+    "sequence": 1,
+    "phase": "knockout",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 15,
+          "score_b": 10
+        }
+      ],
+      "total_points_a": 15,
+      "total_points_b": 10
+    },
+    "actual_start_time": "2026-02-22T13:29:24.135993+00:00",
+    "actual_end_time": "2026-02-22T13:56:18.424+00:00",
+    "assigned_at": "2026-02-22T13:28:04.172+00:00",
+    "created_at": "2026-02-22T12:50:38.080302+00:00",
+    "side_a_team_name": "Gowtham / Spandan P V",
+    "side_b_team_name": "Tshering Wangdi Yolmo / Harsh Pancholi",
+    "side_a_p1_id": "f8554e71-c2c4-4daf-81ce-196922be38dc",
+    "side_a_p1_name": "Spandan P V",
+    "side_a_p2_id": "7de7af5a-9245-40e8-839a-eddf7b80a56c",
+    "side_a_p2_name": "Gowtham",
+    "side_b_p1_id": "f9c0e341-d77e-498e-bf23-67c818404bad",
+    "side_b_p1_name": "Tshering Wangdi Yolmo",
+    "side_b_p2_id": "859b87ff-f163-4548-9f43-13458057cdd8",
+    "side_b_p2_name": "Harsh Pancholi"
+  },
+  {
+    "match_id": "27ffa82f-e1f5-401e-9ceb-9037eaa06f60",
+    "division_name": "Men's Doubles",
+    "round": 2,
+    "sequence": 2,
+    "phase": "knockout",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 10,
+          "score_b": 15
+        }
+      ],
+      "total_points_a": 10,
+      "total_points_b": 15
+    },
+    "actual_start_time": "2026-02-22T13:59:21.521827+00:00",
+    "actual_end_time": "2026-02-22T14:37:22.54+00:00",
+    "assigned_at": "2026-02-22T13:57:12.811+00:00",
+    "created_at": "2026-02-22T12:50:38.080302+00:00",
+    "side_a_team_name": "Dinakar Naidu / Ranjit Kupli",
+    "side_b_team_name": "Kiran Ashish / Nirup",
+    "side_a_p1_id": "cb9fd4fb-88e0-4bab-aaac-a318afbf4aaf",
+    "side_a_p1_name": "Ranjit Kupli",
+    "side_a_p2_id": "91af2eac-8a1e-46f5-a980-e560efb552b8",
+    "side_a_p2_name": "Dinakar Naidu",
+    "side_b_p1_id": "86ddfa47-c2db-4d72-8be2-fb9d141005f9",
+    "side_b_p1_name": "Kiran Ashish",
+    "side_b_p2_id": "f5705a40-2152-450b-adb1-ed19b301ee83",
+    "side_b_p2_name": "Nirup"
+  },
+  {
+    "match_id": "58a075b2-d537-4532-a343-f2d5de784978",
+    "division_name": "Men's Doubles",
+    "round": 3,
+    "sequence": 1,
+    "phase": "knockout",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 15,
+          "score_b": 13
+        }
+      ],
+      "total_points_a": 15,
+      "total_points_b": 13
+    },
+    "actual_start_time": "2026-02-22T15:02:32.44133+00:00",
+    "actual_end_time": "2026-02-22T15:35:57.567+00:00",
+    "assigned_at": "2026-02-22T14:59:58.514+00:00",
+    "created_at": "2026-02-22T12:50:38.080302+00:00",
+    "side_a_team_name": "Gowtham / Spandan P V",
+    "side_b_team_name": "Kiran Ashish / Nirup",
+    "side_a_p1_id": "f8554e71-c2c4-4daf-81ce-196922be38dc",
+    "side_a_p1_name": "Spandan P V",
+    "side_a_p2_id": "7de7af5a-9245-40e8-839a-eddf7b80a56c",
+    "side_a_p2_name": "Gowtham",
+    "side_b_p1_id": "86ddfa47-c2db-4d72-8be2-fb9d141005f9",
+    "side_b_p1_name": "Kiran Ashish",
+    "side_b_p2_id": "f5705a40-2152-450b-adb1-ed19b301ee83",
+    "side_b_p2_name": "Nirup"
+  }
+]

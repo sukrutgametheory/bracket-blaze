@@ -1,0 +1,1692 @@
+[
+  {
+    "match_id": "d514dc89-9dd5-4868-9f78-a6def3743bb5",
+    "division_name": "Women's Singles",
+    "round": 1,
+    "sequence": 3,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 2
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 2
+    },
+    "actual_start_time": "2026-02-22T02:24:38.594344+00:00",
+    "actual_end_time": "2026-02-22T02:34:32.955+00:00",
+    "assigned_at": "2026-02-22T02:16:50.727+00:00",
+    "created_at": "2026-02-22T02:04:27.594905+00:00",
+    "side_a_player": "Kavya J",
+    "side_a_participant_id": "3fc6efe0-2892-4929-85f9-cb2041596eba",
+    "side_b_player": "Aashna Bhardwaj",
+    "side_b_participant_id": "0341898d-613f-4353-8a78-4ccdfb8477f0"
+  },
+  {
+    "match_id": "deb97a1c-c4ee-4ff5-86d2-fd0852d097c2",
+    "division_name": "Women's Singles",
+    "round": 1,
+    "sequence": 1,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 2
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 2
+    },
+    "actual_start_time": "2026-02-22T02:23:30.973972+00:00",
+    "actual_end_time": "2026-02-22T02:34:47.646+00:00",
+    "assigned_at": "2026-02-22T02:04:58.196+00:00",
+    "created_at": "2026-02-22T02:04:27.594905+00:00",
+    "side_a_player": "Manjushree JH",
+    "side_a_participant_id": "ff25e856-a853-4b02-b7db-b18effb33580",
+    "side_b_player": "Aswathi",
+    "side_b_participant_id": "4d4b2e45-e6fc-4c86-b0e0-3e642a24d062"
+  },
+  {
+    "match_id": "f9609064-fe6f-4fc6-b4f7-1a36d87d0e78",
+    "division_name": "Women's Singles",
+    "round": 1,
+    "sequence": 2,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 9,
+          "score_b": 11
+        }
+      ],
+      "total_points_a": 9,
+      "total_points_b": 11
+    },
+    "actual_start_time": "2026-02-22T02:24:50.536344+00:00",
+    "actual_end_time": "2026-02-22T02:43:07.629+00:00",
+    "assigned_at": "2026-02-22T02:15:58.526+00:00",
+    "created_at": "2026-02-22T02:04:27.594905+00:00",
+    "side_a_player": "Shilpa Sham",
+    "side_a_participant_id": "49385b3e-6e0d-48bc-bcbc-a65dac835990",
+    "side_b_player": "Hita",
+    "side_b_participant_id": "6e96cf87-3648-4609-ab5e-bbaa99bd481c"
+  },
+  {
+    "match_id": "454f3357-6914-41c2-82f9-592913985e28",
+    "division_name": "Men's Singles - Intermediate",
+    "round": 1,
+    "sequence": 1,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 0
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 0
+    },
+    "actual_start_time": "2026-02-22T02:47:46.353596+00:00",
+    "actual_end_time": "2026-02-22T02:53:26.767+00:00",
+    "assigned_at": "2026-02-22T02:41:04.623+00:00",
+    "created_at": "2026-02-22T02:40:35.346295+00:00",
+    "side_a_player": "Rahul Yadav",
+    "side_a_participant_id": "51a73fac-a95e-4528-82c8-c513fa098234",
+    "side_b_player": "Sharva",
+    "side_b_participant_id": "fc3dba3f-d6c2-4c42-b79c-d12c02852fad"
+  },
+  {
+    "match_id": "860fad0a-ed3a-44de-828b-9eeb1532b807",
+    "division_name": "Women's Singles",
+    "round": 2,
+    "sequence": 2,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 1,
+          "score_b": 11
+        }
+      ],
+      "total_points_a": 1,
+      "total_points_b": 11
+    },
+    "actual_start_time": "2026-02-22T02:46:19.472301+00:00",
+    "actual_end_time": "2026-02-22T02:53:40.489+00:00",
+    "assigned_at": "2026-02-22T02:44:03.923+00:00",
+    "created_at": "2026-02-22T02:43:46.033815+00:00",
+    "side_a_player": "Manjushree JH",
+    "side_a_participant_id": "ff25e856-a853-4b02-b7db-b18effb33580",
+    "side_b_player": "Aashna Bhardwaj",
+    "side_b_participant_id": "0341898d-613f-4353-8a78-4ccdfb8477f0"
+  },
+  {
+    "match_id": "240c2359-0869-4a93-80ea-ac6897423773",
+    "division_name": "Men's Singles - Intermediate",
+    "round": 1,
+    "sequence": 2,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 3
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 3
+    },
+    "actual_start_time": "2026-02-22T02:48:38.890643+00:00",
+    "actual_end_time": "2026-02-22T02:58:01.872+00:00",
+    "assigned_at": "2026-02-22T02:41:51.098+00:00",
+    "created_at": "2026-02-22T02:40:35.346295+00:00",
+    "side_a_player": "Ranjit Kupli",
+    "side_a_participant_id": "cb9fd4fb-88e0-4bab-aaac-a318afbf4aaf",
+    "side_b_player": "Abhinav Kumar",
+    "side_b_participant_id": "140fe84a-4684-4e8e-88db-f3f95cb0b453"
+  },
+  {
+    "match_id": "a7ca983f-6ba7-4745-a6bd-123c2e17d125",
+    "division_name": "Men's Singles - Intermediate",
+    "round": 1,
+    "sequence": 3,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 3
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 3
+    },
+    "actual_start_time": "2026-02-22T02:49:29.188629+00:00",
+    "actual_end_time": "2026-02-22T02:58:09.063+00:00",
+    "assigned_at": "2026-02-22T02:47:04.354+00:00",
+    "created_at": "2026-02-22T02:40:35.346295+00:00",
+    "side_a_player": "Aman",
+    "side_a_participant_id": "4056c424-288d-4cfe-9508-bf48751c34c5",
+    "side_b_player": "Darshan",
+    "side_b_participant_id": "da4dbf7e-6f8b-406b-9627-0fa474dd223e"
+  },
+  {
+    "match_id": "ed05856a-e077-4385-917d-3cdf311e7678",
+    "division_name": "Women's Singles",
+    "round": 2,
+    "sequence": 3,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 0
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 0
+    },
+    "actual_start_time": "2026-02-22T02:55:32.757143+00:00",
+    "actual_end_time": "2026-02-22T03:02:18.853+00:00",
+    "assigned_at": "2026-02-22T02:54:12.591+00:00",
+    "created_at": "2026-02-22T02:43:46.033815+00:00",
+    "side_a_player": "Shilpa Sham",
+    "side_a_participant_id": "49385b3e-6e0d-48bc-bcbc-a65dac835990",
+    "side_b_player": "Aswathi",
+    "side_b_participant_id": "4d4b2e45-e6fc-4c86-b0e0-3e642a24d062"
+  },
+  {
+    "match_id": "642b57ef-b9b9-4bac-883c-c84dbcd38eaf",
+    "division_name": "Women's Singles",
+    "round": 2,
+    "sequence": 1,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 0
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 0
+    },
+    "actual_start_time": "2026-02-22T02:54:07.531507+00:00",
+    "actual_end_time": "2026-02-22T03:05:25.371+00:00",
+    "assigned_at": "2026-02-22T02:54:01.541+00:00",
+    "created_at": "2026-02-22T02:43:46.033815+00:00",
+    "side_a_player": "Kavya J",
+    "side_a_participant_id": "3fc6efe0-2892-4929-85f9-cb2041596eba",
+    "side_b_player": "Hita",
+    "side_b_participant_id": "6e96cf87-3648-4609-ab5e-bbaa99bd481c"
+  },
+  {
+    "match_id": "c3c3b670-c5f0-4cd6-b7b8-0fe9176611a8",
+    "division_name": "Men's Singles - Intermediate",
+    "round": 1,
+    "sequence": 4,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 0
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 0
+    },
+    "actual_start_time": "2026-02-22T03:00:10.889914+00:00",
+    "actual_end_time": "2026-02-22T03:08:34.801+00:00",
+    "assigned_at": "2026-02-22T02:58:21.722+00:00",
+    "created_at": "2026-02-22T02:40:35.346295+00:00",
+    "side_a_player": "Dinakar Naidu",
+    "side_a_participant_id": "91af2eac-8a1e-46f5-a980-e560efb552b8",
+    "side_b_player": "Bharath",
+    "side_b_participant_id": "45a00f0f-58d0-46f1-bc0d-a315a6a830e4"
+  },
+  {
+    "match_id": "339ba818-4f91-4a72-8211-6d2f18b51d5c",
+    "division_name": "Men's Singles - Intermediate",
+    "round": 1,
+    "sequence": 5,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 8,
+          "score_b": 11
+        }
+      ],
+      "total_points_a": 8,
+      "total_points_b": 11
+    },
+    "actual_start_time": "2026-02-22T03:00:15.346791+00:00",
+    "actual_end_time": "2026-02-22T03:10:44.541+00:00",
+    "assigned_at": "2026-02-22T02:58:32.565+00:00",
+    "created_at": "2026-02-22T02:40:35.346295+00:00",
+    "side_a_player": "Shankar",
+    "side_a_participant_id": "b19b4641-9b4f-4cf2-bd38-b3e5d4cfdffb",
+    "side_b_player": "Saikrishna Kondaraju",
+    "side_b_participant_id": "0d9a1434-b902-4da8-9cb5-e945ed2d16be"
+  },
+  {
+    "match_id": "025fc734-bdca-4c58-a2ed-b0bba9ac3d5c",
+    "division_name": "Women's Singles",
+    "round": 3,
+    "sequence": 2,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 6
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 6
+    },
+    "actual_start_time": "2026-02-22T03:07:18.274212+00:00",
+    "actual_end_time": "2026-02-22T03:20:35+00:00",
+    "assigned_at": "2026-02-22T03:06:29.839+00:00",
+    "created_at": "2026-02-22T03:05:51.312603+00:00",
+    "side_a_player": "Shilpa Sham",
+    "side_a_participant_id": "49385b3e-6e0d-48bc-bcbc-a65dac835990",
+    "side_b_player": "Aashna Bhardwaj",
+    "side_b_participant_id": "0341898d-613f-4353-8a78-4ccdfb8477f0"
+  },
+  {
+    "match_id": "7ddcb570-c3b8-4eb5-9ad8-a4bd7c849c64",
+    "division_name": "Men's Singles - Intermediate",
+    "round": 2,
+    "sequence": 5,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 2,
+          "score_b": 11
+        }
+      ],
+      "total_points_a": 2,
+      "total_points_b": 11
+    },
+    "actual_start_time": "2026-02-22T03:13:34.952504+00:00",
+    "actual_end_time": "2026-02-22T03:24:43.959+00:00",
+    "assigned_at": "2026-02-22T03:12:03.356+00:00",
+    "created_at": "2026-02-22T03:11:28.197866+00:00",
+    "side_a_player": "Darshan",
+    "side_a_participant_id": "da4dbf7e-6f8b-406b-9627-0fa474dd223e",
+    "side_b_player": "Abhinav Kumar",
+    "side_b_participant_id": "140fe84a-4684-4e8e-88db-f3f95cb0b453"
+  },
+  {
+    "match_id": "f880e3b8-3588-44e0-8257-20c5e5dbbe61",
+    "division_name": "Women's Singles",
+    "round": 3,
+    "sequence": 3,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 10,
+          "score_b": 12
+        }
+      ],
+      "total_points_a": 10,
+      "total_points_b": 12
+    },
+    "actual_start_time": "2026-02-22T03:13:21.164349+00:00",
+    "actual_end_time": "2026-02-22T03:26:39.97+00:00",
+    "assigned_at": "2026-02-22T03:09:04.839+00:00",
+    "created_at": "2026-02-22T03:05:51.312603+00:00",
+    "side_a_player": "Hita",
+    "side_a_participant_id": "6e96cf87-3648-4609-ab5e-bbaa99bd481c",
+    "side_b_player": "Aswathi",
+    "side_b_participant_id": "4d4b2e45-e6fc-4c86-b0e0-3e642a24d062"
+  },
+  {
+    "match_id": "91721e7e-81b8-4ec8-a7b0-689a6f5f5ced",
+    "division_name": "Men's Singles - Intermediate",
+    "round": 2,
+    "sequence": 1,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 1
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 1
+    },
+    "actual_start_time": "2026-02-22T03:21:21.061578+00:00",
+    "actual_end_time": "2026-02-22T03:29:25.2+00:00",
+    "assigned_at": "2026-02-22T03:20:47.291+00:00",
+    "created_at": "2026-02-22T03:11:28.197866+00:00",
+    "side_a_player": "Rahul Yadav",
+    "side_a_participant_id": "51a73fac-a95e-4528-82c8-c513fa098234",
+    "side_b_player": "Saikrishna Kondaraju",
+    "side_b_participant_id": "0d9a1434-b902-4da8-9cb5-e945ed2d16be"
+  },
+  {
+    "match_id": "39c3a785-2c74-4c94-93c4-8ab6a4e49b92",
+    "division_name": "Women's Singles",
+    "round": 3,
+    "sequence": 1,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 6
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 6
+    },
+    "actual_start_time": "2026-02-22T03:12:18.113864+00:00",
+    "actual_end_time": "2026-02-22T03:29:39.998+00:00",
+    "assigned_at": "2026-02-22T03:09:14.104+00:00",
+    "created_at": "2026-02-22T03:05:51.312603+00:00",
+    "side_a_player": "Kavya J",
+    "side_a_participant_id": "3fc6efe0-2892-4929-85f9-cb2041596eba",
+    "side_b_player": "Manjushree JH",
+    "side_b_participant_id": "ff25e856-a853-4b02-b7db-b18effb33580"
+  },
+  {
+    "match_id": "41f6a329-fc55-4894-a0ee-48bf2c4f627f",
+    "division_name": "Men's Singles - Intermediate",
+    "round": 2,
+    "sequence": 4,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 4
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 4
+    },
+    "actual_start_time": "2026-02-22T03:29:29.33196+00:00",
+    "actual_end_time": "2026-02-22T03:37:51.842+00:00",
+    "assigned_at": "2026-02-22T03:26:50.425+00:00",
+    "created_at": "2026-02-22T03:11:28.197866+00:00",
+    "side_a_player": "Shankar",
+    "side_a_participant_id": "b19b4641-9b4f-4cf2-bd38-b3e5d4cfdffb",
+    "side_b_player": "Sharva",
+    "side_b_participant_id": "fc3dba3f-d6c2-4c42-b79c-d12c02852fad"
+  },
+  {
+    "match_id": "83104a48-99cc-4c45-98df-92fe102cce36",
+    "division_name": "Men's Singles - Intermediate",
+    "round": 2,
+    "sequence": 3,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 1
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 1
+    },
+    "actual_start_time": "2026-02-22T03:30:30.663751+00:00",
+    "actual_end_time": "2026-02-22T03:40:07.219+00:00",
+    "assigned_at": "2026-02-22T03:29:51.66+00:00",
+    "created_at": "2026-02-22T03:11:28.197866+00:00",
+    "side_a_player": "Aman",
+    "side_a_participant_id": "4056c424-288d-4cfe-9508-bf48751c34c5",
+    "side_b_player": "Bharath",
+    "side_b_participant_id": "45a00f0f-58d0-46f1-bc0d-a315a6a830e4"
+  },
+  {
+    "match_id": "100a6db8-87de-4a96-a32f-df69bbdc48dc",
+    "division_name": "Men's Singles - Intermediate",
+    "round": 2,
+    "sequence": 2,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 9
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 9
+    },
+    "actual_start_time": "2026-02-22T03:27:00.516341+00:00",
+    "actual_end_time": "2026-02-22T03:45:02.546+00:00",
+    "assigned_at": "2026-02-22T03:24:52.638+00:00",
+    "created_at": "2026-02-22T03:11:28.197866+00:00",
+    "side_a_player": "Dinakar Naidu",
+    "side_a_participant_id": "91af2eac-8a1e-46f5-a980-e560efb552b8",
+    "side_b_player": "Ranjit Kupli",
+    "side_b_participant_id": "cb9fd4fb-88e0-4bab-aaac-a318afbf4aaf"
+  },
+  {
+    "match_id": "a36bab6f-2dfe-479a-82f4-a8e9e06a6c9b",
+    "division_name": "Men's Singles - Intermediate",
+    "round": 3,
+    "sequence": 2,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 5
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 5
+    },
+    "actual_start_time": "2026-02-22T03:49:30.698491+00:00",
+    "actual_end_time": "2026-02-22T03:59:32.391+00:00",
+    "assigned_at": "2026-02-22T03:45:25.18+00:00",
+    "created_at": "2026-02-22T03:45:14.001397+00:00",
+    "side_a_player": "Aman",
+    "side_a_participant_id": "4056c424-288d-4cfe-9508-bf48751c34c5",
+    "side_b_player": "Saikrishna Kondaraju",
+    "side_b_participant_id": "0d9a1434-b902-4da8-9cb5-e945ed2d16be"
+  },
+  {
+    "match_id": "01ddd43c-e9ba-422d-a208-6002fd13d3d1",
+    "division_name": "Women's Singles",
+    "round": 1,
+    "sequence": 1,
+    "phase": "knockout",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 15,
+          "score_b": 8
+        }
+      ],
+      "total_points_a": 15,
+      "total_points_b": 8
+    },
+    "actual_start_time": "2026-02-22T03:37:43.322464+00:00",
+    "actual_end_time": "2026-02-22T04:01:37.403+00:00",
+    "assigned_at": "2026-02-22T03:32:39.156+00:00",
+    "created_at": "2026-02-22T03:32:24.123447+00:00",
+    "side_a_player": "Kavya J",
+    "side_a_participant_id": "3fc6efe0-2892-4929-85f9-cb2041596eba",
+    "side_b_player": "Shilpa Sham",
+    "side_b_participant_id": "49385b3e-6e0d-48bc-bcbc-a65dac835990"
+  },
+  {
+    "match_id": "0890cccd-f7d9-430b-9cc3-208c9c962b29",
+    "division_name": "Men's Singles - Intermediate",
+    "round": 3,
+    "sequence": 4,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 8
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 8
+    },
+    "actual_start_time": "2026-02-22T03:48:44.824713+00:00",
+    "actual_end_time": "2026-02-22T04:07:25.945+00:00",
+    "assigned_at": "2026-02-22T03:45:42.295+00:00",
+    "created_at": "2026-02-22T03:45:14.001397+00:00",
+    "side_a_player": "Abhinav Kumar",
+    "side_a_participant_id": "140fe84a-4684-4e8e-88db-f3f95cb0b453",
+    "side_b_player": "Bharath",
+    "side_b_participant_id": "45a00f0f-58d0-46f1-bc0d-a315a6a830e4"
+  },
+  {
+    "match_id": "423752b6-b651-4d73-87c0-8c8a60fa3dcb",
+    "division_name": "Men's Singles - Intermediate",
+    "round": 3,
+    "sequence": 5,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 8
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 8
+    },
+    "actual_start_time": "2026-02-22T03:49:11.766592+00:00",
+    "actual_end_time": "2026-02-22T04:07:39.377+00:00",
+    "assigned_at": "2026-02-22T03:45:33.925+00:00",
+    "created_at": "2026-02-22T03:45:14.001397+00:00",
+    "side_a_player": "Darshan",
+    "side_a_participant_id": "da4dbf7e-6f8b-406b-9627-0fa474dd223e",
+    "side_b_player": "Sharva",
+    "side_b_participant_id": "fc3dba3f-d6c2-4c42-b79c-d12c02852fad"
+  },
+  {
+    "match_id": "a92fbacc-87f7-44c8-91cf-2ab54ec1d7f0",
+    "division_name": "Men's Singles - Intermediate",
+    "round": 3,
+    "sequence": 3,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 4
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 4
+    },
+    "actual_start_time": "2026-02-22T04:07:18.428174+00:00",
+    "actual_end_time": "2026-02-22T04:20:22.3+00:00",
+    "assigned_at": "2026-02-22T04:02:00.182+00:00",
+    "created_at": "2026-02-22T03:45:14.001397+00:00",
+    "side_a_player": "Ranjit Kupli",
+    "side_a_participant_id": "cb9fd4fb-88e0-4bab-aaac-a318afbf4aaf",
+    "side_b_player": "Shankar",
+    "side_b_participant_id": "b19b4641-9b4f-4cf2-bd38-b3e5d4cfdffb"
+  },
+  {
+    "match_id": "6a4efe88-e567-4b1d-9278-5b2c48142c76",
+    "division_name": "Men's Singles - Intermediate",
+    "round": 3,
+    "sequence": 1,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 9
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 9
+    },
+    "actual_start_time": "2026-02-22T04:02:54.019155+00:00",
+    "actual_end_time": "2026-02-22T04:25:04.587+00:00",
+    "assigned_at": "2026-02-22T03:59:51.479+00:00",
+    "created_at": "2026-02-22T03:45:14.001397+00:00",
+    "side_a_player": "Rahul Yadav",
+    "side_a_participant_id": "51a73fac-a95e-4528-82c8-c513fa098234",
+    "side_b_player": "Dinakar Naidu",
+    "side_b_participant_id": "91af2eac-8a1e-46f5-a980-e560efb552b8"
+  },
+  {
+    "match_id": "349403bc-948c-4d4b-ad6f-f31b98321eee",
+    "division_name": "Men's Singles - Intermediate",
+    "round": 1,
+    "sequence": 2,
+    "phase": "knockout",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 14,
+          "score_b": 15
+        }
+      ],
+      "total_points_a": 14,
+      "total_points_b": 15
+    },
+    "actual_start_time": "2026-02-22T04:34:51.140592+00:00",
+    "actual_end_time": "2026-02-22T04:56:19.359+00:00",
+    "assigned_at": "2026-02-22T04:28:29.217+00:00",
+    "created_at": "2026-02-22T04:27:43.710335+00:00",
+    "side_a_player": "Rahul Yadav",
+    "side_a_participant_id": "51a73fac-a95e-4528-82c8-c513fa098234",
+    "side_b_player": "Ranjit Kupli",
+    "side_b_participant_id": "cb9fd4fb-88e0-4bab-aaac-a318afbf4aaf"
+  },
+  {
+    "match_id": "a5d8fb0a-4d7a-425d-a87e-36a4690c4538",
+    "division_name": "Men's Singles - Intermediate",
+    "round": 1,
+    "sequence": 1,
+    "phase": "knockout",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 15,
+          "score_b": 12
+        }
+      ],
+      "total_points_a": 15,
+      "total_points_b": 12
+    },
+    "actual_start_time": "2026-02-22T04:36:30.276183+00:00",
+    "actual_end_time": "2026-02-22T05:08:03.407+00:00",
+    "assigned_at": "2026-02-22T04:28:12.781+00:00",
+    "created_at": "2026-02-22T04:27:43.710335+00:00",
+    "side_a_player": "Aman",
+    "side_a_participant_id": "4056c424-288d-4cfe-9508-bf48751c34c5",
+    "side_b_player": "Dinakar Naidu",
+    "side_b_participant_id": "91af2eac-8a1e-46f5-a980-e560efb552b8"
+  },
+  {
+    "match_id": "b045f879-1c20-4665-8392-79a25470fe6a",
+    "division_name": "Men's Singles - Intermediate",
+    "round": 2,
+    "sequence": 1,
+    "phase": "knockout",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 15,
+          "score_b": 7
+        }
+      ],
+      "total_points_a": 15,
+      "total_points_b": 7
+    },
+    "actual_start_time": "2026-02-22T05:19:00.889375+00:00",
+    "actual_end_time": "2026-02-22T05:35:29.283+00:00",
+    "assigned_at": "2026-02-22T05:17:13.79+00:00",
+    "created_at": "2026-02-22T04:27:43.710335+00:00",
+    "side_a_player": "Aman",
+    "side_a_participant_id": "4056c424-288d-4cfe-9508-bf48751c34c5",
+    "side_b_player": "Ranjit Kupli",
+    "side_b_participant_id": "cb9fd4fb-88e0-4bab-aaac-a318afbf4aaf"
+  },
+  {
+    "match_id": "1a8b2bc3-7db3-477f-b46d-21bff4397213",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 1,
+    "sequence": 7,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 2
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 2
+    },
+    "actual_start_time": "2026-02-22T12:36:56.75522+00:00",
+    "actual_end_time": "2026-02-22T12:45:03.714+00:00",
+    "assigned_at": "2026-02-22T12:34:39.577+00:00",
+    "created_at": "2026-02-22T12:20:22.723302+00:00",
+    "side_a_player": "Darshan S",
+    "side_a_participant_id": "bb2358da-20d9-4c9e-88e3-1ac231e22099",
+    "side_b_player": "Rohit PV",
+    "side_b_participant_id": "95c41b8d-2e90-42c5-8e05-8b78e85e4e48"
+  },
+  {
+    "match_id": "698885ad-a63a-4204-89f8-815af753e5a5",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 1,
+    "sequence": 8,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 9,
+          "score_b": 11
+        }
+      ],
+      "total_points_a": 9,
+      "total_points_b": 11
+    },
+    "actual_start_time": "2026-02-22T12:31:31.731463+00:00",
+    "actual_end_time": "2026-02-22T12:52:14.324+00:00",
+    "assigned_at": "2026-02-22T12:27:42.186+00:00",
+    "created_at": "2026-02-22T12:20:22.723302+00:00",
+    "side_a_player": "Venkatesh Sundar",
+    "side_a_participant_id": "fe48ca41-70d4-43f0-8a0f-f2f1fb14c7eb",
+    "side_b_player": "Chirag",
+    "side_b_participant_id": "d552c83b-3ca9-4d3a-9b6e-75c34c0a22c6"
+  },
+  {
+    "match_id": "1bc7ea3f-0db8-4597-83a7-d9f2560a336d",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 1,
+    "sequence": 6,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 5
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 5
+    },
+    "actual_start_time": "2026-02-22T12:43:00.73944+00:00",
+    "actual_end_time": "2026-02-22T12:54:09.453+00:00",
+    "assigned_at": "2026-02-22T12:42:56.167+00:00",
+    "created_at": "2026-02-22T12:20:22.723302+00:00",
+    "side_a_player": "Parth",
+    "side_a_participant_id": "34335d37-c4b1-4e81-9ff9-f9ae1c88637c",
+    "side_b_player": "Bhargav",
+    "side_b_participant_id": "a452d28e-69d5-4545-8259-0fb4da032ef3"
+  },
+  {
+    "match_id": "b253978d-c4a2-447b-9821-326967adf76e",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 1,
+    "sequence": 3,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 4
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 4
+    },
+    "actual_start_time": "2026-02-22T12:55:28.189584+00:00",
+    "actual_end_time": "2026-02-22T13:04:15.738+00:00",
+    "assigned_at": "2026-02-22T12:53:29.652+00:00",
+    "created_at": "2026-02-22T12:20:22.723302+00:00",
+    "side_a_player": "Varun",
+    "side_a_participant_id": "3ddcc77a-74f6-4fc5-bad4-9e317e62ba9e",
+    "side_b_player": "Mohit",
+    "side_b_participant_id": "c1e1035e-6671-46ac-9619-383166e0dd31"
+  },
+  {
+    "match_id": "cc101b99-7e26-4631-b16a-48e54989d5d0",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 1,
+    "sequence": 2,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 12,
+          "score_b": 10
+        }
+      ],
+      "total_points_a": 12,
+      "total_points_b": 10
+    },
+    "actual_start_time": "2026-02-22T12:48:18.591352+00:00",
+    "actual_end_time": "2026-02-22T13:06:11.508+00:00",
+    "assigned_at": "2026-02-22T12:47:27.968+00:00",
+    "created_at": "2026-02-22T12:20:22.723302+00:00",
+    "side_a_player": "Kalyan Kumar",
+    "side_a_participant_id": "6997af53-f4af-4609-85a7-f3fb2549aca0",
+    "side_b_player": "Sanjith S",
+    "side_b_participant_id": "a2f00f61-143c-4655-b1be-eea2f02d8eb8"
+  },
+  {
+    "match_id": "b08be8f5-071c-403a-934d-1085698bcfac",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 1,
+    "sequence": 1,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 0
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 0
+    },
+    "actual_start_time": "2026-02-22T13:09:12.169911+00:00",
+    "actual_end_time": "2026-02-22T13:15:36.368+00:00",
+    "assigned_at": "2026-02-22T13:08:18.318+00:00",
+    "created_at": "2026-02-22T12:20:22.723302+00:00",
+    "side_a_player": "Devansh",
+    "side_a_participant_id": "43813860-bd25-4b45-aaa2-3692bd651c64",
+    "side_b_player": "Anubhav",
+    "side_b_participant_id": "1f3a585a-1163-4df6-8252-88580511d59f"
+  },
+  {
+    "match_id": "0775cfb0-058a-4912-adf3-b207ce396fcd",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 1,
+    "sequence": 10,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 3,
+          "score_b": 11
+        }
+      ],
+      "total_points_a": 3,
+      "total_points_b": 11
+    },
+    "actual_start_time": "2026-02-22T13:07:24.025996+00:00",
+    "actual_end_time": "2026-02-22T13:19:05.693+00:00",
+    "assigned_at": "2026-02-22T13:07:08.69+00:00",
+    "created_at": "2026-02-22T12:20:22.723302+00:00",
+    "side_a_player": "Avinash Ms",
+    "side_a_participant_id": "eb13de5c-bd8a-453b-a710-4e1fe2aed4dd",
+    "side_b_player": "Kamal",
+    "side_b_participant_id": "cc51b048-d310-48f4-9d45-bf5431c7d466"
+  },
+  {
+    "match_id": "ffa7c85c-1baa-4e7a-bca5-ff749fad78d4",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 1,
+    "sequence": 9,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 0
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 0
+    },
+    "actual_start_time": "2026-02-22T13:16:46.331641+00:00",
+    "actual_end_time": "2026-02-22T13:28:12.909+00:00",
+    "assigned_at": "2026-02-22T13:16:27.502+00:00",
+    "created_at": "2026-02-22T12:20:22.723302+00:00",
+    "side_a_player": "Athul Krishna R",
+    "side_a_participant_id": "81cdddae-4b9e-4130-a63a-e1fa858c41f2",
+    "side_b_player": "Sathvik R G",
+    "side_b_participant_id": "d620b3ee-53c3-4a16-aa51-ad30ec8339dc"
+  },
+  {
+    "match_id": "bd520244-0381-4259-bddb-4eff53644717",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 1,
+    "sequence": 4,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 1
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 1
+    },
+    "actual_start_time": "2026-02-22T13:21:27.378247+00:00",
+    "actual_end_time": "2026-02-22T13:29:04.571+00:00",
+    "assigned_at": "2026-02-22T13:21:24.076+00:00",
+    "created_at": "2026-02-22T12:20:22.723302+00:00",
+    "side_a_player": "Ashley Dias",
+    "side_a_participant_id": "e376585f-24be-49cb-80f9-c224c35c6387",
+    "side_b_player": "Soumyadeep Purkait",
+    "side_b_participant_id": "e5348e63-d48e-4d4a-8418-7ffab550c93c"
+  },
+  {
+    "match_id": "58a0c3fa-bd9f-49d8-a305-7bc0758010ef",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 1,
+    "sequence": 5,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 1
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 1
+    },
+    "actual_start_time": "2026-02-22T13:27:12.961645+00:00",
+    "actual_end_time": "2026-02-22T13:30:23.152+00:00",
+    "assigned_at": "2026-02-22T13:27:04.15+00:00",
+    "created_at": "2026-02-22T12:20:22.723302+00:00",
+    "side_a_player": "Krishna Kumar",
+    "side_a_participant_id": "9454c826-2fbe-4e47-baef-d35abe1bcc31",
+    "side_b_player": "Harikrishnan",
+    "side_b_participant_id": "780b0092-3703-4d99-befc-c28b126431ee"
+  },
+  {
+    "match_id": "ea380c43-9c18-4675-936a-e5166339219d",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 2,
+    "sequence": 2,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 6
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 6
+    },
+    "actual_start_time": "2026-02-22T13:35:08.473455+00:00",
+    "actual_end_time": "2026-02-22T13:46:12.257+00:00",
+    "assigned_at": "2026-02-22T13:34:20.96+00:00",
+    "created_at": "2026-02-22T13:30:41.44813+00:00",
+    "side_a_player": "Athul Krishna R",
+    "side_a_participant_id": "81cdddae-4b9e-4130-a63a-e1fa858c41f2",
+    "side_b_player": "Kalyan Kumar",
+    "side_b_participant_id": "6997af53-f4af-4609-85a7-f3fb2549aca0"
+  },
+  {
+    "match_id": "b6483396-1631-4258-851c-d159d5f6f86f",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 2,
+    "sequence": 7,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 4
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 4
+    },
+    "actual_start_time": "2026-02-22T13:34:46.082774+00:00",
+    "actual_end_time": "2026-02-22T13:48:32.548+00:00",
+    "assigned_at": "2026-02-22T13:34:38.492+00:00",
+    "created_at": "2026-02-22T13:30:41.44813+00:00",
+    "side_a_player": "Venkatesh Sundar",
+    "side_a_participant_id": "fe48ca41-70d4-43f0-8a0f-f2f1fb14c7eb",
+    "side_b_player": "Anubhav",
+    "side_b_participant_id": "1f3a585a-1163-4df6-8252-88580511d59f"
+  },
+  {
+    "match_id": "0e2dbac3-c07e-4855-b7c0-ca6f1c6865eb",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 2,
+    "sequence": 1,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 6
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 6
+    },
+    "actual_start_time": "2026-02-22T13:33:24.076896+00:00",
+    "actual_end_time": "2026-02-22T13:50:19.242+00:00",
+    "assigned_at": "2026-02-22T13:31:49.716+00:00",
+    "created_at": "2026-02-22T13:30:41.44813+00:00",
+    "side_a_player": "Devansh",
+    "side_a_participant_id": "43813860-bd25-4b45-aaa2-3692bd651c64",
+    "side_b_player": "Chirag",
+    "side_b_participant_id": "d552c83b-3ca9-4d3a-9b6e-75c34c0a22c6"
+  },
+  {
+    "match_id": "892d64e3-7247-4364-beb9-f8cace2f4260",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 2,
+    "sequence": 10,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 3
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 3
+    },
+    "actual_start_time": "2026-02-22T13:48:37.548905+00:00",
+    "actual_end_time": "2026-02-22T13:57:32.351+00:00",
+    "assigned_at": "2026-02-22T13:47:03.835+00:00",
+    "created_at": "2026-02-22T13:30:41.44813+00:00",
+    "side_a_player": "Avinash Ms",
+    "side_a_participant_id": "eb13de5c-bd8a-453b-a710-4e1fe2aed4dd",
+    "side_b_player": "Rohit PV",
+    "side_b_participant_id": "95c41b8d-2e90-42c5-8e05-8b78e85e4e48"
+  },
+  {
+    "match_id": "cf544804-8686-417f-8d86-9cd0688dd2f0",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 2,
+    "sequence": 9,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 2
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 2
+    },
+    "actual_start_time": "2026-02-22T13:53:22.365788+00:00",
+    "actual_end_time": "2026-02-22T14:01:13.607+00:00",
+    "assigned_at": "2026-02-22T13:49:23.045+00:00",
+    "created_at": "2026-02-22T13:30:41.44813+00:00",
+    "side_a_player": "Mohit",
+    "side_a_participant_id": "c1e1035e-6671-46ac-9619-383166e0dd31",
+    "side_b_player": "Harikrishnan",
+    "side_b_participant_id": "780b0092-3703-4d99-befc-c28b126431ee"
+  },
+  {
+    "match_id": "25c0bac4-0470-455b-858b-4abe735c8fbd",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 2,
+    "sequence": 8,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 8
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 8
+    },
+    "actual_start_time": "2026-02-22T13:51:20.557845+00:00",
+    "actual_end_time": "2026-02-22T14:02:51.23+00:00",
+    "assigned_at": "2026-02-22T13:51:08.874+00:00",
+    "created_at": "2026-02-22T13:30:41.44813+00:00",
+    "side_a_player": "Bhargav",
+    "side_a_participant_id": "a452d28e-69d5-4545-8259-0fb4da032ef3",
+    "side_b_player": "Soumyadeep Purkait",
+    "side_b_participant_id": "e5348e63-d48e-4d4a-8418-7ffab550c93c"
+  },
+  {
+    "match_id": "9fea4dd1-265f-451c-a93c-739fe07a40d8",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 2,
+    "sequence": 6,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 2
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 2
+    },
+    "actual_start_time": "2026-02-22T14:02:13.980184+00:00",
+    "actual_end_time": "2026-02-22T14:06:53.618+00:00",
+    "assigned_at": "2026-02-22T13:59:04.94+00:00",
+    "created_at": "2026-02-22T13:30:41.44813+00:00",
+    "side_a_player": "Sanjith S",
+    "side_a_participant_id": "a2f00f61-143c-4655-b1be-eea2f02d8eb8",
+    "side_b_player": "Sathvik R G",
+    "side_b_participant_id": "d620b3ee-53c3-4a16-aa51-ad30ec8339dc"
+  },
+  {
+    "match_id": "48584f17-8d7c-4a43-8e1a-97b3155217c4",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 2,
+    "sequence": 3,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 3
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 3
+    },
+    "actual_start_time": "2026-02-22T14:02:44.728148+00:00",
+    "actual_end_time": "2026-02-22T14:13:32.393+00:00",
+    "assigned_at": "2026-02-22T14:02:06.516+00:00",
+    "created_at": "2026-02-22T13:30:41.44813+00:00",
+    "side_a_player": "Ashley Dias",
+    "side_a_participant_id": "e376585f-24be-49cb-80f9-c224c35c6387",
+    "side_b_player": "Parth",
+    "side_b_participant_id": "34335d37-c4b1-4e81-9ff9-f9ae1c88637c"
+  },
+  {
+    "match_id": "fa0146e4-6fd9-4a18-9a05-738f7bd2c0fc",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 2,
+    "sequence": 4,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 0
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 0
+    },
+    "actual_start_time": "2026-02-22T14:08:23.416384+00:00",
+    "actual_end_time": "2026-02-22T14:14:45.953+00:00",
+    "assigned_at": "2026-02-22T14:07:51.574+00:00",
+    "created_at": "2026-02-22T13:30:41.44813+00:00",
+    "side_a_player": "Krishna Kumar",
+    "side_a_participant_id": "9454c826-2fbe-4e47-baef-d35abe1bcc31",
+    "side_b_player": "Varun",
+    "side_b_participant_id": "3ddcc77a-74f6-4fc5-bad4-9e317e62ba9e"
+  },
+  {
+    "match_id": "485a9f0f-c8c7-4160-a05d-60f7ee8f5a35",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 2,
+    "sequence": 5,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 2,
+          "score_b": 11
+        }
+      ],
+      "total_points_a": 2,
+      "total_points_b": 11
+    },
+    "actual_start_time": "2026-02-22T14:04:20.135865+00:00",
+    "actual_end_time": "2026-02-22T14:15:49.38+00:00",
+    "assigned_at": "2026-02-22T14:03:58.263+00:00",
+    "created_at": "2026-02-22T13:30:41.44813+00:00",
+    "side_a_player": "Darshan S",
+    "side_a_participant_id": "bb2358da-20d9-4c9e-88e3-1ac231e22099",
+    "side_b_player": "Kamal",
+    "side_b_participant_id": "cc51b048-d310-48f4-9d45-bf5431c7d466"
+  },
+  {
+    "match_id": "404c3400-0331-4de6-8853-2b33f54a2f0f",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 3,
+    "sequence": 9,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 2,
+          "score_b": 11
+        }
+      ],
+      "total_points_a": 2,
+      "total_points_b": 11
+    },
+    "actual_start_time": "2026-02-22T14:19:38.453736+00:00",
+    "actual_end_time": "2026-02-22T14:25:55.29+00:00",
+    "assigned_at": "2026-02-22T14:18:35.585+00:00",
+    "created_at": "2026-02-22T14:16:11.55674+00:00",
+    "side_a_player": "Soumyadeep Purkait",
+    "side_a_participant_id": "e5348e63-d48e-4d4a-8418-7ffab550c93c",
+    "side_b_player": "Harikrishnan",
+    "side_b_participant_id": "780b0092-3703-4d99-befc-c28b126431ee"
+  },
+  {
+    "match_id": "b1d04627-a0e9-4f42-89a0-fc08dc9d65f7",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 3,
+    "sequence": 5,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 4
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 4
+    },
+    "actual_start_time": "2026-02-22T14:17:59.844274+00:00",
+    "actual_end_time": "2026-02-22T14:29:14.924+00:00",
+    "assigned_at": "2026-02-22T14:17:34.492+00:00",
+    "created_at": "2026-02-22T14:16:11.55674+00:00",
+    "side_a_player": "Venkatesh Sundar",
+    "side_a_participant_id": "fe48ca41-70d4-43f0-8a0f-f2f1fb14c7eb",
+    "side_b_player": "Kalyan Kumar",
+    "side_b_participant_id": "6997af53-f4af-4609-85a7-f3fb2549aca0"
+  },
+  {
+    "match_id": "e192f0fe-a9f8-4b82-bc7d-2472a35f5210",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 3,
+    "sequence": 8,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 1
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 1
+    },
+    "actual_start_time": "2026-02-22T14:27:21.090194+00:00",
+    "actual_end_time": "2026-02-22T14:33:54.035+00:00",
+    "assigned_at": "2026-02-22T14:26:51.744+00:00",
+    "created_at": "2026-02-22T14:16:11.55674+00:00",
+    "side_a_player": "Darshan S",
+    "side_a_participant_id": "bb2358da-20d9-4c9e-88e3-1ac231e22099",
+    "side_b_player": "Sathvik R G",
+    "side_b_participant_id": "d620b3ee-53c3-4a16-aa51-ad30ec8339dc"
+  },
+  {
+    "match_id": "bbf6c304-1d21-4b52-9abe-ae947186e5d8",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 3,
+    "sequence": 7,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 7,
+          "score_b": 11
+        }
+      ],
+      "total_points_a": 7,
+      "total_points_b": 11
+    },
+    "actual_start_time": "2026-02-22T14:20:22.737781+00:00",
+    "actual_end_time": "2026-02-22T14:37:41.632+00:00",
+    "assigned_at": "2026-02-22T14:20:17.77+00:00",
+    "created_at": "2026-02-22T14:16:11.55674+00:00",
+    "side_a_player": "Avinash Ms",
+    "side_a_participant_id": "eb13de5c-bd8a-453b-a710-4e1fe2aed4dd",
+    "side_b_player": "Parth",
+    "side_b_participant_id": "34335d37-c4b1-4e81-9ff9-f9ae1c88637c"
+  },
+  {
+    "match_id": "360be0b4-7f43-47cd-b292-cd5713d995ef",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 3,
+    "sequence": 2,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 2,
+          "score_b": 11
+        }
+      ],
+      "total_points_a": 2,
+      "total_points_b": 11
+    },
+    "actual_start_time": "2026-02-22T14:35:06.361916+00:00",
+    "actual_end_time": "2026-02-22T14:46:02.142+00:00",
+    "assigned_at": "2026-02-22T14:35:03.751+00:00",
+    "created_at": "2026-02-22T14:16:11.55674+00:00",
+    "side_a_player": "Ashley Dias",
+    "side_a_participant_id": "e376585f-24be-49cb-80f9-c224c35c6387",
+    "side_b_player": "Devansh",
+    "side_b_participant_id": "43813860-bd25-4b45-aaa2-3692bd651c64"
+  },
+  {
+    "match_id": "1cfc0966-462a-4291-a74c-89c5fd260b6c",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 3,
+    "sequence": 3,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 5
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 5
+    },
+    "actual_start_time": "2026-02-22T14:39:45.340668+00:00",
+    "actual_end_time": "2026-02-22T14:48:54.391+00:00",
+    "assigned_at": "2026-02-22T14:38:41.48+00:00",
+    "created_at": "2026-02-22T14:16:11.55674+00:00",
+    "side_a_player": "Kamal",
+    "side_a_participant_id": "cc51b048-d310-48f4-9d45-bf5431c7d466",
+    "side_b_player": "Varun",
+    "side_b_participant_id": "3ddcc77a-74f6-4fc5-bad4-9e317e62ba9e"
+  },
+  {
+    "match_id": "8856afe4-89ea-458f-ab39-65ca4bad48d6",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 3,
+    "sequence": 1,
+    "phase": "swiss",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 6,
+          "score_b": 11
+        }
+      ],
+      "total_points_a": 6,
+      "total_points_b": 11
+    },
+    "actual_start_time": "2026-02-22T14:31:19.082417+00:00",
+    "actual_end_time": "2026-02-22T14:49:06.848+00:00",
+    "assigned_at": "2026-02-22T14:30:12.832+00:00",
+    "created_at": "2026-02-22T14:16:11.55674+00:00",
+    "side_a_player": "Krishna Kumar",
+    "side_a_participant_id": "9454c826-2fbe-4e47-baef-d35abe1bcc31",
+    "side_b_player": "Athul Krishna R",
+    "side_b_participant_id": "81cdddae-4b9e-4130-a63a-e1fa858c41f2"
+  },
+  {
+    "match_id": "a775b554-085f-4a5b-babf-d4501919fcb7",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 3,
+    "sequence": 4,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 8
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 8
+    },
+    "actual_start_time": "2026-02-22T14:42:28.078201+00:00",
+    "actual_end_time": "2026-02-22T14:51:37.627+00:00",
+    "assigned_at": "2026-02-22T14:39:35.592+00:00",
+    "created_at": "2026-02-22T14:16:11.55674+00:00",
+    "side_a_player": "Sanjith S",
+    "side_a_participant_id": "a2f00f61-143c-4655-b1be-eea2f02d8eb8",
+    "side_b_player": "Bhargav",
+    "side_b_participant_id": "a452d28e-69d5-4545-8259-0fb4da032ef3"
+  },
+  {
+    "match_id": "99eea599-585f-471b-ae2f-091d63ab8d8f",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 3,
+    "sequence": 6,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 0
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 0
+    },
+    "actual_start_time": "2026-02-22T14:50:09.92854+00:00",
+    "actual_end_time": "2026-02-22T14:51:41.013+00:00",
+    "assigned_at": "2026-02-22T14:49:59.644+00:00",
+    "created_at": "2026-02-22T14:16:11.55674+00:00",
+    "side_a_player": "Mohit",
+    "side_a_participant_id": "c1e1035e-6671-46ac-9619-383166e0dd31",
+    "side_b_player": "Chirag",
+    "side_b_participant_id": "d552c83b-3ca9-4d3a-9b6e-75c34c0a22c6"
+  },
+  {
+    "match_id": "92cbf5a4-a222-4eb6-adfb-e32e3ac13975",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 3,
+    "sequence": 10,
+    "phase": "swiss",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 9
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 9
+    },
+    "actual_start_time": "2026-02-22T14:46:56.861737+00:00",
+    "actual_end_time": "2026-02-22T15:00:36.077+00:00",
+    "assigned_at": "2026-02-22T14:46:53.437+00:00",
+    "created_at": "2026-02-22T14:16:11.55674+00:00",
+    "side_a_player": "Rohit PV",
+    "side_a_participant_id": "95c41b8d-2e90-42c5-8e05-8b78e85e4e48",
+    "side_b_player": "Anubhav",
+    "side_b_participant_id": "1f3a585a-1163-4df6-8252-88580511d59f"
+  },
+  {
+    "match_id": "7ae13028-21c6-4d0e-ae36-9444260a78b5",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 1,
+    "sequence": 4,
+    "phase": "knockout",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 15,
+          "score_b": 8
+        }
+      ],
+      "total_points_a": 15,
+      "total_points_b": 8
+    },
+    "actual_start_time": "2026-02-22T15:04:56.797659+00:00",
+    "actual_end_time": "2026-02-22T15:16:45.814+00:00",
+    "assigned_at": "2026-02-22T15:04:39.992+00:00",
+    "created_at": "2026-02-22T15:00:49.228685+00:00",
+    "side_a_player": "Athul Krishna R",
+    "side_a_participant_id": "81cdddae-4b9e-4130-a63a-e1fa858c41f2",
+    "side_b_player": "Venkatesh Sundar",
+    "side_b_participant_id": "fe48ca41-70d4-43f0-8a0f-f2f1fb14c7eb"
+  },
+  {
+    "match_id": "785209d7-17c3-4d0b-a1d2-8215644047e5",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 1,
+    "sequence": 1,
+    "phase": "knockout",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 15
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 15
+    },
+    "actual_start_time": "2026-02-22T15:06:59.971804+00:00",
+    "actual_end_time": "2026-02-22T15:20:43.353+00:00",
+    "assigned_at": "2026-02-22T15:02:07.997+00:00",
+    "created_at": "2026-02-22T15:00:49.228685+00:00",
+    "side_a_player": "Devansh",
+    "side_a_participant_id": "43813860-bd25-4b45-aaa2-3692bd651c64",
+    "side_b_player": "Darshan S",
+    "side_b_participant_id": "bb2358da-20d9-4c9e-88e3-1ac231e22099"
+  },
+  {
+    "match_id": "31752c01-a0d0-45a0-a199-47ee423642e7",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 1,
+    "sequence": 2,
+    "phase": "knockout",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 15,
+          "score_b": 2
+        }
+      ],
+      "total_points_a": 15,
+      "total_points_b": 2
+    },
+    "actual_start_time": "2026-02-22T15:18:03.091976+00:00",
+    "actual_end_time": "2026-02-22T15:25:54.498+00:00",
+    "assigned_at": "2026-02-22T15:17:44.499+00:00",
+    "created_at": "2026-02-22T15:00:49.228685+00:00",
+    "side_a_player": "Krishna Kumar",
+    "side_a_participant_id": "9454c826-2fbe-4e47-baef-d35abe1bcc31",
+    "side_b_player": "Mohit",
+    "side_b_participant_id": "c1e1035e-6671-46ac-9619-383166e0dd31"
+  },
+  {
+    "match_id": "766b2024-3931-4dbb-949b-077127f47f7d",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 1,
+    "sequence": 3,
+    "phase": "knockout",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 15,
+          "score_b": 13
+        }
+      ],
+      "total_points_a": 15,
+      "total_points_b": 13
+    },
+    "actual_start_time": "2026-02-22T15:06:22.443992+00:00",
+    "actual_end_time": "2026-02-22T15:29:53.61+00:00",
+    "assigned_at": "2026-02-22T15:06:07.692+00:00",
+    "created_at": "2026-02-22T15:00:49.228685+00:00",
+    "side_a_player": "Kamal",
+    "side_a_participant_id": "cc51b048-d310-48f4-9d45-bf5431c7d466",
+    "side_b_player": "Sanjith S",
+    "side_b_participant_id": "a2f00f61-143c-4655-b1be-eea2f02d8eb8"
+  },
+  {
+    "match_id": "197376c7-4b95-4bc7-b9ad-9066118e4786",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 2,
+    "sequence": 2,
+    "phase": "knockout",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 4,
+          "score_b": 15
+        }
+      ],
+      "total_points_a": 4,
+      "total_points_b": 15
+    },
+    "actual_start_time": "2026-02-22T15:33:49.396687+00:00",
+    "actual_end_time": "2026-02-22T15:47:44.845+00:00",
+    "assigned_at": "2026-02-22T15:33:17.686+00:00",
+    "created_at": "2026-02-22T15:00:49.228685+00:00",
+    "side_a_player": "Kamal",
+    "side_a_participant_id": "cc51b048-d310-48f4-9d45-bf5431c7d466",
+    "side_b_player": "Athul Krishna R",
+    "side_b_participant_id": "81cdddae-4b9e-4130-a63a-e1fa858c41f2"
+  },
+  {
+    "match_id": "101de8ad-5d62-48f0-9a48-0544d55559a8",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 2,
+    "sequence": 1,
+    "phase": "knockout",
+    "winner_side": "B",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 11,
+          "score_b": 15
+        }
+      ],
+      "total_points_a": 11,
+      "total_points_b": 15
+    },
+    "actual_start_time": "2026-02-22T15:32:06.64108+00:00",
+    "actual_end_time": "2026-02-22T15:50:03.122+00:00",
+    "assigned_at": "2026-02-22T15:31:38.368+00:00",
+    "created_at": "2026-02-22T15:00:49.228685+00:00",
+    "side_a_player": "Darshan S",
+    "side_a_participant_id": "bb2358da-20d9-4c9e-88e3-1ac231e22099",
+    "side_b_player": "Krishna Kumar",
+    "side_b_participant_id": "9454c826-2fbe-4e47-baef-d35abe1bcc31"
+  },
+  {
+    "match_id": "a843fd22-2e31-4bbd-ba52-451ebef62b94",
+    "division_name": "Men's Singles <3.6 DUPR",
+    "round": 3,
+    "sequence": 1,
+    "phase": "knockout",
+    "winner_side": "A",
+    "meta_json": {
+      "games": [
+        {
+          "score_a": 15,
+          "score_b": 3
+        }
+      ],
+      "total_points_a": 15,
+      "total_points_b": 3
+    },
+    "actual_start_time": "2026-02-22T15:55:19.865704+00:00",
+    "actual_end_time": "2026-02-26T04:40:33.62+00:00",
+    "assigned_at": "2026-02-22T15:52:13.151+00:00",
+    "created_at": "2026-02-22T15:00:49.228685+00:00",
+    "side_a_player": "Krishna Kumar",
+    "side_a_participant_id": "9454c826-2fbe-4e47-baef-d35abe1bcc31",
+    "side_b_player": "Athul Krishna R",
+    "side_b_participant_id": "81cdddae-4b9e-4130-a63a-e1fa858c41f2"
+  }
+]

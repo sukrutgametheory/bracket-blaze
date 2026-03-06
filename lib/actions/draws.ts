@@ -16,6 +16,7 @@ import {
 } from "@/lib/services/draw-generators/swiss-engine"
 import { calculateStandings, getQualifiers } from "@/lib/services/standings-engine"
 import { generateKnockoutBracketStructure } from "@/lib/services/draw-generators/knockout-engine"
+import { DEFAULT_KNOCKOUT_VARIANT, getKnockoutVariant } from "@/lib/utils/knockout"
 
 type ServerSupabase = Awaited<ReturnType<typeof createClient>>
 
@@ -109,6 +110,7 @@ export async function generateDraw(divisionId: string) {
       const config = {
         rounds: rulesJson?.swiss_rounds || 5,
         qualifiers: rulesJson?.swiss_qualifiers || 0,
+        knockoutVariant: getKnockoutVariant(rulesJson?.swiss_knockout_variant),
       }
 
       // Validate config
@@ -165,6 +167,7 @@ export async function generateDraw(divisionId: string) {
           current_round: 1,
           total_rounds: rulesJsonForDraw?.swiss_rounds || 5,
           qualifiers: rulesJsonForDraw?.swiss_qualifiers || 0,
+          knockout_variant: getKnockoutVariant(rulesJsonForDraw?.swiss_knockout_variant),
           phase: 'swiss',
           bye_history: byeEntryIds,
         },
@@ -419,6 +422,7 @@ export async function generateKnockoutDraw(divisionId: string) {
 
     const stateJson = draw.state_json as any
     const totalRounds = stateJson?.total_rounds || 5
+    const knockoutVariant = getKnockoutVariant(stateJson?.knockout_variant, DEFAULT_KNOCKOUT_VARIANT)
 
     // Verify all Swiss rounds are complete
     const { data: allMatches } = await supabase
@@ -444,7 +448,8 @@ export async function generateKnockoutDraw(divisionId: string) {
 
     const { matches: bracketMatches } = generateKnockoutBracketStructure(
       divisionId,
-      qualifierData
+      qualifierData,
+      knockoutVariant
     )
 
     // Insert matches without next_match_id first (need DB IDs)
@@ -471,6 +476,7 @@ export async function generateKnockoutDraw(divisionId: string) {
     }
 
     // Update next_match_id references
+    const linkageUpdates: Promise<unknown>[] = []
     for (let i = 0; i < bracketMatches.length; i++) {
       const nextKey = (bracketMatches[i] as any)._next_match_key
       const nextSide = bracketMatches[i].next_match_side
@@ -480,15 +486,21 @@ export async function generateKnockoutDraw(divisionId: string) {
       const currentMatchId = insertedMatches[i].id
 
       if (nextMatchId) {
-        await supabase
-          .from(TABLE_NAMES.MATCHES)
-          .update({
-            next_match_id: nextMatchId,
-            next_match_side: nextSide,
-          })
-          .eq("id", currentMatchId)
+        linkageUpdates.push((async () => {
+          const { error } = await supabase
+            .from(TABLE_NAMES.MATCHES)
+            .update({
+              next_match_id: nextMatchId,
+              next_match_side: nextSide,
+            })
+            .eq("id", currentMatchId)
+
+          if (error) throw error
+        })())
       }
     }
+
+    await Promise.all(linkageUpdates)
 
     // Update draw state to knockout phase
     await supabase
@@ -498,6 +510,7 @@ export async function generateKnockoutDraw(divisionId: string) {
           ...stateJson,
           phase: 'knockout',
           bracket_size: qualifiers.length,
+          knockout_variant: knockoutVariant,
         },
       })
       .eq("id", draw.id)

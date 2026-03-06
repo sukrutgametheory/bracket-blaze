@@ -14,6 +14,7 @@ export type SportType = 'badminton' | 'squash' | 'pickleball' | 'padel'
 export type FormatType = 'swiss' | 'mexicano' | 'groups_knockout'
 export type PlayMode = 'singles' | 'doubles'
 export type WinnerSide = 'A' | 'B'
+export type KnockoutVariant = 'standard' | 'pre_quarter_12'
 
 // Database table names with prefix
 export const TABLE_NAMES = {

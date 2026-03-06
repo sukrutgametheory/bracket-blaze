@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -32,7 +32,12 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useToast } from "@/hooks/use-toast"
-import { Division } from "@/types/database"
+import { Division, type KnockoutVariant } from "@/types/database"
+import {
+  DEFAULT_KNOCKOUT_VARIANT,
+  PRE_QUARTER_QUALIFIER_COUNT,
+  describeSwissKnockoutOption,
+} from "@/lib/utils/knockout"
 
 interface DivisionDialogProps {
   open: boolean
@@ -59,6 +64,44 @@ const formatOptions = [
   { value: "groups_knockout", label: "Groups → Knockout" },
 ]
 
+interface SwissKnockoutOption {
+  value: string
+  qualifiers: number
+  variant: KnockoutVariant
+  label: string
+}
+
+function getSwissKnockoutOptions(drawSize: number): SwissKnockoutOption[] {
+  const options: SwissKnockoutOption[] = [
+    {
+      value: `0:${DEFAULT_KNOCKOUT_VARIANT}`,
+      qualifiers: 0,
+      variant: DEFAULT_KNOCKOUT_VARIANT,
+      label: "Swiss only",
+    },
+  ]
+
+  for (let qualifiers = 2; qualifiers <= drawSize; qualifiers *= 2) {
+    options.push({
+      value: `${qualifiers}:${DEFAULT_KNOCKOUT_VARIANT}`,
+      qualifiers,
+      variant: DEFAULT_KNOCKOUT_VARIANT,
+      label: describeSwissKnockoutOption(qualifiers, DEFAULT_KNOCKOUT_VARIANT),
+    })
+  }
+
+  if (drawSize >= PRE_QUARTER_QUALIFIER_COUNT) {
+    options.push({
+      value: `${PRE_QUARTER_QUALIFIER_COUNT}:pre_quarter_12`,
+      qualifiers: PRE_QUARTER_QUALIFIER_COUNT,
+      variant: "pre_quarter_12",
+      label: describeSwissKnockoutOption(PRE_QUARTER_QUALIFIER_COUNT, "pre_quarter_12"),
+    })
+  }
+
+  return options.sort((a, b) => a.qualifiers - b.qualifiers)
+}
+
 export function DivisionDialog({
   open,
   onOpenChange,
@@ -80,12 +123,17 @@ export function DivisionDialog({
       rules_json: {},
       swiss_rounds: 5,
       swiss_qualifiers: 8,
+      swiss_knockout_variant: DEFAULT_KNOCKOUT_VARIANT,
     },
   })
 
   const selectedFormat = form.watch("format")
   const selectedPlayMode = form.watch("play_mode")
   const drawSize = form.watch("draw_size")
+  const swissQualifiers = form.watch("swiss_qualifiers") || 0
+  const swissKnockoutVariant = form.watch("swiss_knockout_variant") || DEFAULT_KNOCKOUT_VARIANT
+  const swissKnockoutOptions = useMemo(() => getSwissKnockoutOptions(drawSize), [drawSize])
+  const swissKnockoutOptionValue = `${swissQualifiers}:${swissKnockoutVariant}`
 
   // Update form when division changes
   useEffect(() => {
@@ -101,6 +149,9 @@ export function DivisionDialog({
         // Extract format-specific fields from rules_json
         swiss_rounds: rulesJson.swiss_rounds,
         swiss_qualifiers: rulesJson.swiss_qualifiers,
+        swiss_knockout_variant: rulesJson.swiss_knockout_variant === "pre_quarter_12"
+          ? "pre_quarter_12"
+          : DEFAULT_KNOCKOUT_VARIANT,
         groups_count: rulesJson.groups_count,
         group_qualifiers_per_group: rulesJson.group_qualifiers_per_group,
         mexicano_rounds: rulesJson.mexicano_rounds,
@@ -116,6 +167,7 @@ export function DivisionDialog({
         rules_json: {},
         swiss_rounds: 5,
         swiss_qualifiers: 8,
+        swiss_knockout_variant: DEFAULT_KNOCKOUT_VARIANT,
       })
     }
   }, [division, form])
@@ -130,6 +182,7 @@ export function DivisionDialog({
       if (values.format === "swiss") {
         rules_json.swiss_rounds = values.swiss_rounds
         rules_json.swiss_qualifiers = values.swiss_qualifiers
+        rules_json.swiss_knockout_variant = values.swiss_knockout_variant || DEFAULT_KNOCKOUT_VARIANT
       } else if (values.format === "groups_knockout") {
         rules_json.groups_count = values.groups_count
         rules_json.group_qualifiers_per_group = values.group_qualifiers_per_group
@@ -366,30 +419,43 @@ export function DivisionDialog({
                     )}
                   />
 
-                  <FormField
-                    control={form.control}
-                    name="swiss_qualifiers"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Qualifiers for Knockout</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            min={0}
-                            max={drawSize}
-                            step={2}
-                            disabled={isLoading}
-                            {...field}
-                            onChange={(e) => field.onChange(parseInt(e.target.value))}
-                          />
-                        </FormControl>
-                        <FormDescription>
-                          Top N players advance (0 = Swiss only)
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <FormItem>
+                    <FormLabel>Knockout Qualification</FormLabel>
+                    <Select
+                      value={swissKnockoutOptionValue}
+                      onValueChange={(value) => {
+                        const [qualifierValue, variantValue] = value.split(":")
+                        form.setValue("swiss_qualifiers", parseInt(qualifierValue, 10), {
+                          shouldDirty: true,
+                          shouldValidate: true,
+                        })
+                        form.setValue("swiss_knockout_variant", variantValue as KnockoutVariant, {
+                          shouldDirty: true,
+                          shouldValidate: true,
+                        })
+                      }}
+                      disabled={isLoading}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {swissKnockoutOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>
+                      Choose how many players advance and whether Swiss uses the special Pre Quarter path
+                    </FormDescription>
+                    <FormMessage>
+                      {form.formState.errors.swiss_qualifiers?.message || form.formState.errors.swiss_knockout_variant?.message}
+                    </FormMessage>
+                  </FormItem>
                 </div>
               </>
             )}

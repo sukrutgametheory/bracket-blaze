@@ -12,6 +12,9 @@
  * - Top N advance to knockout after Swiss rounds
  */
 
+import type { KnockoutVariant } from "@/types/database"
+import { DEFAULT_KNOCKOUT_VARIANT, isValidSwissKnockoutConfig } from "@/lib/utils/knockout"
+
 export interface SwissEntry {
   id: string
   participant_id: string
@@ -32,6 +35,7 @@ export interface SwissMatch {
 export interface SwissConfig {
   rounds: number
   qualifiers: number // Top N advance to knockout
+  knockoutVariant?: KnockoutVariant
 }
 
 interface StandingForPairing {
@@ -149,15 +153,20 @@ export function validateSwissConfig(
     return { valid: false, error: `Cannot have ${config.qualifiers} qualifiers with only ${entryCount} entries` }
   }
 
-  if (config.qualifiers > 0 && config.qualifiers % 2 !== 0) {
-    return { valid: false, error: 'Qualifiers must be even number for knockout bracket' }
+  if (config.qualifiers > 0) {
+    const variant = config.knockoutVariant || DEFAULT_KNOCKOUT_VARIANT
+    if (!isValidSwissKnockoutConfig(config.qualifiers, variant)) {
+      return {
+        valid: false,
+        error: variant === "pre_quarter_12"
+          ? 'Pre Quarter knockout requires exactly 12 qualifiers'
+          : 'Qualifiers must be a power of 2 (2, 4, 8, 16, 32)',
+      }
+    }
   }
 
-  if (config.qualifiers > 0) {
-    const isPowerOf2 = (n: number) => n > 0 && (n & (n - 1)) === 0
-    if (!isPowerOf2(config.qualifiers)) {
-      return { valid: false, error: 'Qualifiers must be a power of 2 (2, 4, 8, 16, 32)' }
-    }
+  if (config.qualifiers === 0 && (config.knockoutVariant || DEFAULT_KNOCKOUT_VARIANT) !== DEFAULT_KNOCKOUT_VARIANT) {
+    return { valid: false, error: 'Swiss-only divisions cannot use a knockout variant' }
   }
 
   return { valid: true }
