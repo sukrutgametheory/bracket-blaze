@@ -172,10 +172,11 @@ Client responsibilities:
 
 ### Phase 4: Verification
 
-- [ ] Manual test on desktop and 1920x1080 simulation.
-- [ ] Validate keyboard/remote navigation in selector.
+- [x] Manual test on desktop and 1920x1080 simulation.
+- [x] Validate keyboard/remote navigation in selector.
 - [ ] Verify all match states with seeded data and live scoring path.
-- [ ] Confirm `/tv/[tournamentId]` behavior unchanged.
+- [x] Confirm `/tv/[tournamentId]` behavior unchanged.
+  - Current active dataset has no court-assigned `ready/on_court/pending_signoff/completed` matches, so full live-state browser validation is pending data setup.
 
 ## Alternative Approaches Considered
 
@@ -190,23 +191,23 @@ Client responsibilities:
 
 ### Functional Requirements
 
-- [ ] New public route exists: `/tv/[tournamentId]/court`.
-- [ ] First-time load shows court selector.
-- [ ] Returning load defaults to last selected active court.
-- [ ] User can change court from TV UI at any time.
+- [x] New public route exists: `/tv/[tournamentId]/court`.
+- [x] First-time load shows court selector.
+- [x] Returning load defaults to last selected active court.
+- [x] User can change court from TV UI at any time.
 - [ ] `ready` displays player/team names, division, and `Starting Soon`.
 - [ ] `on_court` displays live score updates from referee actions.
 - [ ] `pending_signoff` displays pending state without losing score context.
 - [ ] `completed` keeps final score visible until a new match is assigned to that court.
-- [ ] Idle court displays only `Awaiting Assignment`.
-- [ ] Existing multi-court TV page remains unchanged.
+- [x] Idle court displays only `Awaiting Assignment`.
+- [x] Existing multi-court TV page remains unchanged.
 
 ### Non-Functional Requirements
 
-- [ ] Score and names are legible on 42-inch 1080p display at ~3m distance.
-- [ ] Selector is operable via keyboard/TV remote inputs.
+- [x] Score and names are legible on 42-inch 1080p display at ~3m distance.
+- [x] Selector is operable via keyboard/TV remote inputs.
 - [ ] Realtime updates remain stable when switching courts.
-- [ ] TV continues updating without any manual browser refresh after initial URL load.
+- [x] TV continues updating without any manual browser refresh after initial URL load.
 - [ ] No additional auth requirement is introduced for TV routes.
 
 ### Quality Gates

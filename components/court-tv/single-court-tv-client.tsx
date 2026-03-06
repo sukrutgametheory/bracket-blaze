@@ -105,32 +105,7 @@ export function SingleCourtTvClient({
       setIsSyncing(true)
 
       try {
-        const { data: latestCourts } = await supabase
-          .from(TABLE_NAMES.COURTS)
-          .select("*")
-          .eq("tournament_id", tournamentId)
-          .eq("is_active", true)
-          .order("name", { ascending: true })
-
-        if (latestCourts) {
-          setAvailableCourts(latestCourts)
-        }
-
-        const activeCourts = latestCourts || []
         if (!nextCourtId) return
-
-        const courtStillActive = activeCourts.some(court => court.id === nextCourtId)
-
-        if (!courtStillActive) {
-          if (typeof window !== "undefined") {
-            window.localStorage.removeItem(storageKey)
-          }
-
-          setSelectedCourtId(activeCourts[0]?.id || null)
-          setShowCourtPicker(activeCourts.length > 0)
-          setMatches(prev => prev.filter(match => match.court_id !== nextCourtId))
-          return
-        }
 
         const { data: selectedCourtMatches } = await supabase
           .from(TABLE_NAMES.MATCHES)
@@ -161,7 +136,7 @@ export function SingleCourtTvClient({
         setIsSyncing(false)
       }
     },
-    [selectedCourtId, storageKey, supabase, tournamentId]
+    [selectedCourtId, supabase]
   )
 
   useEffect(() => {
