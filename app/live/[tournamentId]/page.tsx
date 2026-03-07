@@ -41,7 +41,7 @@ export default async function LivePortalPage({ params }: LivePortalPageProps) {
       id, status, court_id, meta_json, round, sequence, phase,
       winner_side, actual_start_time, actual_end_time, division_id,
       division:bracket_blaze_divisions!inner(id, name, format),
-      court:bracket_blaze_courts(id, name),
+      court:bracket_blaze_courts!bracket_blaze_matches_court_id_fkey(id, name),
       side_a:bracket_blaze_entries!side_a_entry_id(
         id, seed,
         participant:bracket_blaze_participants(display_name, club),

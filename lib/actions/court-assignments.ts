@@ -205,7 +205,7 @@ async function checkConflicts(
       .from(TABLE_NAMES.MATCHES)
       .select(`
         *,
-        court:bracket_blaze_courts(name),
+        court:bracket_blaze_courts!bracket_blaze_matches_court_id_fkey(name),
         side_a:bracket_blaze_entries!side_a_entry_id(participant_id, team_id),
         side_b:bracket_blaze_entries!side_b_entry_id(participant_id, team_id)
       `)
