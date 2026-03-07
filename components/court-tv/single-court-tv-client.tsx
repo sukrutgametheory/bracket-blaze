@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { createClient } from "@supabase/supabase-js"
 import { Oswald } from "next/font/google"
 import { getEntryDisplayName } from "@/lib/utils/display-name"
+import { cn } from "@/lib/utils"
 import { TABLE_NAMES, type Court, type GameScore, type LiveScore } from "@/types/database"
 
 interface CourtTvMatch {
