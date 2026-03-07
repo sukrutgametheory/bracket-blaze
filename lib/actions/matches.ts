@@ -6,6 +6,7 @@ import { TABLE_NAMES, type MatchStatus, type WinnerSide, type GameScore, type Ma
 import { requireAuth, isTournamentAdminForMatch, requireTournamentAdminForMatch } from "@/lib/auth/require-auth"
 import { closeOpenAssignmentAuditRows, promoteQueuedMatchForCourt, type PromotionResult } from "@/lib/actions/court-assignments"
 import { ensureAndScheduleMatchStories, markMatchStoriesStale } from "@/lib/services/match-stories"
+import { calculateStandings } from "@/lib/services/standings-engine"
 
 type ServerSupabase = Awaited<ReturnType<typeof createClient>>
 
@@ -33,6 +34,33 @@ async function revalidateMatchPaths(supabase: ServerSupabase, divisionId: string
   if (data?.tournament_id) {
     revalidatePath(`/tournaments/${data.tournament_id}/control-center`)
     revalidatePath(`/tournaments/${data.tournament_id}/divisions/${divisionId}/matches`)
+    revalidatePath(`/live/${data.tournament_id}`)
+  }
+}
+
+async function refreshSwissStandings(
+  supabase: ServerSupabase,
+  divisionId: string,
+  affectedRound: number | null | undefined
+) {
+  const startRound = typeof affectedRound === "number" && affectedRound > 0 ? affectedRound : 1
+
+  const { data: draw } = await supabase
+    .from(TABLE_NAMES.DRAWS)
+    .select("state_json")
+    .eq("division_id", divisionId)
+    .maybeSingle()
+
+  const currentRound = Math.max(
+    startRound,
+    Number((draw?.state_json as any)?.current_round || startRound)
+  )
+
+  for (let round = startRound; round <= currentRound; round++) {
+    const { error } = await calculateStandings(divisionId, round, supabase)
+    if (error && error !== "No completed matches found") {
+      console.error(`Error refreshing Swiss standings for division ${divisionId} round ${round}:`, error)
+    }
   }
 }
 
@@ -99,6 +127,7 @@ async function finalizeMatch(
   matchId: string,
   divisionId: string,
   phase: string,
+  round: number | null | undefined,
   winnerSide: WinnerSide,
   games: GameScore[],
   options: {
@@ -139,6 +168,10 @@ async function finalizeMatch(
   // If knockout match, advance winner to next match
   if (phase === 'knockout') {
     await advanceKnockoutWinner(supabase, matchId, winnerSide)
+  }
+
+  if (phase === 'swiss') {
+    await refreshSwissStandings(supabase, divisionId, round)
   }
 
   try {
@@ -188,7 +221,7 @@ export async function completeMatch(
 
     const { data: match, error: fetchError } = await supabase
       .from(TABLE_NAMES.MATCHES)
-      .select("id, status, division_id, phase, court_id")
+      .select("id, status, division_id, phase, round, court_id")
       .eq("id", matchId)
       .single()
 
@@ -216,6 +249,7 @@ export async function completeMatch(
       matchId,
       match.division_id,
       match.phase,
+      match.round,
       winnerSide,
       games,
       {
@@ -253,7 +287,7 @@ export async function approveMatch(matchId: string) {
 
     const { data: match, error: fetchError } = await supabase
       .from(TABLE_NAMES.MATCHES)
-      .select("id, status, division_id, phase, meta_json, court_id")
+      .select("id, status, division_id, phase, round, meta_json, court_id")
       .eq("id", matchId)
       .single()
 
@@ -298,6 +332,7 @@ export async function approveMatch(matchId: string) {
       matchId,
       match.division_id,
       match.phase,
+      match.round,
       winnerSide,
       games,
       {
@@ -387,7 +422,7 @@ export async function recordWalkover(
 
     const { data: match, error: fetchError } = await supabase
       .from(TABLE_NAMES.MATCHES)
-      .select("id, status, division_id, phase, court_id")
+      .select("id, status, division_id, phase, round, court_id")
       .eq("id", matchId)
       .single()
 
@@ -428,6 +463,10 @@ export async function recordWalkover(
     // If knockout match, advance winner to next match
     if (match.phase === 'knockout') {
       await advanceKnockoutWinner(supabase, matchId, winnerSide)
+    }
+
+    if (match.phase === 'swiss') {
+      await refreshSwissStandings(supabase, match.division_id, match.round)
     }
 
     let promotion: PromotionResult = { status: "none" }
@@ -476,7 +515,7 @@ export async function editMatchScore(
 
     const { data: match, error: fetchError } = await supabase
       .from(TABLE_NAMES.MATCHES)
-      .select("id, status, division_id, phase, winner_side, next_match_id, next_match_side, side_a_entry_id, side_b_entry_id")
+      .select("id, status, division_id, phase, round, winner_side, next_match_id, next_match_side, side_a_entry_id, side_b_entry_id")
       .eq("id", matchId)
       .single()
 
@@ -558,6 +597,10 @@ export async function editMatchScore(
           console.error("Failed to refresh downstream knockout story after score edit:", error)
         }
       }
+    }
+
+    if (match.phase === 'swiss') {
+      await refreshSwissStandings(supabase, match.division_id, match.round)
     }
 
     try {
