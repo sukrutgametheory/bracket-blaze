@@ -181,7 +181,7 @@ export function LivePortalClient({
                 <p className="text-sm">No matches yet</p>
               </div>
             ) : (
-              <div className="space-y-3 max-w-2xl">
+              <div className="grid grid-cols-1 items-start gap-3 md:grid-cols-2 xl:grid-cols-3">
                 {filteredMatches.map(match => (
                   <MatchCard
                     key={match.id}
