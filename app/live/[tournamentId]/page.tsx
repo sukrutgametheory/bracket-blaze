@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { notFound } from "next/navigation"
 import { TABLE_NAMES, type MatchStory } from "@/types/database"
 import { getPersistedStandings, type RankedStanding } from "@/lib/services/standings-engine"
@@ -10,7 +10,7 @@ interface LivePortalPageProps {
 
 export default async function LivePortalPage({ params }: LivePortalPageProps) {
   const { tournamentId } = await params
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const [
     { data: tournament },
@@ -115,7 +115,7 @@ export default async function LivePortalPage({ params }: LivePortalPageProps) {
     (divisions || []).map(async (division) => {
       const drawState = draws?.find(d => d.division_id === division.id)?.state_json as any
       const currentRound = drawState?.current_round || 1
-      const { standings } = await getPersistedStandings(division.id, currentRound)
+      const { standings } = await getPersistedStandings(division.id, currentRound, supabase)
       return [division.id, standings || []] as const
     })
   )

@@ -1,5 +1,5 @@
-import { createClient } from "@/lib/supabase/server"
-import { redirect, notFound } from "next/navigation"
+import { createAdminClient } from "@/lib/supabase/admin"
+import { notFound } from "next/navigation"
 import { TABLE_NAMES, type ControlCenterMatch, type Tournament } from "@/types/database"
 import { ControlCenterClient } from "@/components/control-center/control-center-client"
 import { getPersistedStandings, type RankedStanding } from "@/lib/services/standings-engine"
@@ -13,15 +13,7 @@ interface ControlCenterPageProps {
 
 export default async function ControlCenterPage({ params }: ControlCenterPageProps) {
   const { id } = await params
-  const supabase = await createClient()
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect("/auth/login")
-  }
+  const supabase = createAdminClient()
 
   const [
     { data: tournament, error: tournamentError },
@@ -102,7 +94,7 @@ export default async function ControlCenterPage({ params }: ControlCenterPagePro
     (divisions || []).map(async (division) => {
       const drawState = draws?.find(d => d.division_id === division.id)?.state_json as any
       const currentRound = drawState?.current_round || 1
-      const { standings } = await getPersistedStandings(division.id, currentRound)
+      const { standings } = await getPersistedStandings(division.id, currentRound, supabase)
       return [division.id, standings || []] as const
     })
   )

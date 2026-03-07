@@ -9,6 +9,9 @@
 
 import { createClient } from "@/lib/supabase/server"
 import { TABLE_NAMES, type MatchScoreData } from "@/types/database"
+import type { SupabaseClient } from "@supabase/supabase-js"
+
+type AppSupabaseClient = SupabaseClient<any, "public", any>
 
 interface StandingRow {
   entry_id: string
@@ -32,9 +35,10 @@ export interface RankedStanding extends StandingRow {
  */
 export async function calculateStandings(
   divisionId: string,
-  throughRound: number
+  throughRound: number,
+  supabaseClient?: AppSupabaseClient
 ): Promise<{ standings: RankedStanding[]; error?: string }> {
-  const supabase = await createClient()
+  const supabase = supabaseClient ?? await createClient()
 
   // Fetch all completed/walkover matches for this division up through the given round
   const { data: matches, error: matchError } = await supabase
@@ -182,9 +186,10 @@ export async function calculateStandings(
  */
 export async function getPersistedStandings(
   divisionId: string,
-  round: number
+  round: number,
+  supabaseClient?: AppSupabaseClient
 ): Promise<{ standings: RankedStanding[]; error?: string }> {
-  const supabase = await createClient()
+  const supabase = supabaseClient ?? await createClient()
 
   const { data, error } = await supabase
     .from(TABLE_NAMES.STANDINGS)

@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
-import { redirect, notFound } from "next/navigation"
+import { notFound } from "next/navigation"
 import { TABLE_NAMES, type Tournament, type Division } from "@/types/database"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -14,14 +14,6 @@ interface MatchesPageProps {
 export default async function MatchesPage({ params }: MatchesPageProps) {
   const { id, divisionId } = await params
   const supabase = await createClient()
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect("/auth/login")
-  }
 
   // Fetch tournament
   const { data: tournament, error: tournamentError } = await supabase

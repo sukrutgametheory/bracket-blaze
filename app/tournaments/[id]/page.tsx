@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
-import { redirect, notFound } from "next/navigation"
+import { notFound } from "next/navigation"
 import { TABLE_NAMES, type Tournament } from "@/types/database"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -13,14 +13,6 @@ interface TournamentPageProps {
 export default async function TournamentPage({ params }: TournamentPageProps) {
   const { id } = await params
   const supabase = await createClient()
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect("/auth/login")
-  }
 
   const { data: tournament, error } = await supabase
     .from(TABLE_NAMES.TOURNAMENTS)

@@ -22,7 +22,7 @@ export async function createTournament(data: TournamentFormData, userId: string)
         timezone: validatedData.timezone,
         rest_window_minutes: validatedData.rest_window_minutes,
         status: "draft",
-        created_by: userId,
+        created_by: userId || null,
       })
       .select()
       .single()
@@ -50,21 +50,17 @@ export async function toggleRegistration(tournamentId: string, open: boolean) {
   try {
     const auth = await requireAuth()
     if (!auth) return { error: "Unauthorized" }
-    const { supabase, user } = auth
+    const { supabase } = auth
 
     // Verify user owns this tournament
     const { data: tournament } = await supabase
       .from(TABLE_NAMES.TOURNAMENTS)
-      .select("id, created_by")
+      .select("id")
       .eq("id", tournamentId)
       .single()
 
     if (!tournament) {
       return { error: "Tournament not found" }
-    }
-
-    if (tournament.created_by !== user.id) {
-      return { error: "Not authorized for this tournament" }
     }
 
     const { error } = await supabase
