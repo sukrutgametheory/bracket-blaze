@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { notFound } from "next/navigation"
 import { TABLE_NAMES, type MatchStory } from "@/types/database"
-import { calculateStandings, type RankedStanding } from "@/lib/services/standings-engine"
+import { getPersistedStandings, type RankedStanding } from "@/lib/services/standings-engine"
 import { LivePortalClient } from "@/components/live-portal/live-portal-client"
 
 interface LivePortalPageProps {
@@ -12,53 +12,68 @@ export default async function LivePortalPage({ params }: LivePortalPageProps) {
   const { tournamentId } = await params
   const supabase = await createClient()
 
-  // Fetch tournament (public — no auth required)
-  const { data: tournament } = await supabase
-    .from(TABLE_NAMES.TOURNAMENTS)
-    .select("id, name, status")
-    .eq("id", tournamentId)
-    .eq("status", "active")
-    .single()
+  const [
+    { data: tournament },
+    { data: divisions },
+  ] = await Promise.all([
+    supabase
+      .from(TABLE_NAMES.TOURNAMENTS)
+      .select("id, name, status")
+      .eq("id", tournamentId)
+      .eq("status", "active")
+      .single(),
+    supabase
+      .from(TABLE_NAMES.DIVISIONS)
+      .select("*")
+      .eq("tournament_id", tournamentId)
+      .eq("is_published", true)
+      .order("scheduling_priority", { ascending: false }),
+  ])
 
   if (!tournament) {
     notFound()
   }
 
-  // Fetch published divisions
-  const { data: divisions } = await supabase
-    .from(TABLE_NAMES.DIVISIONS)
-    .select("*")
-    .eq("tournament_id", tournamentId)
-    .eq("is_published", true)
-    .order("scheduling_priority", { ascending: false })
-
   const divisionIds = divisions?.map(d => d.id) || []
 
-  // Fetch live + completed matches with player/court details
-  const { data: matches } = divisionIds.length === 0
-    ? { data: [] }
-    : await supabase
-        .from(TABLE_NAMES.MATCHES)
-        .select(`
-          id, status, court_id, meta_json, round, sequence, phase,
-          winner_side, actual_start_time, actual_end_time, division_id,
-          division:bracket_blaze_divisions!inner(id, name, format),
-          court:bracket_blaze_courts!bracket_blaze_matches_court_id_fkey(id, name),
-          side_a:bracket_blaze_entries!side_a_entry_id(
-            id, seed,
-            participant:bracket_blaze_participants(display_name, club),
-            team:bracket_blaze_teams(name)
-          ),
-          side_b:bracket_blaze_entries!side_b_entry_id(
-            id, seed,
-            participant:bracket_blaze_participants(display_name, club),
-            team:bracket_blaze_teams(name)
-          )
-        `)
-        .in("division_id", divisionIds)
-        .in("status", ["on_court", "completed", "walkover"])
-        .order("round", { ascending: true })
-        .order("sequence", { ascending: true })
+  const [
+    { data: matches },
+    { data: draws },
+    { data: entries },
+  ] = divisionIds.length === 0
+    ? [{ data: [] }, { data: [] }, { data: [] }]
+    : await Promise.all([
+        supabase
+          .from(TABLE_NAMES.MATCHES)
+          .select(`
+            id, status, court_id, meta_json, round, sequence, phase,
+            winner_side, actual_start_time, actual_end_time, division_id,
+            division:bracket_blaze_divisions!inner(id, name, format),
+            court:bracket_blaze_courts!bracket_blaze_matches_court_id_fkey(id, name),
+            side_a:bracket_blaze_entries!side_a_entry_id(
+              id, seed,
+              participant:bracket_blaze_participants(display_name, club),
+              team:bracket_blaze_teams(name)
+            ),
+            side_b:bracket_blaze_entries!side_b_entry_id(
+              id, seed,
+              participant:bracket_blaze_participants(display_name, club),
+              team:bracket_blaze_teams(name)
+            )
+          `)
+          .in("division_id", divisionIds)
+          .in("status", ["on_court", "completed", "walkover"])
+          .order("round", { ascending: true })
+          .order("sequence", { ascending: true }),
+        supabase
+          .from(TABLE_NAMES.DRAWS)
+          .select("division_id, state_json")
+          .in("division_id", divisionIds),
+        supabase
+          .from(TABLE_NAMES.ENTRIES)
+          .select("id, seed, participant:bracket_blaze_participants(display_name, club), team:bracket_blaze_teams(name)")
+          .in("division_id", divisionIds),
+      ])
 
   const matchIds = matches?.map(match => match.id) || []
   const liveCourtIds = Array.from(new Set(
@@ -95,30 +110,18 @@ export default async function LivePortalPage({ params }: LivePortalPageProps) {
         .select("id, match_id, story_type, status, version, model_slug, prompt_version, content, context_json, error_code, error_message, generated_at, invalidated_at, created_at, updated_at")
         .in("match_id", matchIds)
 
-  // Fetch draw state for standings context
-  const { data: draws } = divisionIds.length === 0
-    ? { data: [] }
-    : await supabase
-        .from(TABLE_NAMES.DRAWS)
-        .select("division_id, state_json")
-        .in("division_id", divisionIds)
-
-  // Calculate standings per division
   const standingsMap: Record<string, RankedStanding[]> = {}
-  for (const division of divisions || []) {
-    const drawState = draws?.find(d => d.division_id === division.id)?.state_json as any
-    const currentRound = drawState?.current_round || 1
-    const { standings } = await calculateStandings(division.id, currentRound)
-    standingsMap[division.id] = standings || []
+  const standingsResults = await Promise.all(
+    (divisions || []).map(async (division) => {
+      const drawState = draws?.find(d => d.division_id === division.id)?.state_json as any
+      const currentRound = drawState?.current_round || 1
+      const { standings } = await getPersistedStandings(division.id, currentRound)
+      return [division.id, standings || []] as const
+    })
+  )
+  for (const [divisionId, standings] of standingsResults) {
+    standingsMap[divisionId] = standings
   }
-
-  // Fetch entries with participant names for standings display
-  const { data: entries } = divisionIds.length === 0
-    ? { data: [] }
-    : await supabase
-        .from(TABLE_NAMES.ENTRIES)
-        .select("id, seed, participant:bracket_blaze_participants(display_name, club), team:bracket_blaze_teams(name)")
-        .in("division_id", divisionIds)
 
   return (
     <LivePortalClient

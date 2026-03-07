@@ -177,6 +177,50 @@ export async function calculateStandings(
 }
 
 /**
+ * Read the latest persisted standings snapshot for a division/round without recomputing.
+ * This avoids expensive render-time recalculation on read-heavy pages.
+ */
+export async function getPersistedStandings(
+  divisionId: string,
+  round: number
+): Promise<{ standings: RankedStanding[]; error?: string }> {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from(TABLE_NAMES.STANDINGS)
+    .select("entry_id, wins, losses, points_for, points_against, tiebreak_json")
+    .eq("division_id", divisionId)
+    .eq("round", round)
+
+  if (error) {
+    return { standings: [], error: error.message }
+  }
+
+  if (!data || data.length === 0) {
+    return { standings: [] }
+  }
+
+  const normalized = data.map((row) => ({
+    entry_id: row.entry_id,
+    wins: row.wins,
+    losses: row.losses,
+    points_for: row.points_for,
+    points_against: row.points_against,
+    tiebreak_json: {
+      point_diff: (row.tiebreak_json as any)?.point_diff ?? (row.points_for - row.points_against),
+      h2h_results: (row.tiebreak_json as any)?.h2h_results ?? {},
+    },
+  }))
+
+  const ranked = sortByTiebreaks(normalized).map((standing, index) => ({
+    ...standing,
+    rank: index + 1,
+  }))
+
+  return { standings: ranked }
+}
+
+/**
  * Sort standings by tiebreak hierarchy:
  * 1. Wins DESC
  * 2. Point Diff DESC

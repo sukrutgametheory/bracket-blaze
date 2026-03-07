@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { redirect, notFound } from "next/navigation"
 import { TABLE_NAMES, type ControlCenterMatch, type Tournament } from "@/types/database"
 import { ControlCenterClient } from "@/components/control-center/control-center-client"
-import { calculateStandings, type RankedStanding } from "@/lib/services/standings-engine"
+import { getPersistedStandings, type RankedStanding } from "@/lib/services/standings-engine"
 import { sortByNaturalName } from "@/lib/utils"
 
 export const dynamic = "force-dynamic"
@@ -23,12 +23,28 @@ export default async function ControlCenterPage({ params }: ControlCenterPagePro
     redirect("/auth/login")
   }
 
-  // Fetch tournament
-  const { data: tournament, error: tournamentError } = await supabase
-    .from(TABLE_NAMES.TOURNAMENTS)
-    .select("*")
-    .eq("id", id)
-    .single()
+  const [
+    { data: tournament, error: tournamentError },
+    { data: courts },
+    { data: divisions },
+  ] = await Promise.all([
+    supabase
+      .from(TABLE_NAMES.TOURNAMENTS)
+      .select("*")
+      .eq("id", id)
+      .single(),
+    supabase
+      .from(TABLE_NAMES.COURTS)
+      .select("*")
+      .eq("tournament_id", id)
+      .eq("is_active", true),
+    supabase
+      .from(TABLE_NAMES.DIVISIONS)
+      .select("*")
+      .eq("tournament_id", id)
+      .eq("is_published", true)
+      .order("scheduling_priority", { ascending: false }),
+  ])
 
   if (tournamentError || !tournament) {
     notFound()
@@ -36,77 +52,63 @@ export default async function ControlCenterPage({ params }: ControlCenterPagePro
 
   const typedTournament = tournament as Tournament
 
-  // Fetch active courts
-  const { data: courts } = await supabase
-    .from(TABLE_NAMES.COURTS)
-    .select("*")
-    .eq("tournament_id", id)
-    .eq("is_active", true)
-
-  // Fetch divisions with published draws
-  const { data: divisions } = await supabase
-    .from(TABLE_NAMES.DIVISIONS)
-    .select("*")
-    .eq("tournament_id", id)
-    .eq("is_published", true)
-    .order("scheduling_priority", { ascending: false })
-
   const divisionIds = divisions?.map(d => d.id) || []
 
-  // Fetch all matches for published divisions with entry/participant details
-  const { data: matches } = divisionIds.length === 0
-    ? { data: [] }
-    : await supabase
-        .from(TABLE_NAMES.MATCHES)
-        .select(`
-          *,
-          division:bracket_blaze_divisions!inner(
-            id,
-            name,
-            format,
-            scheduling_priority
-          ),
-          side_a:bracket_blaze_entries!side_a_entry_id(
-            id,
-            seed,
-            participant:bracket_blaze_participants(id, display_name, club),
-            team:bracket_blaze_teams(name)
-          ),
-          side_b:bracket_blaze_entries!side_b_entry_id(
-            id,
-            seed,
-            participant:bracket_blaze_participants(id, display_name, club),
-            team:bracket_blaze_teams(name)
-          )
-        `)
-        .in("division_id", divisionIds)
-        .order("round", { ascending: true })
-        .order("sequence", { ascending: true })
+  const [
+    { data: matches },
+    { data: draws },
+    { data: entriesWithParticipants },
+  ] = divisionIds.length === 0
+    ? [{ data: [] }, { data: [] }, { data: [] }]
+    : await Promise.all([
+        supabase
+          .from(TABLE_NAMES.MATCHES)
+          .select(`
+            *,
+            division:bracket_blaze_divisions!inner(
+              id,
+              name,
+              format,
+              scheduling_priority
+            ),
+            side_a:bracket_blaze_entries!side_a_entry_id(
+              id,
+              seed,
+              participant:bracket_blaze_participants(id, display_name, club),
+              team:bracket_blaze_teams(name)
+            ),
+            side_b:bracket_blaze_entries!side_b_entry_id(
+              id,
+              seed,
+              participant:bracket_blaze_participants(id, display_name, club),
+              team:bracket_blaze_teams(name)
+            )
+          `)
+          .in("division_id", divisionIds)
+          .order("round", { ascending: true })
+          .order("sequence", { ascending: true }),
+        supabase
+          .from(TABLE_NAMES.DRAWS)
+          .select("division_id, state_json")
+          .in("division_id", divisionIds),
+        supabase
+          .from(TABLE_NAMES.ENTRIES)
+          .select("id, seed, participant:bracket_blaze_participants(display_name, club), team:bracket_blaze_teams(name)")
+          .in("division_id", divisionIds),
+      ])
 
-  // Fetch draw state for each division
-  const { data: draws } = divisionIds.length === 0
-    ? { data: [] }
-    : await supabase
-        .from(TABLE_NAMES.DRAWS)
-        .select("division_id, state_json")
-        .in("division_id", divisionIds)
-
-  // Calculate standings per division
   const standingsMap: Record<string, RankedStanding[]> = {}
-  for (const division of divisions || []) {
-    const drawState = draws?.find(d => d.division_id === division.id)?.state_json as any
-    const currentRound = drawState?.current_round || 1
-    const { standings } = await calculateStandings(division.id, currentRound)
-    standingsMap[division.id] = standings || []
+  const standingsResults = await Promise.all(
+    (divisions || []).map(async (division) => {
+      const drawState = draws?.find(d => d.division_id === division.id)?.state_json as any
+      const currentRound = drawState?.current_round || 1
+      const { standings } = await getPersistedStandings(division.id, currentRound)
+      return [division.id, standings || []] as const
+    })
+  )
+  for (const [divisionId, standings] of standingsResults) {
+    standingsMap[divisionId] = standings
   }
-
-  // Fetch entries with participant names for standings display
-  const { data: entriesWithParticipants } = divisionIds.length === 0
-    ? { data: [] }
-    : await supabase
-        .from(TABLE_NAMES.ENTRIES)
-        .select("id, seed, participant:bracket_blaze_participants(display_name, club), team:bracket_blaze_teams(name)")
-        .in("division_id", divisionIds)
 
   return (
     <div className="container mx-auto py-6">
