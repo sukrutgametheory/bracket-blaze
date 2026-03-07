@@ -12,13 +12,14 @@ import {
 } from "@/components/ui/select"
 import { StandingsSection } from "@/components/control-center/standings-section"
 import { MatchCard } from "./match-card"
-import type { Division } from "@/types/database"
+import type { Division, MatchStory } from "@/types/database"
 import type { RankedStanding } from "@/lib/services/standings-engine"
 
 interface LivePortalClientProps {
   tournamentName: string
   divisions: Division[]
   matches: any[]
+  stories: MatchStory[]
   draws: { division_id: string; state_json: any }[]
   standings: Record<string, RankedStanding[]>
   entries: any[]
@@ -31,6 +32,7 @@ export function LivePortalClient({
   tournamentName,
   divisions,
   matches: initialMatches,
+  stories,
   draws,
   standings,
   entries,
@@ -45,6 +47,16 @@ export function LivePortalClient({
     () => new Map(draws.map(draw => [draw.division_id, draw.state_json as any])),
     [draws]
   )
+  const storyMap = useMemo(() => {
+    const map = new Map<string, { pre_match?: MatchStory; post_match?: MatchStory }>()
+    for (const story of stories) {
+      const current = map.get(story.match_id) || {}
+      if (story.story_type === "pre_match") current.pre_match = story
+      if (story.story_type === "post_match") current.post_match = story
+      map.set(story.match_id, current)
+    }
+    return map
+  }, [stories])
 
   // Stable key for Broadcast subscription dependencies
   const matchKey = matches.map(m => `${m.id}:${m.status}`).join(",")
@@ -97,6 +109,24 @@ export function LivePortalClient({
 
     return () => { supabase.removeChannel(channel) }
   }, [supabase, divisionIds])
+
+  useEffect(() => {
+    const channel = supabase.channel("live-portal-stories")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "bracket_blaze_match_stories",
+        },
+        () => {
+          window.location.reload()
+        }
+      )
+      .subscribe()
+
+    return () => { supabase.removeChannel(channel) }
+  }, [supabase])
 
   // Auto-reconnect on visibility change (tab/screen wake)
   useEffect(() => {
@@ -188,6 +218,7 @@ export function LivePortalClient({
                     match={match}
                     isLive={match.status === "on_court"}
                     drawState={drawMap.get(match.division_id)}
+                    stories={storyMap.get(match.id)}
                   />
                 ))}
               </div>

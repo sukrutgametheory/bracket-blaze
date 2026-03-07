@@ -10,6 +10,8 @@ export type TournamentStatus = 'draft' | 'active' | 'paused' | 'completed' | 'ca
 export type EntryStatus = 'active' | 'withdrawn' | 'late_add'
 export type MatchStatus = 'scheduled' | 'ready' | 'on_court' | 'pending_signoff' | 'completed' | 'walkover'
 export type MatchPhase = 'swiss' | 'knockout'
+export type MatchStoryType = 'pre_match' | 'post_match'
+export type MatchStoryStatus = 'pending' | 'generating' | 'ready' | 'failed' | 'stale'
 export type SportType = 'badminton' | 'squash' | 'pickleball' | 'padel'
 export type FormatType = 'swiss' | 'mexicano' | 'groups_knockout'
 export type PlayMode = 'singles' | 'doubles'
@@ -27,6 +29,7 @@ export const TABLE_NAMES = {
   ENTRIES: 'bracket_blaze_entries',
   DRAWS: 'bracket_blaze_draws',
   MATCHES: 'bracket_blaze_matches',
+  MATCH_STORIES: 'bracket_blaze_match_stories',
   MATCH_EVENTS: 'bracket_blaze_match_events',
   OFFICIAL_ASSIGNMENTS: 'bracket_blaze_official_assignments',
   CHECKINS: 'bracket_blaze_checkins',
@@ -153,6 +156,24 @@ export interface Match {
   estimated_duration_minutes: number
   next_match_id: string | null
   next_match_side: WinnerSide | null
+  created_at: string
+  updated_at: string
+}
+
+export interface MatchStory {
+  id: string
+  match_id: string
+  story_type: MatchStoryType
+  status: MatchStoryStatus
+  version: number
+  model_slug: string | null
+  prompt_version: string
+  content: string | null
+  context_json: Json
+  error_code: string | null
+  error_message: string | null
+  generated_at: string | null
+  invalidated_at: string | null
   created_at: string
   updated_at: string
 }

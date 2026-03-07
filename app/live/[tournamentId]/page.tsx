@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { notFound } from "next/navigation"
-import { TABLE_NAMES } from "@/types/database"
+import { TABLE_NAMES, type MatchStory } from "@/types/database"
 import { calculateStandings, type RankedStanding } from "@/lib/services/standings-engine"
 import { LivePortalClient } from "@/components/live-portal/live-portal-client"
 
@@ -58,6 +58,15 @@ export default async function LivePortalPage({ params }: LivePortalPageProps) {
     .order("round", { ascending: true })
     .order("sequence", { ascending: true })
 
+  const matchIds = matches?.map(match => match.id) || []
+
+  const { data: stories } = matchIds.length === 0
+    ? { data: [] as MatchStory[] }
+    : await supabase
+        .from(TABLE_NAMES.MATCH_STORIES)
+        .select("id, match_id, story_type, status, version, model_slug, prompt_version, content, context_json, error_code, error_message, generated_at, invalidated_at, created_at, updated_at")
+        .in("match_id", matchIds)
+
   // Fetch draw state for standings context
   const { data: draws } = await supabase
     .from(TABLE_NAMES.DRAWS)
@@ -84,6 +93,7 @@ export default async function LivePortalPage({ params }: LivePortalPageProps) {
       tournamentName={tournament.name}
       divisions={divisions || []}
       matches={matches || []}
+      stories={stories || []}
       draws={draws || []}
       standings={standingsMap}
       entries={entries || []}

@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server"
 import { TABLE_NAMES, type MatchStatus, type WinnerSide, type GameScore, type MatchScoreData } from "@/types/database"
 import { requireAuth, isTournamentAdminForMatch, requireTournamentAdminForMatch } from "@/lib/auth/require-auth"
 import { closeOpenAssignmentAuditRows, promoteQueuedMatchForCourt, type PromotionResult } from "@/lib/actions/court-assignments"
+import { ensureAndScheduleMatchStories, markMatchStoriesStale } from "@/lib/services/match-stories"
 
 type ServerSupabase = Awaited<ReturnType<typeof createClient>>
 
@@ -73,6 +74,12 @@ export async function startMatch(matchId: string) {
       return { error: updateError.message }
     }
 
+    try {
+      await ensureAndScheduleMatchStories([matchId], "pre_match")
+    } catch (error) {
+      console.error("Failed to ensure pre-match story at match start:", error)
+    }
+
     await revalidateMatchPaths(supabase, match.division_id)
 
     return { success: true, message: "Match started" }
@@ -132,6 +139,12 @@ async function finalizeMatch(
   // If knockout match, advance winner to next match
   if (phase === 'knockout') {
     await advanceKnockoutWinner(supabase, matchId, winnerSide)
+  }
+
+  try {
+    await ensureAndScheduleMatchStories([matchId], "post_match", { force: true })
+  } catch (error) {
+    console.error("Failed to schedule post-match story:", error)
   }
 
   let promotion: PromotionResult = { status: "none" }
@@ -428,6 +441,12 @@ export async function recordWalkover(
       )
     }
 
+    try {
+      await ensureAndScheduleMatchStories([matchId], "post_match", { force: true })
+    } catch (error) {
+      console.error("Failed to schedule post-match story for walkover:", error)
+    }
+
     await revalidateMatchPaths(supabase, match.division_id)
 
     return { success: true, message: buildMatchCompletionMessage("Walkover recorded", promotion) }
@@ -531,7 +550,20 @@ export async function editMatchScore(
           .from(TABLE_NAMES.MATCHES)
           .update({ [updateField]: newWinnerEntryId })
           .eq("id", match.next_match_id)
+
+        try {
+          await markMatchStoriesStale([match.next_match_id], "pre_match")
+          await ensureAndScheduleMatchStories([match.next_match_id], "pre_match", { force: true })
+        } catch (error) {
+          console.error("Failed to refresh downstream knockout story after score edit:", error)
+        }
       }
+    }
+
+    try {
+      await ensureAndScheduleMatchStories([matchId], "post_match", { force: true })
+    } catch (error) {
+      console.error("Failed to refresh post-match story after score edit:", error)
     }
 
     await revalidateMatchPaths(supabase, match.division_id)
@@ -573,4 +605,11 @@ async function advanceKnockoutWinner(
     .from(TABLE_NAMES.MATCHES)
     .update({ [updateField]: winnerEntryId })
     .eq("id", match.next_match_id)
+
+  try {
+    await markMatchStoriesStale([match.next_match_id], "pre_match")
+    await ensureAndScheduleMatchStories([match.next_match_id], "pre_match", { force: true })
+  } catch (error) {
+    console.error("Failed to refresh downstream knockout pre-match story:", error)
+  }
 }

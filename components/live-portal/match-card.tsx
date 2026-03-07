@@ -1,9 +1,10 @@
 "use client"
 
+import { useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
-import type { GameScore, KnockoutVariant, LiveScore, MatchScoreData } from "@/types/database"
+import type { GameScore, KnockoutVariant, LiveScore, MatchScoreData, MatchStory } from "@/types/database"
 import { getEntryDisplayName } from "@/lib/utils/display-name"
 import {
   getKnockoutRoundCount,
@@ -14,6 +15,10 @@ import {
 interface MatchCardProps {
   match: any
   isLive: boolean
+  stories?: {
+    pre_match?: MatchStory
+    post_match?: MatchStory
+  }
   drawState?: {
     bracket_size?: number
     knockout_variant?: KnockoutVariant
@@ -29,7 +34,8 @@ function formatDuration(startTime: string | null): string {
   return `${mins}m`
 }
 
-export function MatchCard({ match, isLive, drawState }: MatchCardProps) {
+export function MatchCard({ match, isLive, stories, drawState }: MatchCardProps) {
+  const [isExpanded, setIsExpanded] = useState(false)
   const sideA = match.side_a as any
   const sideB = match.side_b as any
   const nameA = getEntryDisplayName(sideA)
@@ -41,6 +47,9 @@ export function MatchCard({ match, isLive, drawState }: MatchCardProps) {
   const liveScore: LiveScore | null = metaJson?.live_score || null
   const isWalkover = metaJson?.walkover === true
   const isCompleted = match.status === "completed" || match.status === "walkover"
+  const currentStory = isCompleted ? (stories?.post_match || stories?.pre_match) : stories?.pre_match
+  const storyLabel = isCompleted ? "Recap" : "Story"
+  const storyText = currentStory?.content || (isCompleted ? "Recap is being prepared." : "Story is being prepared.")
 
   // Round label
   const isKnockout = match.phase === "knockout"
@@ -146,6 +155,34 @@ export function MatchCard({ match, isLive, drawState }: MatchCardProps) {
             {duration}
           </span>
         </div>
+
+        <div className="mt-3 flex items-center justify-between gap-3 border-t border-border/50 pt-3">
+          <button
+            type="button"
+            onClick={() => setIsExpanded(prev => !prev)}
+            className="text-sm font-medium text-foreground underline-offset-4 hover:underline"
+          >
+            {isExpanded ? `Hide ${storyLabel}` : `Show ${storyLabel}`}
+          </button>
+          {currentStory?.status === "failed" && (
+            <Badge variant="outline" className="text-[10px] uppercase tracking-wide">
+              Fallback
+            </Badge>
+          )}
+          {(currentStory?.status === "pending" || currentStory?.status === "generating") && (
+            <span className="text-[11px] text-muted-foreground">
+              Updating
+            </span>
+          )}
+        </div>
+
+        {isExpanded && (
+          <div className="mt-3 rounded-lg border border-border/60 bg-muted/40 p-3">
+            <p className="text-sm leading-6 text-foreground/90">
+              {storyText}
+            </p>
+          </div>
+        )}
       </CardContent>
     </Card>
   )

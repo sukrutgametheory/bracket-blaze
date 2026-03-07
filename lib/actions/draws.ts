@@ -17,6 +17,7 @@ import {
 import { calculateStandings, getQualifiers } from "@/lib/services/standings-engine"
 import { generateKnockoutBracketStructure } from "@/lib/services/draw-generators/knockout-engine"
 import { DEFAULT_KNOCKOUT_VARIANT, getKnockoutVariant } from "@/lib/utils/knockout"
+import { ensureAndScheduleMatchStories } from "@/lib/services/match-stories"
 
 type ServerSupabase = Awaited<ReturnType<typeof createClient>>
 
@@ -185,6 +186,15 @@ export async function generateDraw(divisionId: string) {
       .update({ status: 'active' })
       .eq("id", division.tournament_id)
       .eq("status", "draft")
+
+    try {
+      const storyMatchIds = (insertedMatches || [])
+        .filter(match => match.side_b_entry_id !== null)
+        .map(match => match.id)
+      await ensureAndScheduleMatchStories(storyMatchIds, "pre_match")
+    } catch (error) {
+      console.error("Failed to schedule Round 1 match stories:", error)
+    }
 
     await revalidateDivisionPaths(supabase, divisionId)
 
@@ -371,6 +381,15 @@ export async function generateNextSwissRound(divisionId: string) {
       })
       .eq("id", draw.id)
 
+    try {
+      const storyMatchIds = (insertedMatches || [])
+        .filter(match => match.side_b_entry_id !== null)
+        .map(match => match.id)
+      await ensureAndScheduleMatchStories(storyMatchIds, "pre_match")
+    } catch (error) {
+      console.error(`Failed to schedule Swiss Round ${nextRound} match stories:`, error)
+    }
+
     await revalidateDivisionPaths(supabase, divisionId)
 
     return {
@@ -514,6 +533,12 @@ export async function generateKnockoutDraw(divisionId: string) {
         },
       })
       .eq("id", draw.id)
+
+    try {
+      await ensureAndScheduleMatchStories(insertedMatches.map(match => match.id), "pre_match")
+    } catch (error) {
+      console.error("Failed to schedule knockout match stories:", error)
+    }
 
     await revalidateDivisionPaths(supabase, divisionId)
 
