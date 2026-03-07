@@ -140,11 +140,14 @@ export interface Match {
   side_b_entry_id: string | null
   scheduled_at: string | null
   court_id: string | null
+  queued_court_id: string | null
   status: MatchStatus
   winner_side: WinnerSide | null
   meta_json: Json
   assigned_at: string | null
   assigned_by: string | null
+  queued_at: string | null
+  queued_by: string | null
   actual_start_time: string | null
   actual_end_time: string | null
   estimated_duration_minutes: number
@@ -211,6 +214,7 @@ export interface CourtAssignment {
   id: string
   match_id: string
   court_id: string | null
+  assignment_kind: 'active' | 'queue'
   assigned_by: string | null
   assigned_at: string
   unassigned_at: string | null
@@ -249,6 +253,22 @@ export interface MatchWithDetails extends Match {
     participant?: Participant
     team?: Team
   }
+}
+
+export interface ControlCenterMatch extends Match {
+  division?: Pick<Division, "id" | "name" | "format" | "scheduling_priority">
+  side_a?: {
+    id: string
+    seed: number | null
+    participant?: Pick<Participant, "id" | "display_name" | "club">
+    team?: Pick<Team, "name">
+  } | null
+  side_b?: {
+    id: string
+    seed: number | null
+    participant?: Pick<Participant, "id" | "display_name" | "club">
+    team?: Pick<Team, "name">
+  } | null
 }
 
 export interface DivisionWithTournament extends Division {

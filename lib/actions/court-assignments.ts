@@ -3,14 +3,155 @@
 import { revalidatePath } from "next/cache"
 import { createClient } from "@/lib/supabase/server"
 import { TABLE_NAMES } from "@/types/database"
-import { requireAuth, isTournamentAdminForMatch, requireTournamentAdminForMatch, getTournamentIdForDivision } from "@/lib/auth/require-auth"
+import {
+  requireAuth,
+  isTournamentAdminForMatch,
+  requireTournamentAdminForCourt,
+  requireTournamentAdminForMatch,
+  getTournamentIdForDivision,
+} from "@/lib/auth/require-auth"
 
 type ServerSupabase = Awaited<ReturnType<typeof createClient>>
+
+type AssignmentKind = "active" | "queue"
+
+const ACTIVE_MATCH_STATUSES = ["scheduled", "ready", "on_court", "pending_signoff"] as const
+const OCCUPIED_COURT_STATUSES = ["ready", "on_court", "pending_signoff"] as const
 
 interface ConflictWarning {
   type: "player_overlap" | "rest_violation"
   severity: "warning" | "error"
   message: string
+}
+
+export interface PromotionResult {
+  status: "promoted" | "none" | "returned_to_ready"
+  message?: string
+}
+
+function normalizeAssignmentError(message: string | undefined, fallback: string): string {
+  if (!message) return fallback
+  if (message.includes("idx_bracket_blaze_matches_one_active_per_court")) {
+    return "Court already has an active match"
+  }
+  if (message.includes("idx_bracket_blaze_matches_one_queue_per_court")) {
+    return "Court already has a queued match"
+  }
+  return message
+}
+
+export async function closeOpenAssignmentAuditRows(
+  supabase: ServerSupabase,
+  matchIds: string[],
+  assignmentKind: AssignmentKind
+) {
+  if (matchIds.length === 0) return
+
+  await supabase
+    .from(TABLE_NAMES.COURT_ASSIGNMENTS)
+    .update({ unassigned_at: new Date().toISOString() })
+    .in("match_id", matchIds)
+    .eq("assignment_kind", assignmentKind)
+    .is("unassigned_at", null)
+}
+
+async function logResolvedConflicts(
+  supabase: ServerSupabase,
+  matchId: string,
+  warnings: ConflictWarning[],
+  userId: string,
+  reason: string
+) {
+  if (warnings.length === 0) return
+
+  const conflictRecords = warnings.map(w => ({
+    match_id: matchId,
+    conflict_type: w.type,
+    severity: w.severity,
+    details_json: { message: w.message },
+    resolved_at: new Date().toISOString(),
+    resolved_by: userId,
+    override_reason: reason,
+  }))
+
+  await supabase
+    .from(TABLE_NAMES.MATCH_CONFLICTS)
+    .insert(conflictRecords)
+}
+
+async function clearQueuedReservationsForCourt(
+  supabase: ServerSupabase,
+  courtId: string
+): Promise<number> {
+  const { data: queuedMatches, error: queuedFetchError } = await supabase
+    .from(TABLE_NAMES.MATCHES)
+    .select("id")
+    .eq("queued_court_id", courtId)
+
+  if (queuedFetchError || !queuedMatches || queuedMatches.length === 0) {
+    return 0
+  }
+
+  const queuedMatchIds = queuedMatches.map(match => match.id)
+
+  await supabase
+    .from(TABLE_NAMES.MATCHES)
+    .update({
+      queued_court_id: null,
+      queued_at: null,
+      queued_by: null,
+    })
+    .eq("queued_court_id", courtId)
+
+  await closeOpenAssignmentAuditRows(supabase, queuedMatchIds, "queue")
+
+  return queuedMatchIds.length
+}
+
+async function clearQueuedReservationForMatch(
+  supabase: ServerSupabase,
+  matchId: string
+) {
+  await supabase
+    .from(TABLE_NAMES.MATCHES)
+    .update({
+      queued_court_id: null,
+      queued_at: null,
+      queued_by: null,
+    })
+    .eq("id", matchId)
+
+  await closeOpenAssignmentAuditRows(supabase, [matchId], "queue")
+}
+
+async function getCourtSlotState(supabase: ServerSupabase, courtId: string) {
+  const [activeResult, occupiedResult, queuedResult] = await Promise.all([
+    supabase
+      .from(TABLE_NAMES.MATCHES)
+      .select("id, status")
+      .eq("court_id", courtId)
+      .in("status", [...ACTIVE_MATCH_STATUSES]),
+    supabase
+      .from(TABLE_NAMES.MATCHES)
+      .select("id, status")
+      .eq("court_id", courtId)
+      .in("status", [...OCCUPIED_COURT_STATUSES]),
+    supabase
+      .from(TABLE_NAMES.MATCHES)
+      .select("id, status")
+      .eq("queued_court_id", courtId),
+  ])
+
+  return {
+    activeMatch: activeResult.data?.[0] ?? null,
+    occupiedMatch: occupiedResult.data?.[0] ?? null,
+    queuedMatch: queuedResult.data?.[0] ?? null,
+  }
+}
+
+async function revalidateControlCenter(tournamentId?: string) {
+  if (!tournamentId) return
+  revalidatePath(`/tournaments/${tournamentId}/control-center`)
 }
 
 /**
@@ -28,7 +169,6 @@ async function checkConflicts(
 ): Promise<ConflictWarning[]> {
   const warnings: ConflictWarning[] = []
 
-  // 1. Fetch match + all division IDs in parallel (2 queries, parallel)
   const [matchResult, divisionsResult] = await Promise.all([
     supabase
       .from(TABLE_NAMES.MATCHES)
@@ -50,7 +190,6 @@ async function checkConflicts(
   const divisionIds = divisionsResult.data?.map((d: { id: string }) => d.id) || []
   if (divisionIds.length === 0) return warnings
 
-  // 2. Fetch active court matches + recent completed matches in parallel (2 queries, parallel)
   const cutoffTime = new Date(Date.now() - restWindowMinutes * 60 * 1000).toISOString()
 
   const [activeResult, recentResult] = await Promise.all([
@@ -64,7 +203,7 @@ async function checkConflicts(
       `)
       .neq("id", matchId)
       .not("court_id", "is", null)
-      .in("status", ["scheduled", "ready", "on_court"])
+      .in("status", [...ACTIVE_MATCH_STATUSES])
       .in("division_id", divisionIds),
     supabase
       .from(TABLE_NAMES.MATCHES)
@@ -80,12 +219,11 @@ async function checkConflicts(
       .in("division_id", divisionIds),
   ])
 
-  // 3. Collect ALL team_ids from all matches, batch-fetch team_members (1 query)
   const allMatches = [match, ...(activeResult.data || []), ...(recentResult.data || [])]
   const allTeamIds = new Set<string>()
-  for (const m of allMatches) {
-    if (m.side_a?.team_id) allTeamIds.add(m.side_a.team_id)
-    if (m.side_b?.team_id) allTeamIds.add(m.side_b.team_id)
+  for (const currentMatch of allMatches) {
+    if (currentMatch.side_a?.team_id) allTeamIds.add(currentMatch.side_a.team_id)
+    if (currentMatch.side_b?.team_id) allTeamIds.add(currentMatch.side_b.team_id)
   }
 
   const teamMemberMap = new Map<string, string[]>()
@@ -102,7 +240,6 @@ async function checkConflicts(
     }
   }
 
-  // Helper: resolve participant IDs from entry using the pre-fetched map (no queries)
   function resolveIds(entry: { participant_id: string | null; team_id: string | null } | null): string[] {
     if (!entry) return []
     if (entry.participant_id) return [entry.participant_id]
@@ -113,7 +250,6 @@ async function checkConflicts(
   const matchParticipantIds = [...resolveIds(match.side_a), ...resolveIds(match.side_b)]
   if (matchParticipantIds.length === 0) return warnings
 
-  // 4. Check player overlaps (in-memory, no queries)
   const conflictParticipantIds = new Set<string>()
 
   for (const otherMatch of activeResult.data || []) {
@@ -129,7 +265,6 @@ async function checkConflicts(
     }
   }
 
-  // 5. Check rest violations (in-memory, no queries)
   for (const recentMatch of recentResult.data || []) {
     const recentIds = [...resolveIds(recentMatch.side_a), ...resolveIds(recentMatch.side_b)]
     const overlapping = matchParticipantIds.filter(id => recentIds.includes(id))
@@ -152,7 +287,6 @@ async function checkConflicts(
     }
   }
 
-  // 6. Batch-fetch all conflicting participant names (1 query, only if conflicts found)
   if (conflictParticipantIds.size > 0) {
     const { data: players } = await supabase
       .from(TABLE_NAMES.PARTICIPANTS)
@@ -161,10 +295,10 @@ async function checkConflicts(
 
     const nameMap = new Map(players?.map((p: { id: string; display_name: string }) => [p.id, p.display_name]) || [])
 
-    for (const w of warnings) {
-      const placeholderMatch = w.message.match(/__PLAYER_(.+?)__/)
+    for (const warning of warnings) {
+      const placeholderMatch = warning.message.match(/__PLAYER_(.+?)__/)
       if (placeholderMatch) {
-        w.message = w.message.replace(
+        warning.message = warning.message.replace(
           `__PLAYER_${placeholderMatch[1]}__`,
           nameMap.get(placeholderMatch[1]) || "A player"
         )
@@ -173,6 +307,89 @@ async function checkConflicts(
   }
 
   return warnings
+}
+
+export async function promoteQueuedMatchForCourt(
+  supabase: ServerSupabase,
+  courtId: string,
+  actingUserId: string,
+  tournamentId: string,
+  restWindowMinutes: number
+): Promise<PromotionResult> {
+  const { data: queuedMatch, error: queuedFetchError } = await supabase
+    .from(TABLE_NAMES.MATCHES)
+    .select("id, status, court_id, queued_court_id")
+    .eq("queued_court_id", courtId)
+    .maybeSingle()
+
+  if (queuedFetchError || !queuedMatch) {
+    return { status: "none" }
+  }
+
+  const warnings = await checkConflicts(supabase, queuedMatch.id, tournamentId, restWindowMinutes)
+  const blockingErrors = warnings.filter(warning => warning.severity === "error")
+
+  if (blockingErrors.length > 0) {
+    await clearQueuedReservationForMatch(supabase, queuedMatch.id)
+    return {
+      status: "returned_to_ready",
+      message: `Queued match returned to ready queue: ${blockingErrors.map(error => error.message).join("; ")}`,
+    }
+  }
+
+  const now = new Date().toISOString()
+  const { data: promotedMatch, error: promoteError } = await supabase
+    .from(TABLE_NAMES.MATCHES)
+    .update({
+      court_id: courtId,
+      queued_court_id: null,
+      queued_at: null,
+      queued_by: null,
+      status: "ready",
+      assigned_at: now,
+      assigned_by: actingUserId,
+    })
+    .eq("id", queuedMatch.id)
+    .is("court_id", null)
+    .eq("status", "scheduled")
+    .select("id")
+    .maybeSingle()
+
+  if (promoteError) {
+    await clearQueuedReservationForMatch(supabase, queuedMatch.id)
+    return {
+      status: "returned_to_ready",
+      message: `Queued match returned to ready queue: ${normalizeAssignmentError(promoteError.message, "Promotion failed")}`,
+    }
+  }
+
+  if (!promotedMatch) {
+    await clearQueuedReservationForMatch(supabase, queuedMatch.id)
+    return {
+      status: "returned_to_ready",
+      message: "Queued match returned to ready queue because it was no longer promotable",
+    }
+  }
+
+  await closeOpenAssignmentAuditRows(supabase, [queuedMatch.id], "queue")
+  await supabase.from(TABLE_NAMES.COURT_ASSIGNMENTS).insert({
+    match_id: queuedMatch.id,
+    court_id: courtId,
+    assignment_kind: "active",
+    assigned_by: actingUserId,
+  })
+
+  const warningMessages = warnings.filter(warning => warning.severity === "warning")
+  if (warningMessages.length > 0) {
+    await logResolvedConflicts(supabase, queuedMatch.id, warningMessages, actingUserId, "Auto-promoted from court queue")
+  }
+
+  return {
+    status: "promoted",
+    message: warningMessages.length > 0
+      ? `Queued match promoted to court with warnings: ${warningMessages.map(warning => warning.message).join("; ")}`
+      : "Queued match promoted to court",
+  }
 }
 
 export async function assignMatchToCourt(
@@ -192,67 +409,68 @@ export async function assignMatchToCourt(
     const { tournamentId, restWindowMinutes } = adminCheck
     if (!tournamentId) return { error: "Tournament not found" }
 
-    // Check conflicts (scoped to tournament)
+    const courtState = await getCourtSlotState(supabase, courtId)
+    if (courtState.activeMatch) {
+      return { error: "Court already has an active match" }
+    }
+    if (courtState.queuedMatch) {
+      return { error: "Court already has a queued match reserved" }
+    }
+
     const warnings = await checkConflicts(supabase, matchId, tournamentId, restWindowMinutes!)
 
-    // Block if there are errors (not just warnings)
-    const errors = warnings.filter(w => w.severity === "error")
+    const errors = warnings.filter(warning => warning.severity === "error")
     if (errors.length > 0 && !override) {
       return {
-        error: errors.map(e => e.message).join("; "),
-        warnings: warnings.map(w => w.message),
+        error: errors.map(error => error.message).join("; "),
+        warnings: warnings.map(warning => warning.message),
       }
     }
 
-    // Allow warnings to be overridden
-    const warningMessages = warnings.filter(w => w.severity === "warning")
+    const warningMessages = warnings.filter(warning => warning.severity === "warning")
     if (warningMessages.length > 0 && !override) {
       return {
-        warnings: warningMessages.map(w => w.message),
+        warnings: warningMessages.map(warning => warning.message),
       }
     }
 
-    // Assign match to court — userId from session, not client
-    const { error: updateError } = await supabase
+    const now = new Date().toISOString()
+    const { data: assignedMatch, error: updateError } = await supabase
       .from(TABLE_NAMES.MATCHES)
       .update({
         court_id: courtId,
         status: "ready",
-        assigned_at: new Date().toISOString(),
+        assigned_at: now,
         assigned_by: user.id,
       })
       .eq("id", matchId)
+      .eq("status", "scheduled")
+      .is("court_id", null)
+      .is("queued_court_id", null)
+      .select("id")
+      .maybeSingle()
 
     if (updateError) {
-      return { error: updateError.message }
+      return { error: normalizeAssignmentError(updateError.message, "Failed to assign match to court") }
     }
 
-    // Log the assignment
+    if (!assignedMatch) {
+      return { error: "Match is no longer available for direct assignment" }
+    }
+
     await supabase.from(TABLE_NAMES.COURT_ASSIGNMENTS).insert({
       match_id: matchId,
       court_id: courtId,
+      assignment_kind: "active",
       assigned_by: user.id,
       notes: override ? overrideReason : null,
     })
 
-    // Log conflicts if any were overridden
     if (override && warnings.length > 0) {
-      const conflictRecords = warnings.map(w => ({
-        match_id: matchId,
-        conflict_type: w.type,
-        severity: w.severity,
-        details_json: { message: w.message },
-        resolved_at: new Date().toISOString(),
-        resolved_by: user.id,
-        override_reason: overrideReason,
-      }))
-
-      await supabase
-        .from(TABLE_NAMES.MATCH_CONFLICTS)
-        .insert(conflictRecords)
+      await logResolvedConflicts(supabase, matchId, warnings, user.id, overrideReason || "TD override")
     }
 
-    revalidatePath(`/tournaments/${tournamentId}/control-center`)
+    await revalidateControlCenter(tournamentId)
 
     return {
       success: true,
@@ -264,45 +482,160 @@ export async function assignMatchToCourt(
   }
 }
 
+export async function queueMatchForCourt(matchId: string, courtId: string) {
+  try {
+    const auth = await requireAuth()
+    if (!auth) return { error: "Unauthorized" }
+    const { supabase, user } = auth
+
+    const [matchAdmin, courtAdmin] = await Promise.all([
+      requireTournamentAdminForMatch(supabase, matchId, user.id),
+      requireTournamentAdminForCourt(supabase, courtId, user.id),
+    ])
+
+    if (!matchAdmin.authorized || !courtAdmin.authorized) {
+      return { error: "Not authorized for this tournament" }
+    }
+
+    if (!matchAdmin.tournamentId || matchAdmin.tournamentId !== courtAdmin.tournamentId) {
+      return { error: "Match and court must belong to the same tournament" }
+    }
+
+    const [matchResult, courtState] = await Promise.all([
+      supabase
+        .from(TABLE_NAMES.MATCHES)
+        .select("id, status, court_id, queued_court_id, side_b_entry_id")
+        .eq("id", matchId)
+        .single(),
+      getCourtSlotState(supabase, courtId),
+    ])
+
+    const match = matchResult.data
+    if (matchResult.error || !match) {
+      return { error: "Match not found" }
+    }
+
+    if (match.status !== "scheduled") {
+      return { error: `Only scheduled matches can be queued. Current status is '${match.status}'` }
+    }
+
+    if (match.court_id) {
+      return { error: "Match is already assigned to a court" }
+    }
+
+    if (match.queued_court_id) {
+      return { error: "Match is already queued for another court" }
+    }
+
+    if (!match.side_b_entry_id) {
+      return { error: "Bye matches cannot be queued" }
+    }
+
+    if (!courtState.occupiedMatch) {
+      return { error: "Only occupied courts can accept a queued match" }
+    }
+
+    if (courtState.queuedMatch) {
+      return { error: "Court already has a queued match" }
+    }
+
+    const now = new Date().toISOString()
+    const { data: queuedMatch, error: updateError } = await supabase
+      .from(TABLE_NAMES.MATCHES)
+      .update({
+        queued_court_id: courtId,
+        queued_at: now,
+        queued_by: user.id,
+      })
+      .eq("id", matchId)
+      .eq("status", "scheduled")
+      .is("court_id", null)
+      .is("queued_court_id", null)
+      .select("id")
+      .maybeSingle()
+
+    if (updateError) {
+      return { error: normalizeAssignmentError(updateError.message, "Failed to queue match for court") }
+    }
+
+    if (!queuedMatch) {
+      return { error: "Match is no longer available for queueing" }
+    }
+
+    await supabase.from(TABLE_NAMES.COURT_ASSIGNMENTS).insert({
+      match_id: matchId,
+      court_id: courtId,
+      assignment_kind: "queue",
+      assigned_by: user.id,
+    })
+
+    await revalidateControlCenter(matchAdmin.tournamentId)
+
+    return {
+      success: true,
+      message: "Match queued for court",
+    }
+  } catch (error) {
+    console.error("Error in queueMatchForCourt:", error)
+    return { error: "Failed to queue match for court" }
+  }
+}
+
+export async function clearCourtQueue(courtId: string) {
+  try {
+    const auth = await requireAuth()
+    if (!auth) return { error: "Unauthorized" }
+    const { supabase, user } = auth
+
+    const adminCheck = await requireTournamentAdminForCourt(supabase, courtId, user.id)
+    if (!adminCheck.authorized) return { error: "Not authorized for this tournament" }
+
+    const clearedCount = await clearQueuedReservationsForCourt(supabase, courtId)
+    if (clearedCount === 0) {
+      return { error: "No queued match found for this court" }
+    }
+
+    await revalidateControlCenter(adminCheck.tournamentId)
+
+    return {
+      success: true,
+      message: "Queued match cleared",
+    }
+  } catch (error) {
+    console.error("Error in clearCourtQueue:", error)
+    return { error: "Failed to clear queued match" }
+  }
+}
+
 export async function clearCourt(courtId: string) {
   try {
     const auth = await requireAuth()
     if (!auth) return { error: "Unauthorized" }
     const { supabase, user } = auth
 
-    // Find active match on this court (exclude completed/walkover)
     const { data: match } = await supabase
       .from(TABLE_NAMES.MATCHES)
       .select("id, status, division_id")
       .eq("court_id", courtId)
-      .in("status", ["scheduled", "ready", "on_court", "pending_signoff"])
+      .in("status", [...ACTIVE_MATCH_STATUSES])
       .single()
 
     if (!match) {
       return { error: "No match found on this court" }
     }
 
-    // Verify tournament admin via match's division
     const isAdmin = await isTournamentAdminForMatch(supabase, match.id, user.id)
     if (!isAdmin) return { error: "Not authorized for this tournament" }
 
-    // Guard: cannot clear completed or walkover matches
-    if (match.status === "completed" || match.status === "walkover") {
-      return { error: `Cannot clear court: match is already ${match.status}` }
-    }
-
-    // Guard: cannot clear in-progress matches without explicit action
     if (match.status === "on_court") {
       return { error: "Cannot clear court: match is in progress. Complete or walkover the match first." }
     }
 
-    // Guard: cannot clear matches pending TD sign-off
     if (match.status === "pending_signoff") {
       return { error: "Cannot clear court: match is pending sign-off. Approve or reject the match first." }
     }
 
-    // Clear court assignment
-    const { error: updateError } = await supabase
+    const { data: clearedMatch, error: updateError } = await supabase
       .from(TABLE_NAMES.MATCHES)
       .update({
         court_id: null,
@@ -311,26 +644,27 @@ export async function clearCourt(courtId: string) {
         assigned_by: null,
       })
       .eq("id", match.id)
+      .select("id")
+      .maybeSingle()
 
     if (updateError) {
       return { error: updateError.message }
     }
 
-    // Log unassignment
-    await supabase
-      .from(TABLE_NAMES.COURT_ASSIGNMENTS)
-      .update({ unassigned_at: new Date().toISOString() })
-      .eq("match_id", match.id)
-      .is("unassigned_at", null)
+    if (!clearedMatch) {
+      return { error: "Court could not be cleared" }
+    }
+
+    await closeOpenAssignmentAuditRows(supabase, [match.id], "active")
+
+    const clearedQueuedCount = await clearQueuedReservationsForCourt(supabase, courtId)
 
     const tournamentId = await getTournamentIdForDivision(supabase, match.division_id)
-    if (tournamentId) {
-      revalidatePath(`/tournaments/${tournamentId}/control-center`)
-    }
+    await revalidateControlCenter(tournamentId ?? undefined)
 
     return {
       success: true,
-      message: "Court cleared",
+      message: clearedQueuedCount > 0 ? "Court cleared and queued match removed" : "Court cleared",
     }
   } catch (error) {
     console.error("Error in clearCourt:", error)

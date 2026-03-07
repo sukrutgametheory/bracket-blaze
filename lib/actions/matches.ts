@@ -3,7 +3,8 @@
 import { revalidatePath } from "next/cache"
 import { createClient } from "@/lib/supabase/server"
 import { TABLE_NAMES, type MatchStatus, type WinnerSide, type GameScore, type MatchScoreData } from "@/types/database"
-import { requireAuth, isTournamentAdminForMatch } from "@/lib/auth/require-auth"
+import { requireAuth, isTournamentAdminForMatch, requireTournamentAdminForMatch } from "@/lib/auth/require-auth"
+import { closeOpenAssignmentAuditRows, promoteQueuedMatchForCourt, type PromotionResult } from "@/lib/actions/court-assignments"
 
 type ServerSupabase = Awaited<ReturnType<typeof createClient>>
 
@@ -92,7 +93,13 @@ async function finalizeMatch(
   divisionId: string,
   phase: string,
   winnerSide: WinnerSide,
-  games: GameScore[]
+  games: GameScore[],
+  options: {
+    actingUserId: string
+    courtId: string | null
+    tournamentId: string
+    restWindowMinutes: number
+  }
 ) {
   const totalPointsA = games.reduce((sum, g) => sum + g.score_a, 0)
   const totalPointsB = games.reduce((sum, g) => sum + g.score_b, 0)
@@ -118,14 +125,35 @@ async function finalizeMatch(
     return { error: updateError.message }
   }
 
+  if (options.courtId) {
+    await closeOpenAssignmentAuditRows(supabase, [matchId], "active")
+  }
+
   // If knockout match, advance winner to next match
   if (phase === 'knockout') {
     await advanceKnockoutWinner(supabase, matchId, winnerSide)
   }
 
+  let promotion: PromotionResult = { status: "none" }
+  if (options.courtId) {
+    promotion = await promoteQueuedMatchForCourt(
+      supabase,
+      options.courtId,
+      options.actingUserId,
+      options.tournamentId,
+      options.restWindowMinutes
+    )
+  }
+
   await revalidateMatchPaths(supabase, divisionId)
 
-  return { success: true, scoreData }
+  return { success: true, scoreData, promotion }
+}
+
+function buildMatchCompletionMessage(base: string, promotion?: PromotionResult) {
+  if (!promotion) return base
+  if (promotion.status === "none" || !promotion.message) return base
+  return `${base}. ${promotion.message}`
 }
 
 /**
@@ -142,12 +170,12 @@ export async function completeMatch(
     if (!auth) return { error: "Unauthorized" }
     const { supabase, user } = auth
 
-    const isAdmin = await isTournamentAdminForMatch(supabase, matchId, user.id)
-    if (!isAdmin) return { error: "Not authorized for this tournament" }
+    const adminCheck = await requireTournamentAdminForMatch(supabase, matchId, user.id)
+    if (!adminCheck.authorized || !adminCheck.tournamentId) return { error: "Not authorized for this tournament" }
 
     const { data: match, error: fetchError } = await supabase
       .from(TABLE_NAMES.MATCHES)
-      .select("id, status, division_id, phase")
+      .select("id, status, division_id, phase, court_id")
       .eq("id", matchId)
       .single()
 
@@ -170,12 +198,25 @@ export async function completeMatch(
       }
     }
 
-    const result = await finalizeMatch(supabase, matchId, match.division_id, match.phase, winnerSide, games)
+    const result = await finalizeMatch(
+      supabase,
+      matchId,
+      match.division_id,
+      match.phase,
+      winnerSide,
+      games,
+      {
+        actingUserId: user.id,
+        courtId: match.court_id,
+        tournamentId: adminCheck.tournamentId,
+        restWindowMinutes: adminCheck.restWindowMinutes ?? 15,
+      }
+    )
     if (result.error) return result
 
     return {
       success: true,
-      message: "Match completed",
+      message: buildMatchCompletionMessage("Match completed", result.promotion),
       scoreData: result.scoreData,
     }
   } catch (error) {
@@ -194,12 +235,12 @@ export async function approveMatch(matchId: string) {
     if (!auth) return { error: "Unauthorized" }
     const { supabase, user } = auth
 
-    const isAdmin = await isTournamentAdminForMatch(supabase, matchId, user.id)
-    if (!isAdmin) return { error: "Not authorized for this tournament" }
+    const adminCheck = await requireTournamentAdminForMatch(supabase, matchId, user.id)
+    if (!adminCheck.authorized || !adminCheck.tournamentId) return { error: "Not authorized for this tournament" }
 
     const { data: match, error: fetchError } = await supabase
       .from(TABLE_NAMES.MATCHES)
-      .select("id, status, division_id, phase, meta_json")
+      .select("id, status, division_id, phase, meta_json, court_id")
       .eq("id", matchId)
       .single()
 
@@ -239,10 +280,23 @@ export async function approveMatch(matchId: string) {
       payload_json: { games, winner_side: winnerSide },
     })
 
-    const result = await finalizeMatch(supabase, matchId, match.division_id, match.phase, winnerSide, games)
+    const result = await finalizeMatch(
+      supabase,
+      matchId,
+      match.division_id,
+      match.phase,
+      winnerSide,
+      games,
+      {
+        actingUserId: user.id,
+        courtId: match.court_id,
+        tournamentId: adminCheck.tournamentId,
+        restWindowMinutes: adminCheck.restWindowMinutes ?? 15,
+      }
+    )
     if (result.error) return result
 
-    return { success: true, message: "Match approved" }
+    return { success: true, message: buildMatchCompletionMessage("Match approved", result.promotion) }
   } catch (error) {
     console.error("Error in approveMatch:", error)
     return { error: "Failed to approve match" }
@@ -315,12 +369,12 @@ export async function recordWalkover(
     if (!auth) return { error: "Unauthorized" }
     const { supabase, user } = auth
 
-    const isAdmin = await isTournamentAdminForMatch(supabase, matchId, user.id)
-    if (!isAdmin) return { error: "Not authorized for this tournament" }
+    const adminCheck = await requireTournamentAdminForMatch(supabase, matchId, user.id)
+    if (!adminCheck.authorized || !adminCheck.tournamentId) return { error: "Not authorized for this tournament" }
 
     const { data: match, error: fetchError } = await supabase
       .from(TABLE_NAMES.MATCHES)
-      .select("id, status, division_id, phase")
+      .select("id, status, division_id, phase, court_id")
       .eq("id", matchId)
       .single()
 
@@ -354,14 +408,29 @@ export async function recordWalkover(
       return { error: updateError.message }
     }
 
+    if (match.court_id) {
+      await closeOpenAssignmentAuditRows(supabase, [matchId], "active")
+    }
+
     // If knockout match, advance winner to next match
     if (match.phase === 'knockout') {
       await advanceKnockoutWinner(supabase, matchId, winnerSide)
     }
 
+    let promotion: PromotionResult = { status: "none" }
+    if (match.court_id) {
+      promotion = await promoteQueuedMatchForCourt(
+        supabase,
+        match.court_id,
+        user.id,
+        adminCheck.tournamentId,
+        adminCheck.restWindowMinutes ?? 15
+      )
+    }
+
     await revalidateMatchPaths(supabase, match.division_id)
 
-    return { success: true, message: "Walkover recorded" }
+    return { success: true, message: buildMatchCompletionMessage("Walkover recorded", promotion) }
   } catch (error) {
     console.error("Error in recordWalkover:", error)
     return { error: "Failed to record walkover" }

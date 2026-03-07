@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Court } from "@/types/database"
+import { Court, type ControlCenterMatch, type MatchScoreData } from "@/types/database"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -11,12 +11,14 @@ import { getEntryDisplayName } from "@/lib/utils/display-name"
 
 interface CourtGridProps {
   courts: Court[]
-  matches: any[]
+  matches: ControlCenterMatch[]
   selectedMatch: string | null
   onAssign: (matchId: string, courtId: string) => void
+  onQueue: (matchId: string, courtId: string) => void
   onClear: (courtId: string) => void
+  onClearQueue: (courtId: string) => void
   onStartMatch: (matchId: string) => void
-  onRecordResult: (match: any) => void
+  onRecordResult: (match: ControlCenterMatch) => void
   onApproveMatch?: (matchId: string) => void
   onRejectMatch?: (matchId: string, note?: string) => void
 }
@@ -53,7 +55,9 @@ export function CourtGrid({
   matches,
   selectedMatch,
   onAssign,
+  onQueue,
   onClear,
+  onClearQueue,
   onStartMatch,
   onRecordResult,
   onApproveMatch,
@@ -70,29 +74,43 @@ export function CourtGrid({
     )
   }
 
-  // Map courts to their current matches
-  const courtMatches = new Map(
-    matches.map(m => [m.court_id, m])
+  const activeMatchesByCourt = new Map(
+    matches
+      .filter(match => Boolean(match.court_id))
+      .map(match => [match.court_id, match] as const)
+  )
+  const queuedMatchesByCourt = new Map(
+    matches
+      .filter(match => Boolean(match.queued_court_id))
+      .map(match => [match.queued_court_id, match] as const)
   )
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {courts.map((court) => {
-        const match = courtMatches.get(court.id)
+        const match = activeMatchesByCourt.get(court.id)
+        const queuedMatch = queuedMatchesByCourt.get(court.id)
+        const matchScoreData = match ? match.meta_json as MatchScoreData | null : null
+        const completedGames = matchScoreData?.games ?? []
         const isEmpty = !match
-        const canAssign = selectedMatch && isEmpty
+        const canAssign = Boolean(selectedMatch && isEmpty)
+        const canQueue = Boolean(selectedMatch && !isEmpty && !queuedMatch)
 
         return (
           <div
             key={court.id}
             onClick={() => {
-              if (canAssign) {
+              if (selectedMatch && canAssign) {
                 onAssign(selectedMatch, court.id)
+                return
+              }
+              if (selectedMatch && canQueue) {
+                onQueue(selectedMatch, court.id)
               }
             }}
             className={cn(
               "border rounded-lg p-4 transition-all",
-              canAssign && "cursor-pointer hover:border-primary hover:bg-primary/5",
+              (canAssign || canQueue) && "cursor-pointer hover:border-primary hover:bg-primary/5",
               isEmpty && "bg-muted/30",
               !isEmpty && "bg-card",
               match?.status === 'on_court' && "border-green-500/50 bg-green-50/30 dark:bg-green-950/10",
@@ -154,7 +172,7 @@ export function CourtGrid({
                       </span>
                     )}
                     <span className="font-medium text-sm truncate">
-                      {getEntryDisplayName(match.side_a)}
+                      {getEntryDisplayName(match.side_a ?? null)}
                     </span>
                   </div>
 
@@ -172,19 +190,19 @@ export function CourtGrid({
                         </span>
                       )}
                       <span className="font-medium text-sm truncate">
-                        {getEntryDisplayName(match.side_b)}
+                        {getEntryDisplayName(match.side_b ?? null)}
                       </span>
                     </div>
                   )}
                 </div>
 
                 {/* Live Score (when on_court or pending_signoff with live_score data) */}
-                {match.meta_json?.live_score && (match.status === 'on_court' || match.status === 'pending_signoff') && (
+                {matchScoreData?.live_score && (match.status === 'on_court' || match.status === 'pending_signoff') && (
                   <div className="pt-1">
                     {/* Completed games */}
-                    {match.meta_json?.games?.length > 0 && (
+                    {completedGames.length > 0 && (
                       <div className="flex gap-1 mb-1">
-                        {match.meta_json.games.map((game: any, i: number) => (
+                        {completedGames.map((game, i: number) => (
                           <span key={i} className="px-1.5 py-0.5 bg-muted rounded text-xs font-mono">
                             {game.score_a}-{game.score_b}
                           </span>
@@ -193,15 +211,15 @@ export function CourtGrid({
                     )}
                     {/* Current game score */}
                     <div className="text-sm font-mono font-semibold">
-                      Game {match.meta_json.live_score.current_game}: {match.meta_json.live_score.score_a} - {match.meta_json.live_score.score_b}
+                      Game {matchScoreData.live_score.current_game}: {matchScoreData.live_score.score_a} - {matchScoreData.live_score.score_b}
                     </div>
                   </div>
                 )}
 
                 {/* Completed games summary (pending_signoff without live_score) */}
-                {match.status === 'pending_signoff' && !match.meta_json?.live_score && match.meta_json?.games?.length > 0 && (
+                {match.status === 'pending_signoff' && !matchScoreData?.live_score && completedGames.length > 0 && (
                   <div className="flex gap-1 pt-1">
-                    {match.meta_json.games.map((game: any, i: number) => (
+                    {completedGames.map((game, i: number) => (
                       <span key={i} className="px-1.5 py-0.5 bg-muted rounded text-xs font-mono">
                         {game.score_a}-{game.score_b}
                       </span>
@@ -296,6 +314,59 @@ export function CourtGrid({
                         </>
                       )}
                     </>
+                  )}
+                </div>
+
+                <div className="mt-3 border-t pt-3">
+                  <div className="mb-2 flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                        Up Next
+                      </span>
+                      <Badge variant={queuedMatch ? "secondary" : "outline"} className="text-xs">
+                        {queuedMatch ? "Queued Next" : "Open"}
+                      </Badge>
+                    </div>
+                    {queuedMatch && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onClearQueue(court.id)
+                        }}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+
+                  {queuedMatch ? (
+                    <div className="space-y-2 rounded-md border border-dashed bg-muted/20 p-3">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="text-xs">
+                          {queuedMatch.division?.name}
+                        </Badge>
+                        <span className="text-xs text-muted-foreground">
+                          {queuedMatch.phase === 'knockout' ? 'KO ' : ''}Round {queuedMatch.round} • Match {queuedMatch.sequence}
+                        </span>
+                      </div>
+                      <div className="space-y-1">
+                        <div className="text-sm font-medium truncate">
+                          {getEntryDisplayName(queuedMatch.side_a ?? null)}
+                        </div>
+                        <div className="text-xs text-muted-foreground font-semibold text-center">
+                          VS
+                        </div>
+                        <div className="text-sm font-medium truncate">
+                          {getEntryDisplayName(queuedMatch.side_b ?? null)}
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="rounded-md border border-dashed bg-muted/20 p-3 text-sm text-muted-foreground">
+                      {canQueue ? "Click this court to queue the selected match" : "No queued match"}
+                    </div>
                   )}
                 </div>
               </div>

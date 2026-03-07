@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Tournament, Court, Division, type GameScore, type WinnerSide } from "@/types/database"
+import { Tournament, Court, Division, type ControlCenterMatch, type GameScore, type MatchScoreData, type WinnerSide } from "@/types/database"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -11,7 +11,7 @@ import { RoundManagement } from "./round-management"
 import { StandingsSection } from "./standings-section"
 import { ResultsSection } from "./results-section"
 import { MatchResultDialog } from "./match-result-dialog"
-import { assignMatchToCourt, clearCourt } from "@/lib/actions/court-assignments"
+import { assignMatchToCourt, clearCourt, clearCourtQueue, queueMatchForCourt } from "@/lib/actions/court-assignments"
 import { startMatch, completeMatch, recordWalkover, editMatchScore, approveMatch, rejectMatch } from "@/lib/actions/matches"
 import { generateNextSwissRound, generateKnockoutDraw } from "@/lib/actions/draws"
 import { generateScoringToken } from "@/lib/actions/scoring-token"
@@ -25,7 +25,7 @@ interface ControlCenterClientProps {
   tournament: Tournament
   courts: Court[]
   divisions: Division[]
-  matches: any[]
+  matches: ControlCenterMatch[]
   draws: { division_id: string; state_json: any }[]
   standings: Record<string, RankedStanding[]>
   entries: any[]
@@ -43,7 +43,7 @@ export function ControlCenterClient({
   const [selectedMatch, setSelectedMatch] = useState<string | null>(null)
   const [resultDialog, setResultDialog] = useState<{
     open: boolean
-    match: any | null
+    match: ControlCenterMatch | null
     mode: 'record' | 'edit'
   }>({ open: false, match: null, mode: 'record' })
   const { toast } = useToast()
@@ -52,10 +52,10 @@ export function ControlCenterClient({
   // Separate matches into assigned and unassigned
   // Unassigned: no court, scheduled status, not a completed bye
   const unassignedMatches = matches.filter(
-    m => !m.court_id && m.status === 'scheduled' && m.side_b_entry_id !== null
+    m => !m.court_id && !m.queued_court_id && m.status === 'scheduled' && m.side_b_entry_id !== null
   )
-  const assignedMatches = matches.filter(
-    m => m.court_id && m.status !== 'completed' && m.status !== 'walkover'
+  const courtDisplayMatches = matches.filter(
+    m => (m.court_id || m.queued_court_id) && m.status !== 'completed' && m.status !== 'walkover'
   )
 
   // Sort unassigned by priority (round, then division priority, then sequence)
@@ -96,6 +96,18 @@ export function ControlCenterClient({
     router.refresh()
   }
 
+  const handleQueueMatch = async (matchId: string, courtId: string) => {
+    const result = await queueMatchForCourt(matchId, courtId)
+    if (result.error) {
+      toast({ title: "Error", description: result.error, variant: "destructive" })
+      return
+    }
+
+    toast({ title: "Match Queued", description: result.message })
+    setSelectedMatch(null)
+    router.refresh()
+  }
+
   const handleClearCourt = async (courtId: string) => {
     const court = courts.find(c => c.id === courtId)
     if (!confirm(`Clear ${court?.name}? This will unassign the current match.`)) return
@@ -110,6 +122,20 @@ export function ControlCenterClient({
     router.refresh()
   }
 
+  const handleClearCourtQueue = async (courtId: string) => {
+    const court = courts.find(c => c.id === courtId)
+    if (!confirm(`Clear the queued match for ${court?.name}?`)) return
+
+    const result = await clearCourtQueue(courtId)
+    if (result.error) {
+      toast({ title: "Error", description: result.error, variant: "destructive" })
+      return
+    }
+
+    toast({ title: "Queue Cleared", description: result.message })
+    router.refresh()
+  }
+
   const handleStartMatch = async (matchId: string) => {
     const result = await startMatch(matchId)
     if (result.error) {
@@ -121,11 +147,11 @@ export function ControlCenterClient({
     router.refresh()
   }
 
-  const handleOpenResultDialog = (match: any) => {
+  const handleOpenResultDialog = (match: ControlCenterMatch) => {
     setResultDialog({ open: true, match, mode: 'record' })
   }
 
-  const handleOpenEditDialog = (match: any) => {
+  const handleOpenEditDialog = (match: ControlCenterMatch) => {
     setResultDialog({ open: true, match, mode: 'edit' })
   }
 
@@ -182,7 +208,8 @@ export function ControlCenterClient({
       return
     }
 
-    toast({ title: "Match Approved", description: "Match approved and completed" })
+    const description = 'message' in result ? result.message : "Match approved"
+    toast({ title: "Match Approved", description })
     router.refresh()
   }
 
@@ -193,7 +220,8 @@ export function ControlCenterClient({
       return
     }
 
-    toast({ title: "Match Rejected", description: "Referee can continue scoring" })
+    const description = 'message' in result ? result.message : "Referee can continue scoring"
+    toast({ title: "Match Rejected", description })
     router.refresh()
   }
 
@@ -233,6 +261,7 @@ export function ControlCenterClient({
   }
 
   const pendingSignoffCount = matches.filter(m => m.status === 'pending_signoff').length
+  const resultDialogScoreData = resultDialog.match ? resultDialog.match.meta_json as MatchScoreData | null : null
 
   return (
     <div className="space-y-6">
@@ -337,10 +366,12 @@ export function ControlCenterClient({
                 <CardContent>
                   <CourtGrid
                     courts={courts}
-                    matches={assignedMatches}
+                    matches={courtDisplayMatches}
                     selectedMatch={selectedMatch}
                     onAssign={handleAssignToCourt}
+                    onQueue={handleQueueMatch}
                     onClear={handleClearCourt}
+                    onClearQueue={handleClearCourtQueue}
                     onStartMatch={handleStartMatch}
                     onRecordResult={handleOpenResultDialog}
                     onApproveMatch={handleApproveMatch}
@@ -398,13 +429,13 @@ export function ControlCenterClient({
           open={resultDialog.open}
           onOpenChange={(open) => setResultDialog({ ...resultDialog, open })}
           matchId={resultDialog.match.id}
-          sideAName={getEntryDisplayName(resultDialog.match.side_a) || "Side A"}
-          sideBName={getEntryDisplayName(resultDialog.match.side_b) || "Side B"}
+          sideAName={getEntryDisplayName(resultDialog.match.side_a ?? null) || "Side A"}
+          sideBName={getEntryDisplayName(resultDialog.match.side_b ?? null) || "Side B"}
           onSubmitResult={handleSubmitResult}
           onSubmitWalkover={handleSubmitWalkover}
           mode={resultDialog.mode}
-          initialGames={resultDialog.mode === 'edit' ? resultDialog.match.meta_json?.games : undefined}
-          initialWalkover={resultDialog.mode === 'edit' ? resultDialog.match.meta_json?.walkover : undefined}
+          initialGames={resultDialog.mode === 'edit' ? resultDialogScoreData?.games : undefined}
+          initialWalkover={resultDialog.mode === 'edit' ? resultDialogScoreData?.walkover : undefined}
         />
       )}
     </div>

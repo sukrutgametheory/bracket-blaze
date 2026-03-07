@@ -1,11 +1,12 @@
 "use client"
 
+import { type ControlCenterMatch } from "@/types/database"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { getEntryDisplayName } from "@/lib/utils/display-name"
 
 interface ReadyQueueProps {
-  matches: any[]
+  matches: ControlCenterMatch[]
   selectedMatch: string | null
   onSelectMatch: (matchId: string) => void
 }
@@ -58,7 +59,7 @@ export function ReadyQueue({ matches, selectedMatch, onSelectMatch }: ReadyQueue
                   </span>
                 )}
                 <span className="font-medium truncate">
-                  {getEntryDisplayName(sideA)}
+                  {getEntryDisplayName(sideA ?? null)}
                 </span>
               </div>
 
@@ -74,7 +75,7 @@ export function ReadyQueue({ matches, selectedMatch, onSelectMatch }: ReadyQueue
                     </span>
                   )}
                   <span className="font-medium truncate">
-                    {getEntryDisplayName(sideB)}
+                    {getEntryDisplayName(sideB ?? null)}
                   </span>
                 </div>
               )}

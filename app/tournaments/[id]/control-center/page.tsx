@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { redirect, notFound } from "next/navigation"
-import { TABLE_NAMES, type Tournament } from "@/types/database"
+import { TABLE_NAMES, type ControlCenterMatch, type Tournament } from "@/types/database"
 import { ControlCenterClient } from "@/components/control-center/control-center-client"
 import { calculateStandings, type RankedStanding } from "@/lib/services/standings-engine"
 import { sortByNaturalName } from "@/lib/utils"
@@ -113,7 +113,7 @@ export default async function ControlCenterPage({ params }: ControlCenterPagePro
         tournament={typedTournament}
         courts={sortByNaturalName(courts || [])}
         divisions={divisions || []}
-        matches={matches || []}
+        matches={(matches || []) as ControlCenterMatch[]}
         draws={draws || []}
         standings={standingsMap}
         entries={entriesWithParticipants || []}
