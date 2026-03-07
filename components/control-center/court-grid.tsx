@@ -98,12 +98,12 @@ export function CourtGrid({
         const canAssign = Boolean(selectedMatch && !hasActiveMatch && !hasQueuedMatch)
         const canQueue = Boolean(selectedMatch && hasActiveMatch && !hasQueuedMatch)
         const statusVariant = hasActiveMatch
-          ? getStatusBadgeVariant(match.status)
+          ? getStatusBadgeVariant(match?.status ?? "scheduled")
           : hasQueuedMatch
           ? "secondary"
           : "secondary"
         const statusLabel = hasActiveMatch
-          ? getStatusLabel(match.status)
+          ? getStatusLabel(match?.status ?? "scheduled")
           : hasQueuedMatch
           ? "Queued"
           : "Available"
@@ -167,7 +167,7 @@ export function CourtGrid({
             {(hasActiveMatch || hasQueuedMatch) && (
               <div className="space-y-2">
                 {/* Division and Round */}
-                {hasActiveMatch && (
+                {match && (
                   <div className="flex items-center gap-2">
                     <Badge variant="outline" className="text-xs">
                       {match.division?.name}
@@ -179,7 +179,7 @@ export function CourtGrid({
                 )}
 
                 {/* Players */}
-                {hasActiveMatch && (
+                {match && (
                   <div className="space-y-1">
                     {/* Side A */}
                     <div className="flex items-center gap-2">
@@ -215,7 +215,7 @@ export function CourtGrid({
                 )}
 
                 {/* Live Score (when on_court or pending_signoff with live_score data) */}
-                {matchScoreData?.live_score && (match.status === 'on_court' || match.status === 'pending_signoff') && (
+                {match && matchScoreData?.live_score && (match.status === 'on_court' || match.status === 'pending_signoff') && (
                   <div className="pt-1">
                     {/* Completed games */}
                     {completedGames.length > 0 && (
@@ -235,7 +235,7 @@ export function CourtGrid({
                 )}
 
                 {/* Completed games summary (pending_signoff without live_score) */}
-                {match.status === 'pending_signoff' && !matchScoreData?.live_score && completedGames.length > 0 && (
+                {match && match.status === 'pending_signoff' && !matchScoreData?.live_score && completedGames.length > 0 && (
                   <div className="flex gap-1 pt-1">
                     {completedGames.map((game, i: number) => (
                       <span key={i} className="px-1.5 py-0.5 bg-muted rounded text-xs font-mono">
@@ -246,7 +246,7 @@ export function CourtGrid({
                 )}
 
                 {/* Action Buttons */}
-                {hasActiveMatch && (
+                {match && (
                   <div className="flex gap-2 pt-2">
                   {match.status === 'ready' && (
                     <Button
