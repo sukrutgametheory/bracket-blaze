@@ -1,7 +1,7 @@
 import { revalidatePath } from "next/cache"
 import { NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/supabase/admin"
-import { calculateStandings } from "@/lib/services/standings-engine"
+import { getPersistedStandings } from "@/lib/services/standings-engine"
 
 const TOURNAMENT_ID = "9921d16d-fb68-4778-ae70-60c90f30d375"
 const DIVISION_ID = "b75b3ba3-0e71-4863-ae8a-df3cab468ecb"
@@ -14,6 +14,13 @@ const TARGET_META_JSON = {
   total_points_a: 21,
   total_points_b: 14,
 }
+
+const TARGET_STANDINGS = [
+  { round: 2, entryId: SIDE_A_ENTRY_ID, pointsFor: 42, pointsAgainst: 17, pointDiff: 25 },
+  { round: 2, entryId: SIDE_B_ENTRY_ID, pointsFor: 35, pointsAgainst: 41, pointDiff: -6 },
+  { round: 3, entryId: SIDE_A_ENTRY_ID, pointsFor: 63, pointsAgainst: 35, pointDiff: 28 },
+  { round: 3, entryId: SIDE_B_ENTRY_ID, pointsFor: 56, pointsAgainst: 46, pointDiff: 10 },
+] as const
 
 function readScore(metaJson: unknown) {
   const games = (metaJson as { games?: Array<{ score_a?: number; score_b?: number }> } | null)?.games
@@ -83,28 +90,88 @@ export async function POST() {
       }
     }
 
-    for (const round of [2, 3]) {
-      const { error } = await calculateStandings(DIVISION_ID, round, supabase)
-      if (error && error !== "No completed matches found") {
+    const { data: standingsRows, error: standingsFetchError } = await supabase
+      .from("bracket_blaze_standings")
+      .select("entry_id, round, tiebreak_json")
+      .eq("division_id", DIVISION_ID)
+      .in("entry_id", [SIDE_A_ENTRY_ID, SIDE_B_ENTRY_ID])
+      .in("round", [2, 3])
+
+    if (standingsFetchError) {
+      return NextResponse.json({ error: standingsFetchError.message }, { status: 500 })
+    }
+
+    if (!standingsRows || standingsRows.length !== 4) {
+      return NextResponse.json(
+        { error: "Unexpected standings snapshot shape", standingsRows },
+        { status: 409 }
+      )
+    }
+
+    for (const target of TARGET_STANDINGS) {
+      const existing = standingsRows.find(
+        (row) => row.entry_id === target.entryId && row.round === target.round
+      )
+
+      if (!existing) {
         return NextResponse.json(
-          { error: `Failed to refresh standings for round ${round}: ${error}` },
+          { error: "Missing standings row for score correction", target },
+          { status: 409 }
+        )
+      }
+
+      const currentTiebreak = (existing.tiebreak_json as Record<string, unknown> | null) ?? {}
+      const h2hResults = (currentTiebreak.h2h_results as Record<string, "W" | "L"> | undefined) ?? {}
+
+      const { error: standingsUpdateError } = await supabase
+        .from("bracket_blaze_standings")
+        .update({
+          points_for: target.pointsFor,
+          points_against: target.pointsAgainst,
+          tiebreak_json: {
+            ...currentTiebreak,
+            point_diff: target.pointDiff,
+            h2h_results: h2hResults,
+          },
+        })
+        .eq("division_id", DIVISION_ID)
+        .eq("entry_id", target.entryId)
+        .eq("round", target.round)
+
+      if (standingsUpdateError) {
+        return NextResponse.json(
+          { error: standingsUpdateError.message, target },
           { status: 500 }
         )
       }
     }
 
-    const { data: standings, error: standingsError } = await supabase
-      .from("bracket_blaze_standings")
-      .select("entry_id, round, wins, losses, points_for, points_against, point_diff, rank")
-      .eq("division_id", DIVISION_ID)
-      .in("entry_id", [SIDE_A_ENTRY_ID, SIDE_B_ENTRY_ID])
-      .in("round", [2, 3])
-      .order("round", { ascending: true })
-      .order("rank", { ascending: true })
+    const { standings: round2Standings, error: round2Error } = await getPersistedStandings(DIVISION_ID, 2, supabase)
+    const { standings: round3Standings, error: round3Error } = await getPersistedStandings(DIVISION_ID, 3, supabase)
 
-    if (standingsError) {
-      return NextResponse.json({ error: standingsError.message }, { status: 500 })
+    if (round2Error) {
+      return NextResponse.json({ error: round2Error }, { status: 500 })
     }
+
+    if (round3Error) {
+      return NextResponse.json({ error: round3Error }, { status: 500 })
+    }
+
+    const standings = [
+      ...round2Standings.map((row) => ({ ...row, round: 2 })),
+      ...round3Standings.map((row) => ({ ...row, round: 3 })),
+    ]
+      .filter((row) => row.entry_id === SIDE_A_ENTRY_ID || row.entry_id === SIDE_B_ENTRY_ID)
+      .map((row) => ({
+        entry_id: row.entry_id,
+        round: row.round,
+        wins: row.wins,
+        losses: row.losses,
+        points_for: row.points_for,
+        points_against: row.points_against,
+        point_diff: row.tiebreak_json.point_diff,
+        rank: row.rank,
+      }))
 
     revalidatePath(`/live/${TOURNAMENT_ID}`)
     revalidatePath(`/tournaments/${TOURNAMENT_ID}/control-center`)
