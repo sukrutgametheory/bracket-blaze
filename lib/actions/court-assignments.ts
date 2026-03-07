@@ -40,6 +40,14 @@ function normalizeAssignmentError(message: string | undefined, fallback: string)
   return message
 }
 
+function normalizeQueueSchemaError(message: string | undefined, fallback: string): string {
+  if (!message) return fallback
+  if (message.includes("queued_court_id") || message.includes("queued_at") || message.includes("queued_by") || message.includes("assignment_kind")) {
+    return "Court queue feature requires the latest database migration. Run supabase/migrations/20250307000001_court_queue_slot.sql."
+  }
+  return message
+}
+
 export async function closeOpenAssignmentAuditRows(
   supabase: ServerSupabase,
   matchIds: string[],
@@ -512,7 +520,11 @@ export async function queueMatchForCourt(matchId: string, courtId: string) {
 
     const match = matchResult.data
     if (matchResult.error || !match) {
-      return { error: "Match not found" }
+      return {
+        error: matchResult.error
+          ? normalizeQueueSchemaError(matchResult.error.message, "Failed to load match for queueing")
+          : "Match not found",
+      }
     }
 
     if (match.status !== "scheduled") {
