@@ -59,6 +59,32 @@ export default async function LivePortalPage({ params }: LivePortalPageProps) {
     .order("sequence", { ascending: true })
 
   const matchIds = matches?.map(match => match.id) || []
+  const liveCourtIds = Array.from(new Set(
+    (matches || [])
+      .filter(match => match.status === "on_court" && match.court_id)
+      .map(match => match.court_id as string)
+  ))
+
+  const { data: queuedMatches } = liveCourtIds.length === 0
+    ? { data: [] }
+    : await supabase
+        .from(TABLE_NAMES.MATCHES)
+        .select(`
+          id, status, queued_court_id, round, sequence, phase, division_id,
+          division:bracket_blaze_divisions!inner(id, name, format),
+          side_a:bracket_blaze_entries!side_a_entry_id(
+            id, seed,
+            participant:bracket_blaze_participants(display_name, club),
+            team:bracket_blaze_teams(name)
+          ),
+          side_b:bracket_blaze_entries!side_b_entry_id(
+            id, seed,
+            participant:bracket_blaze_participants(display_name, club),
+            team:bracket_blaze_teams(name)
+          )
+        `)
+        .in("queued_court_id", liveCourtIds)
+        .eq("status", "scheduled")
 
   const { data: stories } = matchIds.length === 0
     ? { data: [] as MatchStory[] }
@@ -93,6 +119,7 @@ export default async function LivePortalPage({ params }: LivePortalPageProps) {
       tournamentName={tournament.name}
       divisions={divisions || []}
       matches={matches || []}
+      queuedMatches={queuedMatches || []}
       stories={stories || []}
       draws={draws || []}
       standings={standingsMap}

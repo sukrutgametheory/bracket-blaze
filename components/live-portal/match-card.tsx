@@ -15,6 +15,11 @@ import {
 interface MatchCardProps {
   match: any
   isLive: boolean
+  queuedMatch?: any
+  queuedDrawState?: {
+    bracket_size?: number
+    knockout_variant?: KnockoutVariant
+  }
   stories?: {
     pre_match?: MatchStory
     post_match?: MatchStory
@@ -34,7 +39,7 @@ function formatDuration(startTime: string | null): string {
   return `${mins}m`
 }
 
-export function MatchCard({ match, isLive, stories, drawState }: MatchCardProps) {
+export function MatchCard({ match, isLive, queuedMatch, queuedDrawState, stories, drawState }: MatchCardProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   const sideA = match.side_a as any
   const sideB = match.side_b as any
@@ -50,6 +55,10 @@ export function MatchCard({ match, isLive, stories, drawState }: MatchCardProps)
   const currentStory = isCompleted ? (stories?.post_match || stories?.pre_match) : stories?.pre_match
   const storyLabel = isCompleted ? "Recap" : "Story"
   const storyText = currentStory?.content || (isCompleted ? "Recap is being prepared." : "Story is being prepared.")
+  const queuedSideA = queuedMatch?.side_a as any
+  const queuedSideB = queuedMatch?.side_b as any
+  const queuedNameA = queuedMatch ? getEntryDisplayName(queuedSideA) : ""
+  const queuedNameB = queuedMatch ? getEntryDisplayName(queuedSideB) : ""
 
   // Round label
   const isKnockout = match.phase === "knockout"
@@ -58,17 +67,22 @@ export function MatchCard({ match, isLive, stories, drawState }: MatchCardProps)
   const roundLabel = isKnockout
     ? getKnockoutRoundLabel(match.round, totalKnockoutRounds, knockoutVariant)
     : `Round ${match.round}`
+  const queuedIsKnockout = queuedMatch?.phase === "knockout"
+  const queuedKnockoutVariant = getKnockoutVariant(queuedDrawState?.knockout_variant)
+  const queuedTotalKnockoutRounds = getKnockoutRoundCount(
+    queuedDrawState?.bracket_size,
+    queuedKnockoutVariant
+  ) || queuedMatch?.round
+  const queuedRoundLabel = queuedMatch
+    ? queuedIsKnockout
+      ? getKnockoutRoundLabel(queuedMatch.round, queuedTotalKnockoutRounds, queuedKnockoutVariant)
+      : `Round ${queuedMatch.round}`
+    : ""
 
   // Duration
   const duration = isLive ? formatDuration(match.actual_start_time) : ""
 
   // Score display for completed matches
-  const scoreStr = isWalkover
-    ? "W/O"
-    : games.length > 0
-    ? games.map(g => `${g.score_a}-${g.score_b}`).join(", ")
-    : ""
-
   return (
     <Card className={cn(
       "overflow-hidden transition-colors",
@@ -156,7 +170,24 @@ export function MatchCard({ match, isLive, stories, drawState }: MatchCardProps)
           </span>
         </div>
 
-        <div className="mt-3 flex items-center justify-between gap-3 border-t border-border/50 pt-3">
+        {isLive && queuedMatch && (
+          <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50/80 p-3 dark:border-amber-900/60 dark:bg-amber-950/20">
+              <div className="mb-2 flex items-center justify-between gap-3">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-amber-700 dark:text-amber-300">
+                  Up Next
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {queuedMatch.division?.name} &middot; {queuedRoundLabel}
+                </span>
+              </div>
+              <div className="space-y-1">
+                <p className="truncate text-sm font-medium text-foreground">{queuedNameA}</p>
+                <p className="truncate text-sm font-medium text-foreground">{queuedNameB}</p>
+              </div>
+          </div>
+        )}
+
+        <div className="flex items-center justify-between gap-3 border-t border-border/50 pt-3">
           <button
             type="button"
             onClick={() => setIsExpanded(prev => !prev)}

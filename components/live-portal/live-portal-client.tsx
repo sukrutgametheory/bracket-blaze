@@ -19,6 +19,7 @@ interface LivePortalClientProps {
   tournamentName: string
   divisions: Division[]
   matches: any[]
+  queuedMatches: any[]
   stories: MatchStory[]
   draws: { division_id: string; state_json: any }[]
   standings: Record<string, RankedStanding[]>
@@ -32,6 +33,7 @@ export function LivePortalClient({
   tournamentName,
   divisions,
   matches: initialMatches,
+  queuedMatches,
   stories,
   draws,
   standings,
@@ -57,6 +59,14 @@ export function LivePortalClient({
     }
     return map
   }, [stories])
+  const queuedMatchByCourtId = useMemo(
+    () => new Map(
+      queuedMatches
+        .filter(match => Boolean(match.queued_court_id))
+        .map(match => [match.queued_court_id, match] as const)
+    ),
+    [queuedMatches]
+  )
 
   // Stable key for Broadcast subscription dependencies
   const matchKey = matches.map(m => `${m.id}:${m.status}`).join(",")
@@ -217,6 +227,10 @@ export function LivePortalClient({
                     key={match.id}
                     match={match}
                     isLive={match.status === "on_court"}
+                    queuedMatch={match.status === "on_court" ? queuedMatchByCourtId.get(match.court_id) : undefined}
+                    queuedDrawState={match.status === "on_court"
+                      ? drawMap.get(queuedMatchByCourtId.get(match.court_id)?.division_id)
+                      : undefined}
                     drawState={drawMap.get(match.division_id)}
                     stories={storyMap.get(match.id)}
                   />
