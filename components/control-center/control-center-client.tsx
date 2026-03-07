@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Tournament, Court, Division, type ControlCenterMatch, type GameScore, type MatchScoreData, type WinnerSide } from "@/types/database"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -20,6 +20,7 @@ import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
 import type { RankedStanding } from "@/lib/services/standings-engine"
 import { getEntryDisplayName } from "@/lib/utils/display-name"
+import { createClient } from "@/lib/supabase/client"
 
 interface ControlCenterClientProps {
   tournament: Tournament
@@ -48,6 +49,47 @@ export function ControlCenterClient({
   }>({ open: false, match: null, mode: 'record' })
   const { toast } = useToast()
   const router = useRouter()
+
+  useEffect(() => {
+    if (divisions.length === 0) return
+
+    const supabase = createClient()
+    const divisionIdSet = new Set(divisions.map(division => division.id))
+    let refreshTimeout: ReturnType<typeof setTimeout> | null = null
+
+    const scheduleRefresh = () => {
+      if (refreshTimeout) clearTimeout(refreshTimeout)
+      refreshTimeout = setTimeout(() => {
+        router.refresh()
+      }, 150)
+    }
+
+    const channel = supabase
+      .channel(`control-center:${tournament.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "bracket_blaze_matches",
+        },
+        payload => {
+          const nextRow = payload.new as { division_id?: string | null } | null
+          const previousRow = payload.old as { division_id?: string | null } | null
+          const divisionId = nextRow?.division_id ?? previousRow?.division_id ?? null
+
+          if (divisionId && divisionIdSet.has(divisionId)) {
+            scheduleRefresh()
+          }
+        }
+      )
+      .subscribe()
+
+    return () => {
+      if (refreshTimeout) clearTimeout(refreshTimeout)
+      supabase.removeChannel(channel)
+    }
+  }, [divisions, router, tournament.id])
 
   // Separate matches into assigned and unassigned
   // Unassigned: no court, scheduled status, not a completed bye

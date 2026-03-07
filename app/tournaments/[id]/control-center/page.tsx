@@ -5,6 +5,8 @@ import { ControlCenterClient } from "@/components/control-center/control-center-
 import { calculateStandings, type RankedStanding } from "@/lib/services/standings-engine"
 import { sortByNaturalName } from "@/lib/utils"
 
+export const dynamic = "force-dynamic"
+
 interface ControlCenterPageProps {
   params: Promise<{ id: string }>
 }
