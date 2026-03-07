@@ -31,7 +31,8 @@ export async function findOrCreatePlayer(
   rawPhone: string,
   displayName: string,
   email: string | null,
-  club: string | null
+  club: string | null,
+  duprId: string | null = null
 ): Promise<{ data: string | null; error?: string }> {
   try {
     const phone = normalizePhone(rawPhone)
@@ -46,6 +47,7 @@ export async function findOrCreatePlayer(
         p_display_name: displayName,
         p_email: email,
         p_club: club,
+        p_dupr_id: duprId,
       })
 
     if (error) {
