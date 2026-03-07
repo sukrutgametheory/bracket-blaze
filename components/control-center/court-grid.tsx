@@ -92,9 +92,21 @@ export function CourtGrid({
         const queuedMatch = queuedMatchesByCourt.get(court.id)
         const matchScoreData = match ? match.meta_json as MatchScoreData | null : null
         const completedGames = matchScoreData?.games ?? []
-        const isEmpty = !match
-        const canAssign = Boolean(selectedMatch && isEmpty)
-        const canQueue = Boolean(selectedMatch && !isEmpty && !queuedMatch)
+        const hasActiveMatch = Boolean(match)
+        const hasQueuedMatch = Boolean(queuedMatch)
+        const isEmpty = !hasActiveMatch && !hasQueuedMatch
+        const canAssign = Boolean(selectedMatch && !hasActiveMatch && !hasQueuedMatch)
+        const canQueue = Boolean(selectedMatch && hasActiveMatch && !hasQueuedMatch)
+        const statusVariant = hasActiveMatch
+          ? getStatusBadgeVariant(match.status)
+          : hasQueuedMatch
+          ? "secondary"
+          : "secondary"
+        const statusLabel = hasActiveMatch
+          ? getStatusLabel(match.status)
+          : hasQueuedMatch
+          ? "Queued"
+          : "Available"
 
         return (
           <div
@@ -114,7 +126,8 @@ export function CourtGrid({
               isEmpty && "bg-muted/30",
               !isEmpty && "bg-card",
               match?.status === 'on_court' && "border-green-500/50 bg-green-50/30 dark:bg-green-950/10",
-              match?.status === 'pending_signoff' && "border-yellow-500/50 bg-yellow-50/30 dark:bg-yellow-950/10"
+              match?.status === 'pending_signoff' && "border-yellow-500/50 bg-yellow-50/30 dark:bg-yellow-950/10",
+              !hasActiveMatch && hasQueuedMatch && "border-blue-500/30 bg-blue-50/20 dark:bg-blue-950/10"
             )}
           >
             {/* Court Header */}
@@ -122,12 +135,13 @@ export function CourtGrid({
               <div className="flex items-center gap-2">
                 <h3 className="font-semibold text-lg">{court.name}</h3>
                 <Badge
-                  variant={isEmpty ? "secondary" : getStatusBadgeVariant(match.status)}
+                  variant={statusVariant}
                   className={cn(
-                    match?.status === 'on_court' && "bg-green-600 text-white hover:bg-green-600"
+                    match?.status === 'on_court' && "bg-green-600 text-white hover:bg-green-600",
+                    !hasActiveMatch && hasQueuedMatch && "bg-blue-600 text-white hover:bg-blue-600"
                   )}
                 >
-                  {isEmpty ? "Available" : getStatusLabel(match.status)}
+                  {statusLabel}
                 </Badge>
                 {match?.status === 'on_court' && match.actual_start_time && (
                   <span className="text-xs text-muted-foreground">
@@ -150,51 +164,55 @@ export function CourtGrid({
             </div>
 
             {/* Match Details */}
-            {!isEmpty && (
+            {(hasActiveMatch || hasQueuedMatch) && (
               <div className="space-y-2">
                 {/* Division and Round */}
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="text-xs">
-                    {match.division?.name}
-                  </Badge>
-                  <span className="text-xs text-muted-foreground">
-                    {match.phase === 'knockout' ? 'KO ' : ''}Round {match.round} • Match {match.sequence}
-                  </span>
-                </div>
-
-                {/* Players */}
-                <div className="space-y-1">
-                  {/* Side A */}
+                {hasActiveMatch && (
                   <div className="flex items-center gap-2">
-                    {match.side_a?.seed && (
-                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-semibold">
-                        {match.side_a.seed}
-                      </span>
-                    )}
-                    <span className="font-medium text-sm truncate">
-                      {getEntryDisplayName(match.side_a ?? null)}
+                    <Badge variant="outline" className="text-xs">
+                      {match.division?.name}
+                    </Badge>
+                    <span className="text-xs text-muted-foreground">
+                      {match.phase === 'knockout' ? 'KO ' : ''}Round {match.round} • Match {match.sequence}
                     </span>
                   </div>
+                )}
 
-                  {/* VS or BYE */}
-                  <div className="text-xs text-muted-foreground font-semibold text-center">
-                    {match.side_b ? "VS" : "BYE"}
-                  </div>
-
-                  {/* Side B */}
-                  {match.side_b && (
+                {/* Players */}
+                {hasActiveMatch && (
+                  <div className="space-y-1">
+                    {/* Side A */}
                     <div className="flex items-center gap-2">
-                      {match.side_b?.seed && (
+                      {match.side_a?.seed && (
                         <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-semibold">
-                          {match.side_b.seed}
+                          {match.side_a.seed}
                         </span>
                       )}
                       <span className="font-medium text-sm truncate">
-                        {getEntryDisplayName(match.side_b ?? null)}
+                        {getEntryDisplayName(match.side_a ?? null)}
                       </span>
                     </div>
-                  )}
-                </div>
+
+                    {/* VS or BYE */}
+                    <div className="text-xs text-muted-foreground font-semibold text-center">
+                      {match.side_b ? "VS" : "BYE"}
+                    </div>
+
+                    {/* Side B */}
+                    {match.side_b && (
+                      <div className="flex items-center gap-2">
+                        {match.side_b?.seed && (
+                          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-semibold">
+                            {match.side_b.seed}
+                          </span>
+                        )}
+                        <span className="font-medium text-sm truncate">
+                          {getEntryDisplayName(match.side_b ?? null)}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* Live Score (when on_court or pending_signoff with live_score data) */}
                 {matchScoreData?.live_score && (match.status === 'on_court' || match.status === 'pending_signoff') && (
@@ -228,7 +246,8 @@ export function CourtGrid({
                 )}
 
                 {/* Action Buttons */}
-                <div className="flex gap-2 pt-2">
+                {hasActiveMatch && (
+                  <div className="flex gap-2 pt-2">
                   {match.status === 'ready' && (
                     <Button
                       size="sm"
@@ -315,7 +334,8 @@ export function CourtGrid({
                       )}
                     </>
                   )}
-                </div>
+                  </div>
+                )}
 
                 <div className="mt-3 border-t pt-3">
                   <div className="mb-2 flex items-center justify-between gap-2">
