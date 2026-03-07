@@ -54,38 +54,42 @@ export default async function ControlCenterPage({ params }: ControlCenterPagePro
   const divisionIds = divisions?.map(d => d.id) || []
 
   // Fetch all matches for published divisions with entry/participant details
-  const { data: matches } = await supabase
-    .from(TABLE_NAMES.MATCHES)
-    .select(`
-      *,
-      division:bracket_blaze_divisions!inner(
-        id,
-        name,
-        format,
-        scheduling_priority
-      ),
-      side_a:bracket_blaze_entries!side_a_entry_id(
-        id,
-        seed,
-        participant:bracket_blaze_participants(id, display_name, club),
-        team:bracket_blaze_teams(name)
-      ),
-      side_b:bracket_blaze_entries!side_b_entry_id(
-        id,
-        seed,
-        participant:bracket_blaze_participants(id, display_name, club),
-        team:bracket_blaze_teams(name)
-      )
-    `)
-    .in("division_id", divisionIds.length > 0 ? divisionIds : ['none'])
-    .order("round", { ascending: true })
-    .order("sequence", { ascending: true })
+  const { data: matches } = divisionIds.length === 0
+    ? { data: [] }
+    : await supabase
+        .from(TABLE_NAMES.MATCHES)
+        .select(`
+          *,
+          division:bracket_blaze_divisions!inner(
+            id,
+            name,
+            format,
+            scheduling_priority
+          ),
+          side_a:bracket_blaze_entries!side_a_entry_id(
+            id,
+            seed,
+            participant:bracket_blaze_participants(id, display_name, club),
+            team:bracket_blaze_teams(name)
+          ),
+          side_b:bracket_blaze_entries!side_b_entry_id(
+            id,
+            seed,
+            participant:bracket_blaze_participants(id, display_name, club),
+            team:bracket_blaze_teams(name)
+          )
+        `)
+        .in("division_id", divisionIds)
+        .order("round", { ascending: true })
+        .order("sequence", { ascending: true })
 
   // Fetch draw state for each division
-  const { data: draws } = await supabase
-    .from(TABLE_NAMES.DRAWS)
-    .select("division_id, state_json")
-    .in("division_id", divisionIds.length > 0 ? divisionIds : ['none'])
+  const { data: draws } = divisionIds.length === 0
+    ? { data: [] }
+    : await supabase
+        .from(TABLE_NAMES.DRAWS)
+        .select("division_id, state_json")
+        .in("division_id", divisionIds)
 
   // Calculate standings per division
   const standingsMap: Record<string, RankedStanding[]> = {}
@@ -97,10 +101,12 @@ export default async function ControlCenterPage({ params }: ControlCenterPagePro
   }
 
   // Fetch entries with participant names for standings display
-  const { data: entriesWithParticipants } = await supabase
-    .from(TABLE_NAMES.ENTRIES)
-    .select("id, seed, participant:bracket_blaze_participants(display_name, club), team:bracket_blaze_teams(name)")
-    .in("division_id", divisionIds.length > 0 ? divisionIds : ['none'])
+  const { data: entriesWithParticipants } = divisionIds.length === 0
+    ? { data: [] }
+    : await supabase
+        .from(TABLE_NAMES.ENTRIES)
+        .select("id, seed, participant:bracket_blaze_participants(display_name, club), team:bracket_blaze_teams(name)")
+        .in("division_id", divisionIds)
 
   return (
     <div className="container mx-auto py-6">

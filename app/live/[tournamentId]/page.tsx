@@ -35,28 +35,30 @@ export default async function LivePortalPage({ params }: LivePortalPageProps) {
   const divisionIds = divisions?.map(d => d.id) || []
 
   // Fetch live + completed matches with player/court details
-  const { data: matches } = await supabase
-    .from(TABLE_NAMES.MATCHES)
-    .select(`
-      id, status, court_id, meta_json, round, sequence, phase,
-      winner_side, actual_start_time, actual_end_time, division_id,
-      division:bracket_blaze_divisions!inner(id, name, format),
-      court:bracket_blaze_courts!bracket_blaze_matches_court_id_fkey(id, name),
-      side_a:bracket_blaze_entries!side_a_entry_id(
-        id, seed,
-        participant:bracket_blaze_participants(display_name, club),
-        team:bracket_blaze_teams(name)
-      ),
-      side_b:bracket_blaze_entries!side_b_entry_id(
-        id, seed,
-        participant:bracket_blaze_participants(display_name, club),
-        team:bracket_blaze_teams(name)
-      )
-    `)
-    .in("division_id", divisionIds.length > 0 ? divisionIds : ['none'])
-    .in("status", ["on_court", "completed", "walkover"])
-    .order("round", { ascending: true })
-    .order("sequence", { ascending: true })
+  const { data: matches } = divisionIds.length === 0
+    ? { data: [] }
+    : await supabase
+        .from(TABLE_NAMES.MATCHES)
+        .select(`
+          id, status, court_id, meta_json, round, sequence, phase,
+          winner_side, actual_start_time, actual_end_time, division_id,
+          division:bracket_blaze_divisions!inner(id, name, format),
+          court:bracket_blaze_courts!bracket_blaze_matches_court_id_fkey(id, name),
+          side_a:bracket_blaze_entries!side_a_entry_id(
+            id, seed,
+            participant:bracket_blaze_participants(display_name, club),
+            team:bracket_blaze_teams(name)
+          ),
+          side_b:bracket_blaze_entries!side_b_entry_id(
+            id, seed,
+            participant:bracket_blaze_participants(display_name, club),
+            team:bracket_blaze_teams(name)
+          )
+        `)
+        .in("division_id", divisionIds)
+        .in("status", ["on_court", "completed", "walkover"])
+        .order("round", { ascending: true })
+        .order("sequence", { ascending: true })
 
   const matchIds = matches?.map(match => match.id) || []
   const liveCourtIds = Array.from(new Set(
@@ -94,10 +96,12 @@ export default async function LivePortalPage({ params }: LivePortalPageProps) {
         .in("match_id", matchIds)
 
   // Fetch draw state for standings context
-  const { data: draws } = await supabase
-    .from(TABLE_NAMES.DRAWS)
-    .select("division_id, state_json")
-    .in("division_id", divisionIds.length > 0 ? divisionIds : ['none'])
+  const { data: draws } = divisionIds.length === 0
+    ? { data: [] }
+    : await supabase
+        .from(TABLE_NAMES.DRAWS)
+        .select("division_id, state_json")
+        .in("division_id", divisionIds)
 
   // Calculate standings per division
   const standingsMap: Record<string, RankedStanding[]> = {}
@@ -109,10 +113,12 @@ export default async function LivePortalPage({ params }: LivePortalPageProps) {
   }
 
   // Fetch entries with participant names for standings display
-  const { data: entries } = await supabase
-    .from(TABLE_NAMES.ENTRIES)
-    .select("id, seed, participant:bracket_blaze_participants(display_name, club), team:bracket_blaze_teams(name)")
-    .in("division_id", divisionIds.length > 0 ? divisionIds : ['none'])
+  const { data: entries } = divisionIds.length === 0
+    ? { data: [] }
+    : await supabase
+        .from(TABLE_NAMES.ENTRIES)
+        .select("id, seed, participant:bracket_blaze_participants(display_name, club), team:bracket_blaze_teams(name)")
+        .in("division_id", divisionIds)
 
   return (
     <LivePortalClient
