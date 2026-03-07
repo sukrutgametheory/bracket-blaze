@@ -103,7 +103,12 @@ export function CourtGrid({
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <h3 className="font-semibold text-lg">{court.name}</h3>
-                <Badge variant={isEmpty ? "secondary" : getStatusBadgeVariant(match.status)}>
+                <Badge
+                  variant={isEmpty ? "secondary" : getStatusBadgeVariant(match.status)}
+                  className={cn(
+                    match?.status === 'on_court' && "bg-green-600 text-white hover:bg-green-600"
+                  )}
+                >
                   {isEmpty ? "Available" : getStatusLabel(match.status)}
                 </Badge>
                 {match?.status === 'on_court' && match.actual_start_time && (

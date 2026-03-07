@@ -357,16 +357,23 @@ export function SingleCourtTvClient({
     ? "text-slate-300"
     : "text-slate-400"
 
+  const pickerGridClassName =
+    availableCourts.length >= 13
+      ? "grid-cols-2 md:grid-cols-3 xl:grid-cols-4"
+      : availableCourts.length >= 9
+      ? "grid-cols-2 md:grid-cols-3"
+      : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+
   return (
-    <div className="min-h-screen bg-[#030712] text-white">
-      <div className="mx-auto min-h-screen max-w-[1920px] px-6 py-6 md:px-10 md:py-8">
-        <header className="flex items-center justify-between border-b border-slate-800 pb-5">
-          <div>
+    <div className="h-dvh overflow-hidden bg-[#030712] text-white">
+      <div className="mx-auto flex h-full max-w-[1920px] flex-col px-4 py-4 md:px-8 md:py-6">
+        <header className="flex shrink-0 items-center justify-between border-b border-slate-800 pb-4">
+          <div className="min-w-0 pr-4">
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-slate-500">Court TV</p>
-            <h1 className="mt-1 text-2xl font-bold text-slate-100 md:text-4xl">{tournamentName}</h1>
+            <h1 className="mt-1 line-clamp-2 text-xl font-bold text-slate-100 md:text-3xl">{tournamentName}</h1>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex shrink-0 items-center gap-3">
             {isSyncing && (
               <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Syncing</span>
             )}
@@ -380,23 +387,23 @@ export function SingleCourtTvClient({
           </div>
         </header>
 
-        <main className="mt-6 min-h-[calc(100vh-120px)]">
+        <main className="mt-4 flex min-h-0 flex-1">
           {!selectedCourt ? (
-            <div className="flex h-full items-center justify-center rounded-2xl border border-slate-800 bg-slate-950">
-              <p className="text-3xl font-semibold text-slate-300">No Active Courts</p>
+            <div className="flex h-full w-full items-center justify-center rounded-2xl border border-slate-800 bg-slate-950">
+              <p className="text-2xl font-semibold text-slate-300 md:text-3xl">No Active Courts</p>
             </div>
           ) : (
-            <section className="flex h-full min-h-[calc(100vh-180px)] flex-col rounded-2xl border border-slate-800 bg-gradient-to-b from-slate-950 to-slate-900 p-6 md:p-10">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-5">
-                <div>
+            <section className="flex h-full min-h-0 w-full flex-col rounded-2xl border border-slate-800 bg-gradient-to-b from-slate-950 to-slate-900 p-5 md:p-8">
+              <div className="flex shrink-0 items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                <div className="min-w-0">
                   <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Selected Court</p>
-                  <h2 className="mt-1 text-3xl font-bold text-slate-100 md:text-5xl">{selectedCourt.name}</h2>
+                  <h2 className="mt-1 break-words text-2xl font-bold text-slate-100 md:text-4xl">{selectedCourt.name}</h2>
                 </div>
 
-                <div className="text-right">
+                <div className="min-w-0 shrink-0 text-right">
                   <p className={`text-sm font-semibold uppercase tracking-[0.2em] ${statusColor}`}>{statusLabel}</p>
                   {selectedMatch?.division?.name && (
-                    <p className="mt-1 text-sm font-medium text-slate-400 md:text-base">
+                    <p className="mt-1 max-w-[22rem] break-words text-sm font-medium text-slate-400 md:text-base">
                       {selectedMatch.division.name}
                     </p>
                   )}
@@ -404,16 +411,18 @@ export function SingleCourtTvClient({
               </div>
 
               {!selectedMatch ? (
-                <div className="flex flex-1 items-center justify-center">
-                  <p className="text-center text-5xl font-bold text-slate-300 md:text-7xl">Awaiting Assignment</p>
+                <div className="flex min-h-0 flex-1 items-center justify-center">
+                  <p className="text-center text-4xl font-bold text-slate-300 md:text-6xl">Awaiting Assignment</p>
                 </div>
               ) : (
                 <>
-                  <div className="mt-8 flex flex-1 flex-col justify-center gap-8">
-                    <div className="flex items-center justify-between gap-6">
-                      <p className="max-w-[70%] text-5xl font-semibold text-slate-100 md:text-7xl">{sideAName}</p>
+                  <div className="mt-5 flex min-h-0 flex-1 flex-col justify-center gap-5 md:gap-6">
+                    <div className="flex min-w-0 items-center justify-between gap-4 md:gap-6">
+                      <p className="min-w-0 max-w-[68%] break-words text-[clamp(2.4rem,4.9vw,5.5rem)] font-semibold leading-[0.95] text-slate-100">
+                        {sideAName}
+                      </p>
                       {showScores && (
-                        <p className={`${oswald.className} text-[clamp(5rem,14vw,15rem)] font-bold leading-none text-white tabular-nums`}>
+                        <p className={`${oswald.className} shrink-0 text-[clamp(4.5rem,12vw,12rem)] font-bold leading-none text-white tabular-nums`}>
                           {scoreA}
                         </p>
                       )}
@@ -421,32 +430,34 @@ export function SingleCourtTvClient({
 
                     <div className="h-px bg-gradient-to-r from-slate-700 via-slate-500 to-slate-700" />
 
-                    <div className="flex items-center justify-between gap-6">
-                      <p className="max-w-[70%] text-5xl font-semibold text-slate-100 md:text-7xl">{sideBName}</p>
+                    <div className="flex min-w-0 items-center justify-between gap-4 md:gap-6">
+                      <p className="min-w-0 max-w-[68%] break-words text-[clamp(2.4rem,4.9vw,5.5rem)] font-semibold leading-[0.95] text-slate-100">
+                        {sideBName}
+                      </p>
                       {showScores && (
-                        <p className={`${oswald.className} text-[clamp(5rem,14vw,15rem)] font-bold leading-none text-white tabular-nums`}>
+                        <p className={`${oswald.className} shrink-0 text-[clamp(4.5rem,12vw,12rem)] font-bold leading-none text-white tabular-nums`}>
                           {scoreB}
                         </p>
                       )}
                     </div>
                   </div>
 
-                  <footer className="mt-8 border-t border-slate-800 pt-5">
+                  <footer className="mt-5 shrink-0 border-t border-slate-800 pt-4">
                     {isReady ? (
-                      <p className="text-center text-3xl font-bold text-sky-300 md:text-4xl">Starting Soon</p>
+                      <p className="text-center text-2xl font-bold text-sky-300 md:text-3xl">Starting Soon</p>
                     ) : games.length > 0 ? (
                       <div className="flex flex-wrap items-center justify-center gap-3">
                         {games.map((game, index) => (
                           <span
                             key={`${game.score_a}-${game.score_b}-${index}`}
-                            className={`${oswald.className} rounded-md border border-slate-700 bg-slate-800 px-3 py-2 text-2xl text-slate-200 tabular-nums`}
+                            className={`${oswald.className} rounded-md border border-slate-700 bg-slate-800 px-3 py-1.5 text-xl text-slate-200 tabular-nums md:text-2xl`}
                           >
                             {game.score_a}-{game.score_b}
                           </span>
                         ))}
                       </div>
                     ) : (
-                      <p className="text-center text-2xl font-semibold text-slate-400">Match In Progress</p>
+                      <p className="text-center text-xl font-semibold text-slate-400 md:text-2xl">Match In Progress</p>
                     )}
                   </footer>
                 </>
@@ -458,16 +469,16 @@ export function SingleCourtTvClient({
 
       {showCourtPicker && availableCourts.length > 0 && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-6"
+          className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-black/90 p-4 md:p-6"
           onKeyDown={handleCourtPickerKeyDown}
         >
-          <div className="w-full max-w-5xl rounded-2xl border border-slate-700 bg-slate-950 p-6 md:p-8">
-            <h3 className="text-center text-3xl font-bold text-slate-100 md:text-5xl">Select Court</h3>
-            <p className="mt-2 text-center text-sm text-slate-400 md:text-base">
+          <div className="flex h-full max-h-full w-full max-w-6xl min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-700 bg-slate-950 p-4 md:p-6">
+            <h3 className="text-center text-2xl font-bold text-slate-100 md:text-4xl">Select Court</h3>
+            <p className="mt-1 text-center text-xs text-slate-400 md:text-sm">
               Use arrow keys and press Enter to choose.
             </p>
 
-            <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className={cn("mt-4 grid flex-1 auto-rows-fr gap-3", pickerGridClassName)}>
               {availableCourts.map((court, index) => {
                 const isSelected = court.id === selectedCourtId
 
@@ -480,14 +491,16 @@ export function SingleCourtTvClient({
                     type="button"
                     onClick={() => handleSelectCourt(court.id)}
                     tabIndex={focusedCourtIndex === index ? 0 : -1}
-                    className={`rounded-xl border px-5 py-6 text-left outline-none transition ${
+                    className={`flex min-h-0 flex-col justify-center rounded-xl border px-4 py-4 text-left outline-none transition ${
                       isSelected
                         ? "border-sky-400 bg-sky-950/40"
                         : "border-slate-700 bg-slate-900 hover:border-slate-500"
                     } focus-visible:ring-2 focus-visible:ring-sky-400`}
                   >
                     <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Court</p>
-                    <p className="mt-2 text-4xl font-bold text-slate-100">{court.name}</p>
+                    <p className="mt-1 break-words text-[clamp(1.6rem,2.4vw,2.75rem)] font-bold leading-none text-slate-100">
+                      {court.name}
+                    </p>
                   </button>
                 )
               })}
